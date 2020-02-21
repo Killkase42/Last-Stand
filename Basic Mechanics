@@ -1,9 +1,12 @@
 Main Menu:
+The main menu not only functions as a "title screen", but also as a way to select and buy ships, skins, and modify the fleet (picture
+included).
 
 
 Range:
 Making use of the distance between points on the map, the range mechanic determines how effective the fleet's weapons are. Primary and
-secondary weapons and abilities will all have a maximum range assigned to them, beyond which they will not effect the enemy. 
+secondary weapons and abilities will all have a maximum range assigned to them, beyond which they will not effect the enemy. Certain
+abilities can be used stratetically to increase or decrease the distance between the fleet and enemy.
 
 
 Grid-Based Movement:
