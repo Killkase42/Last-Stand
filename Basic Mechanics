@@ -4,7 +4,17 @@ Main Menu:
 Range:
 
 
-Grid-Based Movement
+Grid-Based Movement:
+
+
+Each ship in the game has its own movement speed (shown in the statistics tab). The fleet's movement speed, how fast they can relocate
+from one grid position to another, is determined by finding the average of all three ships' movement speeds in the fleet. Based on this
+value, the time it takes to travel from one grid position to another will be modified. This will be done by first finding the
+fleet's average speed (80, for example), multiplying it by a constant (0.075, for example), and then dividing the distannce between
+grid points (20km, for example), by the answer of the previous calculation (6). This example syntax is represented by the expression
+b/(a(0.075)), where a is the fleet's average speed, b is the distance between the points, and 0.075 is the constant. Also, this number
+is not truely a constant, as it can be modified by ships' engine boost or slow abilities (returning to normal after the effect wears
+off).
 
 
 Jump Drive:
