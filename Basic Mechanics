@@ -2,10 +2,15 @@ Main Menu:
 
 
 Range:
+Making use of the distance between points on the map, the range mechanic determines how effective the fleet's weapons are. Primary and
+secondary weapons and abilities will all have a maximum range assigned to them, beyond which they will not effect the enemy. 
 
 
 Grid-Based Movement:
-
+In addition to moving around systems with the jump drive, the fleet can be relocated with the use of the grid-movement system. In each
+system, a series of points will be available to move to. The enemies will spawn on one far away from the system's forward station,
+eventually moving closer (with the goal of capturing the station). This movement mechanic will determine if the fleet is close enough
+to the enemy to effectively engage them (range mechanic) and whether it can recapture and repair.
 
 Each ship in the game has its own movement speed (shown in the statistics tab). The fleet's movement speed, how fast they can relocate
 from one grid position to another, is determined by finding the average of all three ships' movement speeds in the fleet. Based on this
