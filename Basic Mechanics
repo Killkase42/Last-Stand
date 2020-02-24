@@ -65,9 +65,15 @@ Depending on the ships in the fleet, different upgrades will be more effective a
 
 
 Score System:
+How well each game is completed will be judged not only on waves survived, but on "civilians saved" (score). At the end of each wave,
+a the number of civilians saved will be based on how fast the wave was complete, a time bonus (five minutes minus time completed in
+times two, a time bonus will not be rewarded if time completed in is greater than five minutes), a survival score (starts at 150, 50 is
+subtraced for every fleet ship that gets destroyed.
 
 
 Capture System:
+Before enemies can invade the main base and deal damage to it, they must capture the forward station in either the Alpha, Delta, or Beta
+sectors. If the enemies in a given system aren't destroyed in a set amount of time,
 
 
 Base/Turret Health and Mechanics:
