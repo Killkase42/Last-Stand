@@ -3,6 +3,8 @@ Positioning:
 xPosition
 yPosition
 
+System
+
 
 Health:
 
@@ -13,3 +15,4 @@ shipThreeHealth
 
 Applied Statuses:
 
+Slow (default is 0)
