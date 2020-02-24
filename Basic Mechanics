@@ -11,7 +11,7 @@ abilities can be used stratetically to increase or decrease the distance between
 
 Grid-Based Movement:
 In addition to moving around systems with the jump drive, the fleet can be relocated with the use of the grid-movement system. In each
-system, a series of points will be available to move to. The enemies will spawn on one far away from the system's forward station,
+system, a series of points will be available to move to. The enemies will spawn on one far away from the sector's forward station,
 eventually moving closer (with the goal of capturing the station). This movement mechanic will determine if the fleet is close enough
 to the enemy to effectively engage them (range mechanic) and whether it can recapture and repair.
 
@@ -26,12 +26,28 @@ off).
 
 
 Jump Drive:
+The jump drive is an ability every ship has that allows the fleet to travel to different sectors (this cannot be done with the
+grid-based movement system). Similar to other abilities, the a cool down timer is applied to the jump drive once it is used.
+However, the jump drive ability has two charges (meaning the fleet can jump twice before it has to wait for the cooldown). If only one
+charge is used, the other will regenerate over time. This mechanic forces the use of strategy, as the fleet cannot constantly move
+around sectors (quantities of enemies have to be managed).
 
 
 Ship Health:
+All ships in the game, friendly and hostile, will have an amount of health. When a fleet ship's health depletes, it is destroyed and
+will respawn in 60 seconds. For this time, its weapons and abilities will be unavailable. In the case of hostile ships, the depletion
+of health means it is destroyed and will never return (all ships destroyed means the wave is complete).
+
+
+
+Energy:
 
 
 Attacking:
+
+
+Upgrades:
+
 
 
 Abilities:
