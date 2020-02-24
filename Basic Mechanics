@@ -33,24 +33,38 @@ charge is used, the other will regenerate over time. This mechanic forces the us
 around sectors (quantities of enemies have to be managed).
 
 
-Ship Health:
+Abilities: Each ship will include its own abilities that result in different events. Some will damage the enemy, some will help the
+fleet, and some will apply statuses. Statuses include plasma (damage over time), armour break (increasing damage done for a short time),
+slow, energy drain, reveal (ships cannot cloak), shield (defence increased), etc. Depending on the ability, energy will be consumed.
+
+
+Health:
 All ships in the game, friendly and hostile, will have an amount of health. When a fleet ship's health depletes, it is destroyed and
 will respawn in 60 seconds. For this time, its weapons and abilities will be unavailable. In the case of hostile ships, the depletion
 of health means it is destroyed and will never return (all ships destroyed means the wave is complete).
 
 
-
 Energy:
+In addition to health, all ships in the game will have an amount of energy. Energy determines if the activation of an ability is
+possible, different abilities having different enegry costs. While some ships will not depend on energy too much, mostly relying on
+the cooldown timer, others will be heavily centered around it. Special abilities involving energy will include energy drain, energy
+beam, transference shield, particle accelerator, etc. The energy system adds another layer to combat and forces the strategic use of
+abilities.
 
 
 Attacking:
+In order to destroy enemies and progress through waves, an attack system will be available on all ships. Ways of dealing damage to
+enemies include the primary weapon (used most often), secondary weapon (which is sometimes an ability), and other abilities a ship may
+have. Most weapons will be on a cooldown timer and will damage the enemy, possibly applying a status. 
 
 
 Upgrades:
+Every three waves, the fleet will have the option to return to a base and choose an upgrade in Defence (increases fleet health), Utility
+(increases energy, decreases recharge times), or Attack (increases damage). This will be done by modifying the base values of abilities.
+Depending on the ships in the fleet, different upgrades will be more effective and will increase the fleet's survivability.
 
 
-
-Abilities:
+Score System:
 
 
 Capture System:
