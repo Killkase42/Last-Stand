@@ -77,6 +77,10 @@ sectors. If the enemies in a given system aren't destroyed in a set amount of ti
 
 
 Base/Turret Health and Mechanics:
+When the enemy eventually captures a forward station and arrives at the main base, they will have to destroy three turrets (that will be
+damaging the enemy) before damaging the main base. Depending on how many turrets are left, a different amount of damage will be applied
+to a random enemy ship every few seconds. When the main base health reaches zero, the game will be over, and the player will be returned
+to the menu and given rewards based in how well they did.
 
 
 Status Report System:
