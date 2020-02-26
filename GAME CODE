@@ -1,1 +1,14 @@
+import pygame
 
+BLACK = (0, 0, 0)
+
+size = (1920,1080)
+screen.fill(BLACK)
+pygame.display.set_caption(“Last Stand”)
+
+
+menuOpen = true
+
+while menuOpen = true:
+    if event.type==pygame.QUIT:
+        menuOpen = false
