@@ -1,3 +1,17 @@
+---Used In Menu---
+pioneerSkin = 'USR', 'Swarm', 'Synapse', etc.
+venturerSkin = 'USR', 'Swarm', 'Synapse', etc.
+colossusSkin = 'USR', 'Swarm', 'Synapse', etc.
+(Make more skin variables for more ships)
+
+
+fleetSlotOne = (typeOfShip, skin, manfacturer, fleetSlot, 
+fleetSlotTwo = (Name of ship in slot two goes here, data possibly stored with a list to be called upon in game)
+fleetSlotThree = (Name of ship in slot three goes here, data possibly stored with a list to be called upon in game)
+(To decide which ships are in which slots
+
+---Used In Game---
+
 Positioning:
 
 xPosition
