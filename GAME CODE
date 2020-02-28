@@ -1,14 +1,20 @@
 import pygame
 
-BLACK = (0, 0, 0)
+Black = (0, 0, 0)
+White = (255, 255, 255)
+Green = (0, 255, 0)
+Red = (255, 0, 0)
 
-size = (1920,1080)
-screen.fill(BLACK)
+size = (700, 500)
+Screen = pygame.display.set_mode(size)
+
 pygame.display.set_caption(“Last Stand”)
 
+done=False
 
-menuOpen = true
+clock=pygame.time.Clock()
 
-while menuOpen = true:
-    if event.type==pygame.QUIT:
-        menuOpen = false
+while not done:
+	For event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            done = True
