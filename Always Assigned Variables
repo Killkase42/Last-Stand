@@ -1,32 +1,27 @@
----Used In Menu---
-pioneerSkin = 'USR', 'Swarm', 'Synapse', etc.
-venturerSkin = 'USR', 'Swarm', 'Synapse', etc.
-colossusSkin = 'USR', 'Swarm', 'Synapse', etc.
-(Make more skin variables for more ships)
+------------Used In Menu------------
+pioneerData = (Attack, defence, mobility, support, manufacturer, description, picture, stored as a tuple.)
+venturerData = (Attack, defence, mobility, support, manufacturer, description, picture, stored as a tuple.)
+colossusData = (Attack, defence, mobility, support, manufacturer, description, picture, stored as a tuple.)
+...
+(Attack, defense, mobility and support values will be placed in a new list during a game, so they can be modified using upgrades.)
+
+fleetSlotOne = (Which ship you have selected, game calls on ship's data in-game.)
+fleetSlotTwo = (Which ship you have selected, game calls on ship's data in-game.)
+fleetSlotThree = (Which ship you have selected, game calls on ship's data in-game.)
 
 
-fleetSlotOne = (typeOfShip, skin, manfacturer, fleetSlot, 
-fleetSlotTwo = (Name of ship in slot two goes here, data possibly stored with a list to be called upon in game)
-fleetSlotThree = (Name of ship in slot three goes here, data possibly stored with a list to be called upon in game)
-(To decide which ships are in which slots
+------------Used In Game------------
 
----Used In Game---
+xPosition =
+yPosition =
+(When jumping to a new sector, default is at the forward station.)
 
-Positioning:
-
-xPosition
-yPosition
-
-System
+fleetSlow (Increases fleet average travel time.)
+Plasma (Adds damage over time, default is 0)
+armour break (Increases damage dealt, default is 0)
 
 
-Health:
+Enemy:
 
-shipOneHealth
-shipTwoHealth
-shipThreeHealth
-
-
-Applied Statuses:
-
-Slow (default is 0)
+timeToCapture  (once enemies spawn in a location, it will take them 60 seconds to capture the station, if not destroyed before, this
+                amount of time can be increased by using slow abilities)
