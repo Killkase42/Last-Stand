@@ -1,20 +1,36 @@
 import pygame
 
-Black = (0, 0, 0)
-White = (255, 255, 255)
-Green = (0, 255, 0)
-Red = (255, 0, 0)
+#Initialize Pygame.
+pygame.init()
 
-size = (700, 500)
-Screen = pygame.display.set_mode(size)
+#Create screen.
+screen = pygame.display.set_mode((1728, 972))
 
-pygame.display.set_caption(“Last Stand”)
+#Title and Icon
+pygame.display.set_caption('Last Stand')
+icon = pygame.image.load('icon.png')
+pygame.display.set_icon(icon)
 
-done=False
+#Main menu.
 
-clock=pygame.time.Clock()
 
-while not done:
-	For event in pygame.event.get():
+Background1 = pygame.image.load('shipSelectionBackground.png')
+Background1X = 720
+Background1Y = 800
+
+def shipSelectionBackgroundFunc():
+    screen.blit(Background1, (Background1X, Background1Y))
+
+#Main loop.
+running = True
+while running:
+
+    # RGB screen fill.
+    screen.fill((0, 0, 0))
+
+    for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            done = True
+            running = False
+
+    shipSelectionBackgroundFunc()
+    pygame.display.update()
