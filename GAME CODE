@@ -11,40 +11,53 @@ pygame.display.set_caption('Last Stand')
 icon = pygame.image.load('icon.png')
 pygame.display.set_icon(icon)
 
+#Colours
+orange = (245, 118, 0)
+
+
 #Main menu.
 
 #Backgrounds behind selectable ships.
 Background1 = pygame.image.load('shipSelectionBackground.png')
-Background1X = 5
-Background1Y = 790
+Background1X = 20
+Background1Y = 810
 
 Background2 = pygame.image.load('shipSelectionBackground.png')
 Background2X = 300
-Background2Y = 790
+Background2Y = 810
 
 Background3 = pygame.image.load('shipSelectionBackground.png')
-Background3X = 595
-Background3Y = 790
+Background3X = 580
+Background3Y = 810
 
 Background4 = pygame.image.load('shipSelectionBackground.png')
-Background4X = 890
-Background4Y = 790
+Background4X = 860
+Background4Y = 810
 
 Background5 = pygame.image.load('shipSelectionBackground.png')
-Background5X = 1185
-Background5Y = 790
+Background5X = 1140
+Background5Y = 810
 
 Background6 = pygame.image.load('shipSelectionBackground.png')
-Background6X = 1480
-Background6Y = 790
+Background6X = 1420
+Background6Y = 810
 
-def backgroundsFunc():
+def drawBackgroundsFunc():
     screen.blit(Background1, (Background1X, Background1Y))
     screen.blit(Background2, (Background2X, Background2Y))
     screen.blit(Background3, (Background3X, Background3Y))
     screen.blit(Background4, (Background4X, Background4Y))
     screen.blit(Background5, (Background5X, Background5Y))
-    screen.blit(Background5, (Background5X, Background5Y))
+    screen.blit(Background6, (Background6X, Background6Y))
+
+#Battle button.
+
+
+def drawBattleButtonFunc():
+    pygame.draw.rect(screen, orange, [804, 10, 130, 50])
+    pygame.draw.rect(screen, orange, [795, 10, 5, 50])
+    pygame.draw.rect(screen, orange, [938, 10, 5, 50])
+
 
 #Main loop.
 running = True
@@ -57,5 +70,6 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-    backgroundsFunc()
+    drawBackgroundsFunc()
+    drawBattleButtonFunc()
     pygame.display.update()
