@@ -83,8 +83,8 @@ def drawBattleButtonFunc():
 
 
 #Ship variables.
-
-
+class selectableShip:
+    def__init__(self, 
 
 #Main loop.
 running = True
