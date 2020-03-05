@@ -12,35 +12,48 @@ icon = pygame.image.load('icon.png')
 pygame.display.set_icon(icon)
 
 #Colours
-orange = (245, 118, 0)
+orange = (225, 98, 0)
 
 
 #Main menu.
 
 #Backgrounds behind selectable ships.
 Background1 = pygame.image.load('shipSelectionBackground.png')
-Background1X = 20
+Background1X = 17
 Background1Y = 810
 
 Background2 = pygame.image.load('shipSelectionBackground.png')
-Background2X = 300
+Background2X = 304
 Background2Y = 810
 
 Background3 = pygame.image.load('shipSelectionBackground.png')
-Background3X = 580
+Background3X = 585
 Background3Y = 810
 
 Background4 = pygame.image.load('shipSelectionBackground.png')
-Background4X = 860
+Background4X = 867
 Background4Y = 810
 
 Background5 = pygame.image.load('shipSelectionBackground.png')
-Background5X = 1140
+Background5X = 1150
 Background5Y = 810
 
 Background6 = pygame.image.load('shipSelectionBackground.png')
-Background6X = 1420
+Background6X = 1436
 Background6Y = 810
+
+logo1 = pygame.image.load('logoUSR.png')
+logo1X = 45
+logo1Y = 830
+
+logo2 = pygame.image.load('logoUSR.png')
+logo2X = 335
+logo2Y = 830
+
+logo3 = pygame.image.load('logoZRK.png')
+logo3X = 615
+logo3Y = 830
+
 
 def drawBackgroundsFunc():
     screen.blit(Background1, (Background1X, Background1Y))
@@ -49,14 +62,28 @@ def drawBackgroundsFunc():
     screen.blit(Background4, (Background4X, Background4Y))
     screen.blit(Background5, (Background5X, Background5Y))
     screen.blit(Background6, (Background6X, Background6Y))
+    screen.blit(logo1, (logo1X, logo1Y))
+    screen.blit(logo2, (logo2X, logo2Y))
+    screen.blit(logo3, (logo3X, logo3Y))
+
+#Background behind battle button.
+
+upperBackground = pygame.image.load('upperBackground.png')
+upperBackgroundX = 0
+upperBackgroundY = 0
+
+def upperBackgroundFunc():
+    screen.blit(upperBackground, (upperBackgroundX, upperBackgroundY))
 
 #Battle button.
-
-
 def drawBattleButtonFunc():
-    pygame.draw.rect(screen, orange, [804, 10, 130, 50])
-    pygame.draw.rect(screen, orange, [795, 10, 5, 50])
-    pygame.draw.rect(screen, orange, [938, 10, 5, 50])
+    pygame.draw.rect(screen, orange, [784, 13, 170, 60])
+    pygame.draw.rect(screen, orange, [770, 13, 7, 60])
+    pygame.draw.rect(screen, orange, [961, 13, 7, 60])
+
+
+#Ship variables.
+
 
 
 #Main loop.
@@ -71,5 +98,6 @@ while running:
             running = False
 
     drawBackgroundsFunc()
+    upperBackgroundFunc()
     drawBattleButtonFunc()
-    pygame.display.update()
+    pygame.display.update(
