@@ -12,8 +12,9 @@ icon = pygame.image.load('icon.png')
 pygame.display.set_icon(icon)
 
 #Colours
+black = (0, 0, 0)
 orange = (225, 98, 0)
-
+lightOrange = (245, 118, 0)
 
 #Main menu.
 
@@ -75,16 +76,58 @@ upperBackgroundY = 0
 def upperBackgroundFunc():
     screen.blit(upperBackground, (upperBackgroundX, upperBackgroundY))
 
-#Battle button.
-def drawBattleButtonFunc():
-    pygame.draw.rect(screen, orange, [784, 13, 170, 60])
-    pygame.draw.rect(screen, orange, [770, 13, 7, 60])
-    pygame.draw.rect(screen, orange, [961, 13, 7, 60])
 
 
 #Ship variables.
-class selectableShip:
-    def__init__(self, 
+class Spaceship:
+
+    def __init__(self, picture, ability1, ability2, ability3, pointDefense, jumpDrive, jumpHome, primary, secondary):
+        self.picture = picture
+        self.ability1 = ability1
+        self.ability2 = ability2
+        self.ability3 = ability3
+        self.pointDefense = pointDefense
+        self.jumpDrive = jumpDrive
+        self.jumpHome = jumpHome
+        self.primary = primary
+        self.secondary = secondary
+
+#pioneer = Spaceship()
+#colossus = Spaceship()
+#Venturer = Spaceship()
+
+#Displaying text.
+def textObjects (text, font):
+    textSurface = font.render(text, True, black)
+    return textSurface, textSurface.get_rect()
+
+#Battle button needs a separate function due to its shape.
+def battleButton():
+    if 968 > mouse[0] > 770 and 73 > mouse[1] > 13:
+        pygame.draw.rect(screen, lightOrange, [784, 13, 170, 60])
+        pygame.draw.rect(screen, lightOrange, [770, 13, 7, 60])
+        pygame.draw.rect(screen, lightOrange, [961, 13, 7, 60])
+        # add sound later
+    else:
+        pygame.draw.rect(screen, orange, [784, 13, 170, 60])
+        pygame.draw.rect(screen, orange, [770, 13, 7, 60])
+        pygame.draw.rect(screen, orange, [961, 13, 7, 60])
+    battleText = pygame.font.Font('freesansbold.ttf', 40)
+    textSurf, textRect = textObjects('BATTLE', battleText)
+    textRect.center = (869, 43)
+    screen.blit(textSurf, textRect)
+
+#General function for all rectangular buttons.
+def buttonFunc(message, x, y, w, h, inactive, active, textSize):
+    if x + w > mouse[0] > x and y + h > mouse[1] > y:
+        pygame.draw.rect(screen, active, (x, y, w, h))
+    else:
+        pygame.draw.rect(screen, inactive, (x, y, w, h))
+
+    largeText = pygame.font.Font('freesansbold.ttf', textSize)
+    textSurf, textRect = textObjects(message, largeText)
+    textRect.center = ( (x + (w / 2)), (y + (h / 2)) )
+    screen.blit(textSurf, textRect)
 
 #Main loop.
 running = True
@@ -97,7 +140,9 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
+    mouse = pygame.mouse.get_pos()
     drawBackgroundsFunc()
     upperBackgroundFunc()
-    drawBattleButtonFunc()
-    pygame.display.update(
+    battleButton()
+
+    pygame.display.update()
