@@ -77,25 +77,6 @@ def upperBackgroundFunc():
     screen.blit(upperBackground, (upperBackgroundX, upperBackgroundY))
 
 
-
-#Ship variables.
-class Spaceship:
-
-    def __init__(self, picture, ability1, ability2, ability3, pointDefense, jumpDrive, jumpHome, primary, secondary):
-        self.picture = picture
-        self.ability1 = ability1
-        self.ability2 = ability2
-        self.ability3 = ability3
-        self.pointDefense = pointDefense
-        self.jumpDrive = jumpDrive
-        self.jumpHome = jumpHome
-        self.primary = primary
-        self.secondary = secondary
-
-#pioneer = Spaceship()
-#colossus = Spaceship()
-#Venturer = Spaceship()
-
 #Displaying text.
 def textObjects (text, font):
     textSurface = font.render(text, True, black)
@@ -145,4 +126,4 @@ while running:
     upperBackgroundFunc()
     battleButton()
 
-    pygame.display.update()
+    pygame.display.flip()
