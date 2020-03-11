@@ -6,6 +6,8 @@ pygame.init()
 #Create screen.
 screen = pygame.display.set_mode((1728, 972))
 
+clock = pygame.time.Clock()
+
 #Title and Icon
 pygame.display.set_caption('Last Stand')
 icon = pygame.image.load('icon.png')
@@ -16,79 +18,25 @@ black = (0, 0, 0)
 orange = (225, 98, 0)
 lightOrange = (245, 118, 0)
 
-#Main menu.
-
-#Backgrounds behind selectable ships.
-Background1 = pygame.image.load('shipSelectionBackground.png')
-Background1X = 17
-Background1Y = 810
-
-Background2 = pygame.image.load('shipSelectionBackground.png')
-Background2X = 304
-Background2Y = 810
-
-Background3 = pygame.image.load('shipSelectionBackground.png')
-Background3X = 585
-Background3Y = 810
-
-Background4 = pygame.image.load('shipSelectionBackground.png')
-Background4X = 867
-Background4Y = 810
-
-Background5 = pygame.image.load('shipSelectionBackground.png')
-Background5X = 1150
-Background5Y = 810
-
-Background6 = pygame.image.load('shipSelectionBackground.png')
-Background6X = 1436
-Background6Y = 810
-
-logo1 = pygame.image.load('logoUSR.png')
-logo1X = 45
-logo1Y = 830
-
-logo2 = pygame.image.load('logoUSR.png')
-logo2X = 335
-logo2Y = 830
-
-logo3 = pygame.image.load('logoZRK.png')
-logo3X = 615
-logo3Y = 830
-
-
-def drawBackgroundsFunc():
-    screen.blit(Background1, (Background1X, Background1Y))
-    screen.blit(Background2, (Background2X, Background2Y))
-    screen.blit(Background3, (Background3X, Background3Y))
-    screen.blit(Background4, (Background4X, Background4Y))
-    screen.blit(Background5, (Background5X, Background5Y))
-    screen.blit(Background6, (Background6X, Background6Y))
-    screen.blit(logo1, (logo1X, logo1Y))
-    screen.blit(logo2, (logo2X, logo2Y))
-    screen.blit(logo3, (logo3X, logo3Y))
-
-#Background behind battle button.
-
-upperBackground = pygame.image.load('upperBackground.png')
-upperBackgroundX = 0
-upperBackgroundY = 0
-
-def upperBackgroundFunc():
-    screen.blit(upperBackground, (upperBackgroundX, upperBackgroundY))
-
 
 #Displaying text.
 def textObjects (text, font):
     textSurface = font.render(text, True, black)
     return textSurface, textSurface.get_rect()
 
-#Battle button needs a separate function due to its shape.
-def battleButton():
+#Battle button needs a separate function due to its shape and function.
+def battleButton(action=None):
+    mouse = pygame.mouse.get_pos()
+    click = pygame.mouse.get_pressed()
     if 968 > mouse[0] > 770 and 73 > mouse[1] > 13:
         pygame.draw.rect(screen, lightOrange, [784, 13, 170, 60])
         pygame.draw.rect(screen, lightOrange, [770, 13, 7, 60])
         pygame.draw.rect(screen, lightOrange, [961, 13, 7, 60])
-        # add sound later
+        if click[0] == 1 and action != None:
+            if action == "play":
+                gameLoop()
+
+    # add sound later
     else:
         pygame.draw.rect(screen, orange, [784, 13, 170, 60])
         pygame.draw.rect(screen, orange, [770, 13, 7, 60])
@@ -97,6 +45,7 @@ def battleButton():
     textSurf, textRect = textObjects('BATTLE', battleText)
     textRect.center = (869, 43)
     screen.blit(textSurf, textRect)
+
 
 #General function for all rectangular buttons.
 def buttonFunc(message, x, y, w, h, inactive, active, textSize):
@@ -110,20 +59,95 @@ def buttonFunc(message, x, y, w, h, inactive, active, textSize):
     textRect.center = ( (x + (w / 2)), (y + (h / 2)) )
     screen.blit(textSurf, textRect)
 
+#Menu screen.
+def gameIntro():
+    intro = True
+
+    while intro:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+
+        screen.fill(black)
+
+        #Drawing upper background.
+        upperBackground = pygame.image.load('upperBackground.png')
+        upperBackgroundX = 0
+        upperBackgroundY = 0
+
+        screen.blit(upperBackground, (upperBackgroundX, upperBackgroundY))
+
+        # Backgrounds behind selectable ships.
+        Background1 = pygame.image.load('shipSelectionBackground.png')
+        Background1X = 17
+        Background1Y = 810
+
+        Background2 = pygame.image.load('shipSelectionBackground.png')
+        Background2X = 304
+        Background2Y = 810
+
+        Background3 = pygame.image.load('shipSelectionBackground.png')
+        Background3X = 585
+        Background3Y = 810
+
+        Background4 = pygame.image.load('shipSelectionBackground.png')
+        Background4X = 867
+        Background4Y = 810
+
+        Background5 = pygame.image.load('shipSelectionBackground.png')
+        Background5X = 1150
+        Background5Y = 810
+
+        Background6 = pygame.image.load('shipSelectionBackground.png')
+        Background6X = 1436
+        Background6Y = 810
+
+        logo1 = pygame.image.load('logoUSR.png')
+        logo1X = 45
+        logo1Y = 830
+
+        logo2 = pygame.image.load('logoUSR.png')
+        logo2X = 335
+        logo2Y = 830
+
+        logo3 = pygame.image.load('logoZRK.png')
+        logo3X = 615
+        logo3Y = 830
+
+        screen.blit(Background1, (Background1X, Background1Y))
+        screen.blit(Background2, (Background2X, Background2Y))
+        screen.blit(Background3, (Background3X, Background3Y))
+        screen.blit(Background4, (Background4X, Background4Y))
+        screen.blit(Background5, (Background5X, Background5Y))
+        screen.blit(Background6, (Background6X, Background6Y))
+        screen.blit(logo1, (logo1X, logo1Y))
+        screen.blit(logo2, (logo2X, logo2Y))
+        screen.blit(logo3, (logo3X, logo3Y))
+
+        battleButton("play")
+
+
+        pygame.display.update()
+        clock.tick(60)
+
 #Main loop.
-running = True
-while running:
 
-    # RGB screen fill.
-    screen.fill((0, 0, 0))
+def gameLoop():
+    gameRunning = True
 
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
+    while gameRunning:
 
-    mouse = pygame.mouse.get_pos()
-    drawBackgroundsFunc()
-    upperBackgroundFunc()
-    battleButton()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                gameRunning = False
 
-    pygame.display.flip()
+        screen.fill(black)
+
+        pygame.display.update()
+        clock.tick(60)
+
+gameIntro()
+gameLoop()
+pygame.quit()
+quit()
