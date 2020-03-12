@@ -14,15 +14,22 @@ icon = pygame.image.load('icon.png')
 pygame.display.set_icon(icon)
 
 #Colours
+white = (255, 255, 255)
 black = (0, 0, 0)
 orange = (225, 98, 0)
 lightOrange = (245, 118, 0)
 
 
-#Displaying text.
-def textObjects (text, font):
+#Displaying text in various colours.
+def textObjectsBlack(text, font):
     textSurface = font.render(text, True, black)
     return textSurface, textSurface.get_rect()
+
+def textObjectsWhite(text, font):
+    textSurface = font.render(text, True, white)
+    return textSurface, textSurface.get_rect()
+
+
 
 #Battle button needs a separate function due to its shape and function.
 def battleButton(action=None):
@@ -34,7 +41,7 @@ def battleButton(action=None):
         pygame.draw.rect(screen, lightOrange, [961, 13, 7, 60])
         if click[0] == 1 and action != None:
             if action == "play":
-                gameLoop()
+                confirmationScreen()
 
     # add sound later
     else:
@@ -42,10 +49,29 @@ def battleButton(action=None):
         pygame.draw.rect(screen, orange, [770, 13, 7, 60])
         pygame.draw.rect(screen, orange, [961, 13, 7, 60])
     battleText = pygame.font.Font('freesansbold.ttf', 40)
-    textSurf, textRect = textObjects('BATTLE', battleText)
+    textSurf, textRect = textObjectsBlack('BATTLE', battleText)
     textRect.center = (869, 43)
     screen.blit(textSurf, textRect)
 
+def enterGameButton(action=None):
+
+    enterGameButton = pygame.image.load('lastStand.png')
+    enterGameButtonX = 502
+    enterGameButtonY = 180
+
+
+    mouse = pygame.mouse.get_pos()
+    click = pygame.mouse.get_pressed()
+    if 1226 > mouse[0] > 502 and 488 > mouse[1] > 180:
+        pygame.draw.rect(screen, orange, [500, 178, 728, 312])
+        screen.blit(enterGameButton, (enterGameButtonX, enterGameButtonY))
+        if click[0] == 1 and action != None:
+            if action == "play":
+                gameLoop()
+
+    # add sound later
+    else:
+        screen.blit(enterGameButton, (enterGameButtonX, enterGameButtonY))
 
 #General function for all rectangular buttons.
 def buttonFunc(message, x, y, w, h, inactive, active, textSize):
@@ -60,10 +86,10 @@ def buttonFunc(message, x, y, w, h, inactive, active, textSize):
     screen.blit(textSurf, textRect)
 
 #Menu screen.
-def gameIntro():
-    intro = True
+def gameMenu():
+    menu = True
 
-    while intro:
+    while menu:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -133,6 +159,33 @@ def gameIntro():
 
 #Main loop.
 
+def confirmationScreen():
+    confirmation = True
+
+    while confirmation:
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+
+        confirmationBackground = pygame.image.load('confirmationBackground.png')
+        confirmationBackgroundX = 0
+        confirmationBackgroundY = 90
+
+        screen.blit(confirmationBackground, (confirmationBackgroundX, confirmationBackgroundY))
+
+        descriptionText = pygame.font.Font('freesansbold.ttf', 40)
+        textSurf, textRect = textObjectsWhite('Add a description  of the game here.', descriptionText)
+        textRect.center = (869, 600)
+        screen.blit(textSurf, textRect)
+
+        battleButton("play")
+        enterGameButton("play")
+
+        pygame.display.update()
+    clock.tick(60)
+
 def gameLoop():
     gameRunning = True
 
@@ -141,13 +194,16 @@ def gameLoop():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 gameRunning = False
+                pygame.quit()
+                quit()
 
         screen.fill(black)
 
         pygame.display.update()
         clock.tick(60)
 
-gameIntro()
+gameMenu()
+confirmationScreen()
 gameLoop()
 pygame.quit()
 quit()
