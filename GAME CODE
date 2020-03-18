@@ -186,6 +186,74 @@ def confirmationScreen():
         pygame.display.update()
     clock.tick(60)
 
+
+#General HUD appearance.
+
+def displayHUD():
+    abilityBackground1 = pygame.image.load('Frame-fade.png')
+    abilityBackground1X = 772
+    abilityBackground1Y = 830
+    screen.blit(abilityBackground1, (abilityBackground1X, abilityBackground1Y))
+
+    abilityBackground2 = pygame.image.load('Frame-fade.png')
+    abilityBackground2X = 660
+    abilityBackground2Y = 830
+    screen.blit(abilityBackground2, (abilityBackground2X, abilityBackground2Y))
+
+    abilityBackground3 = pygame.image.load('Frame-fade.png')
+    abilityBackground3X = 548
+    abilityBackground3Y = 830
+    screen.blit(abilityBackground3, (abilityBackground3X, abilityBackground3Y))
+
+    abilityBackground4 = pygame.image.load('Frame-fade.png')
+    abilityBackground4X = 884
+    abilityBackground4Y = 830
+    screen.blit(abilityBackground4, (abilityBackground4X, abilityBackground4Y))
+
+    abilityBackground5 = pygame.image.load('Frame-fade.png')
+    abilityBackground5X = 996
+    abilityBackground5Y = 830
+    screen.blit(abilityBackground5, (abilityBackground5X, abilityBackground5Y))
+
+    abilityBackground6 = pygame.image.load('Frame-fade.png')
+    abilityBackground6X = 1108
+    abilityBackground6Y = 830
+    screen.blit(abilityBackground6, (abilityBackground6X, abilityBackground6Y))
+
+    pointDefenseSkill = pygame.image.load('pointDefense.png')
+    pointDefenseSkillX = 776
+    pointDefenseSkillY = 834
+    screen.blit(pointDefenseSkill, (pointDefenseSkillX, pointDefenseSkillY))
+
+    warpSkill = pygame.image.load('warp.png')
+    warpSkillX = 888
+    warpSkillY = 834
+    screen.blit(warpSkill, (warpSkillX, warpSkillY))
+
+    warpSkill1 = pygame.image.load('warp.png')
+    warpSkill1X = 1000
+    warpSkill1Y = 834
+    screen.blit(warpSkill1, (warpSkill1X, warpSkill1Y))
+
+
+
+#Different ships and their functionalities in-game.
+
+def displayPioneer():
+
+    displayHUD()
+
+    mouse = pygame.mouse.get_pos()
+    click = pygame.mouse.get_pressed()
+    if 1226 > mouse[0] > 502 and 488 > mouse[1] > 180:
+        pygame.draw.rect(screen, orange, [500, 178, 728, 312])
+
+
+
+fleetSlotOne = 'Pioneer'
+fleetSlotTwo = 'Colossus'
+fleetSlotThree = 'Venturer'
+
 def gameLoop():
     gameRunning = True
 
@@ -196,8 +264,10 @@ def gameLoop():
                 gameRunning = False
                 pygame.quit()
                 quit()
+            #if arrow keys are pressed, switch between different fleet functions being displayed.
 
         screen.fill(black)
+        displayPioneer()
 
         pygame.display.update()
         clock.tick(60)
