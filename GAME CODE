@@ -235,6 +235,21 @@ def displayHUD():
     warpSkill1Y = 834
     screen.blit(warpSkill1, (warpSkill1X, warpSkill1Y))
 
+    #Minimap test.
+    sector = pygame.image.load('sector.png')
+    screen.blit(sector, (1280, 700))
+    screen.blit(sector, (1404, 700))
+    screen.blit(sector, (1528, 700))
+
+    outpostSector = pygame.image.load('outpostSector.png')
+    screen.blit(outpostSector, (1384, 830))
+
+
+    #Report box test.
+    pygame.draw.rect(screen, orange, [100, 700, 325, 230])
+
+    #Base health/wave/turret health test.
+    pygame.draw.rect(screen, orange, [500, 25, 728, 150])
 
 
 #Different ships and their functionalities in-game.
@@ -243,10 +258,7 @@ def displayPioneer():
 
     displayHUD()
 
-    mouse = pygame.mouse.get_pos()
-    click = pygame.mouse.get_pressed()
-    if 1226 > mouse[0] > 502 and 488 > mouse[1] > 180:
-        pygame.draw.rect(screen, orange, [500, 178, 728, 312])
+
 
 
 
