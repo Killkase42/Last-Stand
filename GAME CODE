@@ -29,6 +29,11 @@ def textObjectsWhite(text, font):
     textSurface = font.render(text, True, white)
     return textSurface, textSurface.get_rect()
 
+def printWhiteText(text, size, x, y ):
+    descriptionText = pygame.font.Font('freesansbold.ttf', size)
+    textSurf, textRect = textObjectsWhite(text, descriptionText)
+    textRect.center = (x, y)
+    screen.blit(textSurf, textRect)
 
 
 #Battle button needs a separate function due to its shape and function.
@@ -190,50 +195,21 @@ def confirmationScreen():
 #General HUD appearance.
 
 def displayHUD():
-    abilityBackground1 = pygame.image.load('Frame-fade.png')
-    abilityBackground1X = 772
-    abilityBackground1Y = 830
-    screen.blit(abilityBackground1, (abilityBackground1X, abilityBackground1Y))
-
-    abilityBackground2 = pygame.image.load('Frame-fade.png')
-    abilityBackground2X = 660
-    abilityBackground2Y = 830
-    screen.blit(abilityBackground2, (abilityBackground2X, abilityBackground2Y))
-
-    abilityBackground3 = pygame.image.load('Frame-fade.png')
-    abilityBackground3X = 548
-    abilityBackground3Y = 830
-    screen.blit(abilityBackground3, (abilityBackground3X, abilityBackground3Y))
-
-    abilityBackground4 = pygame.image.load('Frame-fade.png')
-    abilityBackground4X = 884
-    abilityBackground4Y = 830
-    screen.blit(abilityBackground4, (abilityBackground4X, abilityBackground4Y))
-
-    abilityBackground5 = pygame.image.load('Frame-fade.png')
-    abilityBackground5X = 996
-    abilityBackground5Y = 830
-    screen.blit(abilityBackground5, (abilityBackground5X, abilityBackground5Y))
-
-    abilityBackground6 = pygame.image.load('Frame-fade.png')
-    abilityBackground6X = 1108
-    abilityBackground6Y = 830
-    screen.blit(abilityBackground6, (abilityBackground6X, abilityBackground6Y))
+    abilityBackground = pygame.image.load('Frame-fade.png')
+    screen.blit(abilityBackground, (772, 830))
+    screen.blit(abilityBackground, (660, 830))
+    screen.blit(abilityBackground, (548, 830))
+    screen.blit(abilityBackground, (884, 830))
+    screen.blit(abilityBackground, (996, 830))
+    screen.blit(abilityBackground, (1108, 830))
 
     pointDefenseSkill = pygame.image.load('pointDefense.png')
-    pointDefenseSkillX = 776
-    pointDefenseSkillY = 834
-    screen.blit(pointDefenseSkill, (pointDefenseSkillX, pointDefenseSkillY))
+    screen.blit(pointDefenseSkill, (776, 834))
 
     warpSkill = pygame.image.load('warp.png')
-    warpSkillX = 888
-    warpSkillY = 834
-    screen.blit(warpSkill, (warpSkillX, warpSkillY))
+    screen.blit(warpSkill, (888, 834))
+    screen.blit(warpSkill, (1000, 834))
 
-    warpSkill1 = pygame.image.load('warp.png')
-    warpSkill1X = 1000
-    warpSkill1Y = 834
-    screen.blit(warpSkill1, (warpSkill1X, warpSkill1Y))
 
     #Minimap test.
     sector = pygame.image.load('sector.png')
@@ -243,6 +219,12 @@ def displayHUD():
 
     outpostSector = pygame.image.load('outpostSector.png')
     screen.blit(outpostSector, (1384, 830))
+
+
+    printWhiteText('Alpha', 18, 1330, 687)
+    printWhiteText('Delta', 18, 1453, 687)
+    printWhiteText('Beta', 18, 1575, 687)
+    printWhiteText('Outpost', 18, 1450, 817)
 
 
     #Report box test.
