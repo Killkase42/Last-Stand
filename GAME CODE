@@ -293,6 +293,13 @@ def gameLoop():
             printWhiteText('Pioneer Missiles', 12, 695, 915)
             printWhiteText('Void Charges', 12, 1143, 915)
 
+            detect = pygame.image.load('Detect.png')
+            screen.blit(detect, (559, 841))
+            missiles = pygame.image.load('missiles.png')
+            screen.blit(missiles, (670, 841))
+            cannon = pygame.image.load('cannon.png')
+            screen.blit(cannon, (1119, 841))
+
             #Change below display bars to match up with all ship spots!!!!!!!!!!
             if fleetSlotOne == 'Pioneer':
                 pygame.draw.rect(screen, orange, [265, 615, 250, 25])
@@ -304,6 +311,17 @@ def gameLoop():
         # For the Colossus.
         if fleetSlotOne == 'Colossus' and selectedSlot == 1 or fleetSlotTwo == 'Colossus' and selectedSlot == 2 or fleetSlotThree == 'Colossus' and selectedSlot == 3:
             printWhiteText('colossus selected', 50, 500, 250)
+            printWhiteText('Boost', 12, 583, 915)
+            printWhiteText('Colossus Fighters', 12, 695, 915)
+            printWhiteText('Flak', 12, 1143, 915)
+
+            boost = pygame.image.load('boost.png')
+            screen.blit(boost, (559, 841))
+            fighters = pygame.image.load('fighters.png')
+            screen.blit(fighters, (670, 841))
+            cannonFlak = pygame.image.load('cannon-flak.png')
+            screen.blit(cannonFlak, (1119, 841))
+
             if fleetSlotOne == 'Colossus':
                 pygame.draw.rect(screen, orange, [265, 615, 250, 25])
             elif fleetSlotTwo == 'Colossus':
@@ -314,6 +332,17 @@ def gameLoop():
         # For the Venturer.
         if fleetSlotOne == 'Venturer' and selectedSlot == 1 or fleetSlotTwo == 'Venturer' and selectedSlot == 2 or fleetSlotThree == 'Venturer' and selectedSlot == 3:
             printWhiteText('venturer selected', 50, 500, 250)
+            printWhiteText('Repair Pulse', 12, 583, 915)
+            printWhiteText('Plasma Missiles', 12, 695, 915)
+            printWhiteText('Mining Laser', 12, 1143, 915)
+
+            repairPulse = pygame.image.load('pulse-repair.png')
+            screen.blit(repairPulse, (559, 841))
+            plasmaMissiles = pygame.image.load('missiles-plasma.png')
+            screen.blit(plasmaMissiles, (670, 841))
+            miningLasers = pygame.image.load('laser-big.png')
+            screen.blit(miningLasers, (1119, 841))
+
             if fleetSlotOne == 'Venturer':
                 pygame.draw.rect(screen, orange, [265, 615, 250, 25])
             elif fleetSlotTwo == 'Venturer':
