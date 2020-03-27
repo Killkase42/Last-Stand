@@ -1,17 +1,22 @@
 import pygame
 
+
 #Initialize Pygame.
 pygame.init()
+
 
 #Create screen.
 screen = pygame.display.set_mode((1728, 972))
 
+
 clock = pygame.time.Clock()
+
 
 #Title and Icon
 pygame.display.set_caption('Last Stand')
 icon = pygame.image.load('icon.png')
 pygame.display.set_icon(icon)
+
 
 #Colours
 white = (255, 255, 255)
@@ -58,12 +63,12 @@ def battleButton(action=None):
     textRect.center = (869, 43)
     screen.blit(textSurf, textRect)
 
-def enterGameButton(action=None):
 
+#The large button with picture, enters player into the game.
+def enterGameButton(action=None):
     enterGameButton = pygame.image.load('lastStand.png')
     enterGameButtonX = 502
     enterGameButtonY = 180
-
 
     mouse = pygame.mouse.get_pos()
     click = pygame.mouse.get_pressed()
@@ -78,6 +83,7 @@ def enterGameButton(action=None):
     else:
         screen.blit(enterGameButton, (enterGameButtonX, enterGameButtonY))
 
+
 #General function for all rectangular buttons.
 def buttonFunc(message, x, y, w, h, inactive, active, textSize):
     if x + w > mouse[0] > x and y + h > mouse[1] > y:
@@ -89,6 +95,13 @@ def buttonFunc(message, x, y, w, h, inactive, active, textSize):
     textSurf, textRect = textObjects(message, largeText)
     textRect.center = ( (x + (w / 2)), (y + (h / 2)) )
     screen.blit(textSurf, textRect)
+
+
+#Selected ships.
+fleetSlotOne = 'Pioneer'
+fleetSlotTwo = 'Colossus'
+fleetSlotThree = 'Venturer'
+
 
 #Menu screen.
 def gameMenu():
@@ -102,7 +115,7 @@ def gameMenu():
 
         screen.fill(black)
 
-        #Drawing upper background.
+        #Drawing upper background (behind battle button).
         upperBackground = pygame.image.load('upperBackground.png')
         upperBackgroundX = 0
         upperBackgroundY = 0
@@ -110,51 +123,21 @@ def gameMenu():
         screen.blit(upperBackground, (upperBackgroundX, upperBackgroundY))
 
         # Backgrounds behind selectable ships.
-        Background1 = pygame.image.load('shipSelectionBackground.png')
-        Background1X = 17
-        Background1Y = 810
+        Background = pygame.image.load('shipSelectionBackground.png')
+        screen.blit(Background, (17, 810))
+        screen.blit(Background, (304, 810))
+        screen.blit(Background, (585, 810))
+        screen.blit(Background, (867, 810))
+        screen.blit(Background, (1150, 810))
+        screen.blit(Background, (1436, 810))
 
-        Background2 = pygame.image.load('shipSelectionBackground.png')
-        Background2X = 304
-        Background2Y = 810
+        #Logos on top of backgrounds.
+        logoUSR = pygame.image.load('logoUSR.png')
+        screen.blit(logoUSR, (45, 830))
+        screen.blit(logoUSR, (335, 830))
 
-        Background3 = pygame.image.load('shipSelectionBackground.png')
-        Background3X = 585
-        Background3Y = 810
-
-        Background4 = pygame.image.load('shipSelectionBackground.png')
-        Background4X = 867
-        Background4Y = 810
-
-        Background5 = pygame.image.load('shipSelectionBackground.png')
-        Background5X = 1150
-        Background5Y = 810
-
-        Background6 = pygame.image.load('shipSelectionBackground.png')
-        Background6X = 1436
-        Background6Y = 810
-
-        logo1 = pygame.image.load('logoUSR.png')
-        logo1X = 45
-        logo1Y = 830
-
-        logo2 = pygame.image.load('logoUSR.png')
-        logo2X = 335
-        logo2Y = 830
-
-        logo3 = pygame.image.load('logoZRK.png')
-        logo3X = 615
-        logo3Y = 830
-
-        screen.blit(Background1, (Background1X, Background1Y))
-        screen.blit(Background2, (Background2X, Background2Y))
-        screen.blit(Background3, (Background3X, Background3Y))
-        screen.blit(Background4, (Background4X, Background4Y))
-        screen.blit(Background5, (Background5X, Background5Y))
-        screen.blit(Background6, (Background6X, Background6Y))
-        screen.blit(logo1, (logo1X, logo1Y))
-        screen.blit(logo2, (logo2X, logo2Y))
-        screen.blit(logo3, (logo3X, logo3Y))
+        logoZRK = pygame.image.load('logoZRK.png')
+        screen.blit(logoZRK, (615, 830))
 
         battleButton("play")
 
@@ -193,8 +176,8 @@ def confirmationScreen():
 
 
 #General HUD appearance.
-
 def displayHUD():
+    #The circular backgrounds of abilities and pictures of abilities the same for every ship.
     abilityBackground = pygame.image.load('Frame-fade.png')
     screen.blit(abilityBackground, (772, 830))
     screen.blit(abilityBackground, (660, 830))
@@ -204,14 +187,26 @@ def displayHUD():
     screen.blit(abilityBackground, (1108, 830))
 
     pointDefenseSkill = pygame.image.load('pointDefense.png')
-    screen.blit(pointDefenseSkill, (776, 834))
+    screen.blit(pointDefenseSkill, (783, 841))
 
     warpSkill = pygame.image.load('warp.png')
-    screen.blit(warpSkill, (888, 834))
-    screen.blit(warpSkill, (1000, 834))
+    screen.blit(warpSkill, (895, 841))
+    screen.blit(warpSkill, (1007, 841))
 
+    #The numbers, signifying which key to press to activate each ability, above each ability.
+    printWhiteText('1', 12, 583, 820)
+    printWhiteText('2', 12, 695, 820)
+    printWhiteText('3', 12, 807, 820)
+    printWhiteText('(Tab)', 12, 919, 820)
+    printWhiteText('4', 12, 1031, 820)
+    printWhiteText('(LMB)', 12, 1143, 820)
 
-    #Minimap test.
+    #The names of default abilities (point defense, jump drive, jump home).
+    printWhiteText('Point Defense', 12, 807, 915)
+    printWhiteText('Jump Drive', 12, 919, 915)
+    printWhiteText('Jump Home', 12, 1031, 915)
+
+    #Minimap background.
     sector = pygame.image.load('sector.png')
     screen.blit(sector, (1280, 700))
     screen.blit(sector, (1404, 700))
@@ -220,48 +215,138 @@ def displayHUD():
     outpostSector = pygame.image.load('outpostSector.png')
     screen.blit(outpostSector, (1384, 830))
 
-
     printWhiteText('Alpha', 18, 1330, 687)
     printWhiteText('Delta', 18, 1453, 687)
     printWhiteText('Beta', 18, 1575, 687)
     printWhiteText('Outpost', 18, 1450, 817)
 
 
-    #Report box test.
-    pygame.draw.rect(screen, orange, [100, 700, 325, 230])
-
-    #Base health/wave/turret health test.
-    pygame.draw.rect(screen, orange, [500, 25, 728, 150])
+    #Combat log.
+    printWhiteText('Combat Log:', 18, 100, 700)
 
 
-#Different ships and their functionalities in-game.
-
-def displayPioneer():
-
-    displayHUD()
+    #Background to base/turret health indicator at top of screen.
+    baseDisplay = pygame.image.load('baseDisplay.png')
+    screen.blit(baseDisplay, (499, 25))
 
 
 
 
+#How each wave will work.
 
-fleetSlotOne = 'Pioneer'
-fleetSlotTwo = 'Colossus'
-fleetSlotThree = 'Venturer'
+
 
 def gameLoop():
     gameRunning = True
 
+    selectedSlot = 1
+
+    #Health of player's ships (values will change depending on ships selected).
+    slotOneShipHealth = 0
+    slotTwoShipHealth = 0
+    slotThreeShipHealth = 0
+
+
+    #Health of enemy ships (values will change depending on enemies on screen).
+    enemyOneHealth = 0
+    enemyTwoHealth = 0
+    enemyThreeHealth = 0
+    enemyFourHealth = 0
+    enemyFiveHealth = 0
+    enemySixHealth = 0
+
+    #Aspects of the enemy.
+    selectedEnemyHealth = 0
+
     while gameRunning:
 
+
+        #Player input loop.
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                gameRunning = False
                 pygame.quit()
                 quit()
-            #if arrow keys are pressed, switch between different fleet functions being displayed.
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_LEFT and selectedSlot == 1:
+                    selectedSlot = 3
+                elif event.key == pygame.K_LEFT and selectedSlot == 3:
+                    selectedSlot = 2
+                elif event.key == pygame.K_LEFT and selectedSlot == 2:
+                    selectedSlot = 1
+                elif event.key == pygame.K_RIGHT and selectedSlot == 1:
+                    selectedSlot = 2
+                elif event.key == pygame.K_RIGHT and selectedSlot == 2:
+                    selectedSlot = 3
+                elif event.key == pygame.K_RIGHT and selectedSlot == 3:
+                    selectedSlot = 1
+
+
+
 
         screen.fill(black)
-        displayPioneer()
+
+        # What will happen if a certain fleet ship is selected.
+        # For the Pioneer.
+        if fleetSlotOne == 'Pioneer' and selectedSlot == 1 or fleetSlotTwo == 'Pioneer' and selectedSlot == 2 or fleetSlotThree == 'Pioneer' and selectedSlot == 3:
+            printWhiteText('pioneer selected', 50, 500, 250)
+            printWhiteText('Reveal Sector', 12, 583, 915)
+            printWhiteText('Pioneer Missiles', 12, 695, 915)
+            printWhiteText('Void Charges', 12, 1143, 915)
+
+            #Change below display bars to match up with all ship spots!!!!!!!!!!
+            if fleetSlotOne == 'Pioneer':
+                pygame.draw.rect(screen, orange, [265, 615, 250, 25])
+            elif fleetSlotTwo == 'Pioneer':
+                pygame.draw.rect(screen, orange, [725, 735, 250, 25])
+            elif fleetSlotThree == 'Pioneer':
+                pygame.draw.rect(screen, orange, [265, 615, 250, 25])
+
+        # For the Colossus.
+        if fleetSlotOne == 'Colossus' and selectedSlot == 1 or fleetSlotTwo == 'Colossus' and selectedSlot == 2 or fleetSlotThree == 'Colossus' and selectedSlot == 3:
+            printWhiteText('colossus selected', 50, 500, 250)
+            if fleetSlotOne == 'Colossus':
+                pygame.draw.rect(screen, orange, [265, 615, 250, 25])
+            elif fleetSlotTwo == 'Colossus':
+                pygame.draw.rect(screen, orange, [725, 735, 250, 25])
+            elif fleetSlotThree == 'Colossus':
+                pygame.draw.rect(screen, orange, [265, 615, 250, 25])
+
+        # For the Venturer.
+        if fleetSlotOne == 'Venturer' and selectedSlot == 1 or fleetSlotTwo == 'Venturer' and selectedSlot == 2 or fleetSlotThree == 'Venturer' and selectedSlot == 3:
+            printWhiteText('venturer selected', 50, 500, 250)
+            if fleetSlotOne == 'Venturer':
+                pygame.draw.rect(screen, orange, [265, 615, 250, 25])
+            elif fleetSlotTwo == 'Venturer':
+                pygame.draw.rect(screen, orange, [725, 735, 250, 25])
+            elif fleetSlotThree == 'Venturer':
+                pygame.draw.rect(screen, orange, [1050, 615, 250, 25])
+
+        printWhiteText(str(selectedSlot) + ',', 50, 250, 250)
+
+
+        #Deciding how to draw player ships.
+        if fleetSlotOne == 'Pioneer':
+            pioneerInGameDisplay = pygame.image.load('pioneerInGame.png')
+            screen.blit(pioneerInGameDisplay, (250, 450))
+
+        if fleetSlotTwo == 'Colossus':
+            colossusInGameDisplay = pygame.image.load('colossusInGame.png')
+            screen.blit(colossusInGameDisplay, (689, 575))
+
+        if fleetSlotThree == 'Venturer':
+            venturerInGameDisplay = pygame.image.load('venturerInGame.png')
+            screen.blit(venturerInGameDisplay, (1000, 460))
+
+
+
+
+
+
+
+
+
+        displayHUD()
+
 
         pygame.display.update()
         clock.tick(60)
