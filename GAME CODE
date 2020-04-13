@@ -89,7 +89,7 @@ def enterGameButton(action=None):
 
 
 
-#General function for all rectangular buttons.
+#General function for all rectangular buttons (currently not in use).
 def buttonFunc(message, x, y, w, h, inactive, active, textSize):
     if x + w > mouse[0] > x and y + h > mouse[1] > y:
         pygame.draw.rect(screen, active, (x, y, w, h))
@@ -242,11 +242,49 @@ def displayHUD():
 def enemyPioneerLevelOne():
     pass
 
-#Which enemies appear based on random.
 
+# The values of each of the player's ships' full health- these values will be modified by upgrades. THESE VALUES WILL CHANGE DEPENDING ON WHICH SHIPS THE PLAYER HAS SELECTED IN THE MENU.
+slotOneShipFullHealth = 0
+slotTwoShipFullHealth = 0
+slotThreeShipFullHealth = 0
 
+slotOneShipFullEnergy = 0
+slotTwoShipFullEnergy = 0
+slotThreeShipFullEnergy = 0
 
+#When this value is true, the maximum health of each ship in the player's fleet will be set- this only happens at the beginning of the game because the value can later be modified by upgrades.
+assignFullEnergyAndHealth = True
 
+#Change this to include all ships when we add more.-------------------------------------------------------------------------
+if assignFullEnergyAndHealth == True:
+    if fleetSlotOne == 'Pioneer':
+        slotOneShipFullHealth = 9000
+        slotOneShipFullEnergy = 5000
+    elif fleetSlotTwo == 'Pioneer':
+        slotTwoShipFullHealth = 9000
+        slotTwoShipFullEnergy = 5000
+    elif fleetSlotThree == 'Pioneer':
+        slotThreeShipFullHealth = 9000
+        slotThreeShipFullEnergy = 5000
+    if fleetSlotOne == 'Colossus':
+        slotOneShipFullHealth = 9000
+        slotOneShipFullEnergy = 5000
+    elif fleetSlotTwo == 'Colossus':
+        slotTwoShipFullHealth = 9000
+        slotTwoShipFullEnergy = 5000
+    elif fleetSlotThree == 'Colossus':
+        slotThreeShipFullHealth = 9000
+        slotThreeShipFullEnergy = 5000
+    if fleetSlotOne == 'Venturer':
+        slotOneShipFullHealth = 9000
+        slotOneShipFullEnergy = 5000
+    elif fleetSlotTwo == 'Venturer':
+        slotTwoShipFullHealth = 9000
+        slotTwoShipFullEnergy = 5000
+    elif fleetSlotThree == 'Venturer':
+        slotThreeShipFullHealth = 9000
+        slotThreeShipFullEnergy = 5000
+    assignFullEnergyAndHealth = False
 
 
 def gameLoop():
@@ -254,11 +292,27 @@ def gameLoop():
 
     selectedSlot = 1
 
-    #Health of player's ships (values will change depending on ships selected).
+    #Health and energy of player's ships (values will change depending on ships selected).
     slotOneShipHealth = 0
     slotTwoShipHealth = 0
     slotThreeShipHealth = 0
 
+    slotOneShipEnergy = 0
+    slotTwoShipEnergy = 0
+    slotThreeShipEnergy = 0
+
+    #Only when this variable has a value of True will a player's ship's energy begin to recharge.
+    slotOneEnergyCooldown = True
+    slotTwoEnergyCooldown = True
+    slotThreeEnergyCooldown = True
+
+    #This timer allows energy to be added to a ship only once per given time period.
+    slotOneEnergyTimer = 0
+    slotTwoEnergyTimer = 0
+    slotThreeEnergyTimer = 0
+
+    #When this value is true, all player ships will be assigned full health (used at the beginning of the game).
+    assignEnergyAndHealth = True
 
     #Health of enemy ships (values will change depending on enemies on screen).
     enemyOneHealth = 0
@@ -266,6 +320,8 @@ def gameLoop():
     enemyThreeHealth = 0
     enemyFourHealth = 0
     enemyFiveHealth = 0
+
+
 
     #Aspects of the enemy.
     selectedEnemyHealth = 0
@@ -276,11 +332,40 @@ def gameLoop():
     selectedEnemy = 'None'
 
 
+    damageAmount = 0
+
     #How much additional damage the fleet will do based on abilities.
     fleetDamageBoost = 1
 
     #Which group of enemies will be displayed on-screen and will be available to attack. Enemies not displayed will still deal damage.
     selectedEnemyFleet = 1
+
+
+    #How effective the player's ships's point defense will be/point defense cooldown variables for the player's ships.
+    slotOneShipPointDefenseActive = False
+    slotTwoShipPointDefenseActive = False
+    slotThreeShipPointDefenseActive = False
+
+    slotOneShipPointDefenseCooldown = 0
+    slotTwoShipPointDefenseCooldown = 0
+    slotThreeShipPointDefenseCooldown = 0
+
+    slotOneShipPointDefenseCharge = 100
+    slotTwoShipPointDefenseCharge = 100
+    slotThreeShipPointDefenseCharge = 100
+
+    fleetShipOnePointDefenseEff = 1
+    fleetShipTwoPointDefenseEff = 1
+    fleetShipThreePointDefenseEff = 1
+
+
+    #How effective the enemies' point defense will be.
+    enemyOnePointDefenseEff = 1
+    enemyTwoPointDefenseEff = 1
+    enemyThreePointDefenseEff = 1
+    enemyFourPointDefenseEff = 1
+    enemyFivePointDefenseEff = 1
+
 
     #Showing different ships in different slots.
     pioneerIsEnemyOneFleetOne = False
@@ -303,21 +388,25 @@ def gameLoop():
 
 
     #The combat log, which will display a message once any ship has taken damage or arrived in a new sector.
-    combatLogEntryOne = 'Test One'
-    combatLogEntryTwo = 'Test Two'
-    combatLogEntryThree = 'Test Three'
-    combatLogEntryFour = 'Test Four'
-    combatLogEntryFive = 'Test Five'
-    combatLogEntrySix = 'Test Six'
-    combatLogEntrySeven = 'Test Seven'
-    combatLogEntryEight = 'Test Eight'
-    combatLogEntryNine = 'Test Nine'
-    combatLogEntryTen = 'Test Ten'
+    combatLogEntryOne = ''
+    combatLogEntryTwo = ''
+    combatLogEntryThree = ''
+    combatLogEntryFour = ''
+    combatLogEntryFive = ''
+    combatLogEntrySix = ''
+    combatLogEntrySeven = ''
+    combatLogEntryEight = ''
+    combatLogEntryNine = ''
+    combatLogEntryTen = ''
+
 
     #Cooldown variables.
+    #Pioneer
     pioneerVoidChargesCooldown = 0
+    pioneerMissilesCooldown = 0
 
-
+    #Colossus
+    colossusFlakCooldown = 0
 
     while gameRunning:
 
@@ -347,46 +436,145 @@ def gameLoop():
 
                 #Selecting enemies.
                 if 1040 > mouse[0] > 690 and 340 > mouse[1] > 200:
-                    if event.key == pygame.K_f:
+                    if event.key == pygame.K_f and enemyOneHealth > 0:
                         selectedEnemy = 'One'
                 elif 700 > mouse[0] > 350 and 380 > mouse[1] > 240:
-                    if event.key == pygame.K_f:
+                    if event.key == pygame.K_f and enemyTwoHealth > 0:
                         selectedEnemy = 'Two'
                 elif 1380 > mouse[0] > 1030 and 380 > mouse[1] > 240:
-                    if event.key == pygame.K_f:
+                    if event.key == pygame.K_f and enemyThreeHealth > 0:
                         selectedEnemy = 'Three'
                 elif 360 > mouse[0] > 10 and 430 > mouse[1] > 290:
-                    if event.key == pygame.K_f:
+                    if event.key == pygame.K_f and enemyFourHealth > 0:
                         selectedEnemy = 'Four'
                 elif 1720 > mouse[0] > 1370 and 430 > mouse[1] > 290:
-                    if event.key == pygame.K_f:
+                    if event.key == pygame.K_f and enemyFiveHealth > 0:
                         selectedEnemy = 'Five'
 
+                #Ship abilities
+                #Point defense (same for all ships).
+                if slotOneShipPointDefenseCooldown == 0:
+                    if selectedSlot == 1:
+                        if event.key == pygame.K_3 and slotOneShipPointDefenseActive == False:
+                            if slotOneShipPointDefenseCharge != 0:
+                                slotOneShipPointDefenseActive = True
+                        elif event.key == pygame.K_3 and slotOneShipPointDefenseActive == True:
+                            slotOneShipPointDefenseActive = False
+                            slotOneShipPointDefenseCooldown = 10
+                if slotTwoShipPointDefenseCooldown == 0:
+                    if selectedSlot == 2:
+                        if event.key == pygame.K_3 and slotTwoShipPointDefenseActive == False:
+                            if slotTwoShipPointDefenseCharge != 0:
+                                slotTwoShipPointDefenseActive = True
+                        elif event.key == pygame.K_3 and slotTwoShipPointDefenseActive == True:
+                            slotTwoShipPointDefenseActive = False
+                            slotTwoShipPointDefenseCooldown = 10
+                if slotThreeShipPointDefenseCooldown == 0:
+                    if selectedSlot == 3:
+                        if event.key == pygame.K_3 and slotThreeShipPointDefenseActive == False:
+                            if slotThreeShipPointDefenseCharge != 0:
+                                slotThreeShipPointDefenseActive = True
+                        elif event.key == pygame.K_3 and slotThreeShipPointDefenseActive == True:
+                            slotThreeShipPointDefenseActive = False
+                            slotThreeShipPointDefenseCooldown = 10
 
-                #How abilities will work for each of the player's ships.
-                #For the pioneer.
+
+                #Pioneer abilities.
                 if fleetSlotOne == 'Pioneer' and selectedSlot == 1 or fleetSlotTwo == 'Pioneer' and selectedSlot == 2 or fleetSlotThree == 'Pioneer' and selectedSlot == 3:
-                    if event.key == pygame.K_1:
-                        printWhiteText('Reveal Sector', 50, 400, 400)
-                    elif event.key == pygame.K_2:
-                        printWhiteText('Pioneer Missiles', 50, 400, 400)
-                    elif event.key == pygame.K_3:
-                        printWhiteText('Point Defense', 50, 400, 400)
-                    elif event.key == pygame.K_TAB:
-                        printWhiteText('Jump Drive', 50, 400, 400)
-                    elif event.key == pygame.K_4:
-                        printWhiteText('Jump Home', 50, 400, 400)
+                    #Pioneer missiles.
+                    if pioneerMissilesCooldown == 0:
+                        if selectedEnemy == 'One':
+                            if event.key == pygame.K_2:
+                                if enemyOneHealth > 0:
+                                    enemyOneHealth -= (15 * fleetDamageBoost) * enemyOnePointDefenseEff
+                                    damageAmount = (15 * fleetDamageBoost) * enemyOnePointDefenseEff
+                                    combatLogEntryTen = combatLogEntryNine
+                                    combatLogEntryNine = combatLogEntryEight
+                                    combatLogEntryEight = combatLogEntrySeven
+                                    combatLogEntrySeven = combatLogEntrySix
+                                    combatLogEntrySix = combatLogEntryFive
+                                    combatLogEntryFive = combatLogEntryFour
+                                    combatLogEntryFour = combatLogEntryThree
+                                    combatLogEntryThree = combatLogEntryTwo
+                                    combatLogEntryTwo = combatLogEntryOne
+                                    combatLogEntryOne = 'Enemy 1 Took ' + str(damageAmount) + ' Damage From Pioneer'
+                                    pioneerMissilesCooldown = 100
+                        elif selectedEnemy == 'Two':
+                            if event.key == pygame.K_2:
+                                if enemyTwoHealth > 0:
+                                    enemyTwoHealth -= (15 * fleetDamageBoost) * enemyOnePointDefenseEff
+                                    damageAmount = (15 * fleetDamageBoost) * enemyOnePointDefenseEff
+                                    combatLogEntryTen = combatLogEntryNine
+                                    combatLogEntryNine = combatLogEntryEight
+                                    combatLogEntryEight = combatLogEntrySeven
+                                    combatLogEntrySeven = combatLogEntrySix
+                                    combatLogEntrySix = combatLogEntryFive
+                                    combatLogEntryFive = combatLogEntryFour
+                                    combatLogEntryFour = combatLogEntryThree
+                                    combatLogEntryThree = combatLogEntryTwo
+                                    combatLogEntryTwo = combatLogEntryOne
+                                    combatLogEntryOne = 'Enemy 2 Took ' + str(damageAmount) + ' Damage From Pioneer'
+                                    pioneerMissilesCooldown = 100
+                        elif selectedEnemy == 'Three':
+                            if event.key == pygame.K_2:
+                                if enemyThreeHealth > 0:
+                                    enemyThreeHealth -= (15 * fleetDamageBoost) * enemyOnePointDefenseEff
+                                    damageAmount = (15 * fleetDamageBoost) * enemyOnePointDefenseEff
+                                    combatLogEntryTen = combatLogEntryNine
+                                    combatLogEntryNine = combatLogEntryEight
+                                    combatLogEntryEight = combatLogEntrySeven
+                                    combatLogEntrySeven = combatLogEntrySix
+                                    combatLogEntrySix = combatLogEntryFive
+                                    combatLogEntryFive = combatLogEntryFour
+                                    combatLogEntryFour = combatLogEntryThree
+                                    combatLogEntryThree = combatLogEntryTwo
+                                    combatLogEntryTwo = combatLogEntryOne
+                                    combatLogEntryOne = 'Enemy 3 Took ' + str(damageAmount) + ' Damage From Pioneer'
+                                    pioneerMissilesCooldown = 100
+                        elif selectedEnemy == 'Four':
+                            if event.key == pygame.K_2:
+                                if enemyFourHealth > 0:
+                                    enemyFourHealth -= (15 * fleetDamageBoost) * enemyOnePointDefenseEff
+                                    damageAmount = (15 * fleetDamageBoost) * enemyOnePointDefenseEff
+                                    combatLogEntryTen = combatLogEntryNine
+                                    combatLogEntryNine = combatLogEntryEight
+                                    combatLogEntryEight = combatLogEntrySeven
+                                    combatLogEntrySeven = combatLogEntrySix
+                                    combatLogEntrySix = combatLogEntryFive
+                                    combatLogEntryFive = combatLogEntryFour
+                                    combatLogEntryFour = combatLogEntryThree
+                                    combatLogEntryThree = combatLogEntryTwo
+                                    combatLogEntryTwo = combatLogEntryOne
+                                    combatLogEntryOne = 'Enemy 4 Took ' + str(damageAmount) + ' Damage From Pioneer'
+                                    pioneerMissilesCooldown = 100
+                        elif selectedEnemy == 'Five':
+                            if event.key == pygame.K_2:
+                                if enemyFiveHealth > 0:
+                                    enemyFiveHealth -= (15 * fleetDamageBoost) * enemyOnePointDefenseEff
+                                    damageAmount = (15 * fleetDamageBoost) * enemyOnePointDefenseEff
+                                    combatLogEntryTen = combatLogEntryNine
+                                    combatLogEntryNine = combatLogEntryEight
+                                    combatLogEntryEight = combatLogEntrySeven
+                                    combatLogEntrySeven = combatLogEntrySix
+                                    combatLogEntrySix = combatLogEntryFive
+                                    combatLogEntryFive = combatLogEntryFour
+                                    combatLogEntryFour = combatLogEntryThree
+                                    combatLogEntryThree = combatLogEntryTwo
+                                    combatLogEntryTwo = combatLogEntryOne
+                                    combatLogEntryOne = 'Enemy 5 Took ' + str(damageAmount) + ' Damage From Pioneer'
+                                    pioneerMissilesCooldown = 100
 
 
 
-            #Pioneer's main weapon (Void Cannon), used by clicking enemies that the player wants to damage.
+            #Pioneer weapon systems.
             if fleetSlotOne == 'Pioneer' and selectedSlot == 1 or fleetSlotTwo == 'Pioneer' and selectedSlot == 2 or fleetSlotThree == 'Pioneer' and selectedSlot == 3:
-                if 1040 > mouse[0] > 690 and 340 > mouse[1] > 200:
-                    if click[0] == 1:
-                        if pioneerVoidChargesCooldown == 0:
+                #Pioneer's main weapon (Void Cannon), used by left clicking enemies that the player wants to damage.
+                if pioneerVoidChargesCooldown == 0:
+                    if 1040 > mouse[0] > 690 and 340 > mouse[1] > 200:
+                        if click[0] == 1:
                             if enemyOneHealth > 0:
-                                enemyOneHealth -= 25 * fleetDamageBoost
-                                damageAmount = 25 * fleetDamageBoost
+                                enemyOneHealth -= 5 * fleetDamageBoost
+                                damageAmount = 5 * fleetDamageBoost
                                 combatLogEntryTen = combatLogEntryNine
                                 combatLogEntryNine = combatLogEntryEight
                                 combatLogEntryEight = combatLogEntrySeven
@@ -399,12 +587,11 @@ def gameLoop():
                                 combatLogEntryOne = 'Enemy 1 Took ' + str(damageAmount) + ' Damage From Pioneer'
                                 pioneerVoidChargesCooldown = 50
 
-                elif 700 > mouse[0] > 350 and 380 > mouse[1] > 240:
-                    if click[0] == 1:
-                        if pioneerVoidChargesCooldown == 0:
+                    elif 700 > mouse[0] > 350 and 380 > mouse[1] > 240:
+                        if click[0] == 1:
                             if enemyTwoHealth > 0:
-                                enemyTwoHealth -= 25 * fleetDamageBoost
-                                damageAmount = 25 * fleetDamageBoost
+                                enemyTwoHealth -= 5 * fleetDamageBoost
+                                damageAmount = 5 * fleetDamageBoost
                                 combatLogEntryTen = combatLogEntryNine
                                 combatLogEntryNine = combatLogEntryEight
                                 combatLogEntryEight = combatLogEntrySeven
@@ -417,12 +604,11 @@ def gameLoop():
                                 combatLogEntryOne = 'Enemy 2 Took ' + str(damageAmount) + ' Damage From Pioneer'
                                 pioneerVoidChargesCooldown = 50
 
-                elif 1380 > mouse[0] > 1030 and 380 > mouse[1] > 240:
-                    if click[0] == 1:
-                        if pioneerVoidChargesCooldown == 0:
+                    elif 1380 > mouse[0] > 1030 and 380 > mouse[1] > 240:
+                        if click[0] == 1:
                             if enemyThreeHealth > 0:
-                                enemyThreeHealth -= 25 * fleetDamageBoost
-                                damageAmount = 25 * fleetDamageBoost
+                                enemyThreeHealth -= 5 * fleetDamageBoost
+                                damageAmount = 5 * fleetDamageBoost
                                 combatLogEntryTen = combatLogEntryNine
                                 combatLogEntryNine = combatLogEntryEight
                                 combatLogEntryEight = combatLogEntrySeven
@@ -435,12 +621,11 @@ def gameLoop():
                                 combatLogEntryOne = 'Enemy 3 Took ' + str(damageAmount) + ' Damage From Pioneer'
                                 pioneerVoidChargesCooldown = 50
 
-                elif 360 > mouse[0] > 10 and 430 > mouse[1] > 290:
-                    if click[0] == 1:
-                        if pioneerVoidChargesCooldown == 0:
+                    elif 360 > mouse[0] > 10 and 430 > mouse[1] > 290:
+                        if click[0] == 1:
                             if enemyFourHealth > 0:
-                                enemyFourHealth -= 25 * fleetDamageBoost
-                                damageAmount = 25 * fleetDamageBoost
+                                enemyFourHealth -= 5 * fleetDamageBoost
+                                damageAmount = 5 * fleetDamageBoost
                                 combatLogEntryTen = combatLogEntryNine
                                 combatLogEntryNine = combatLogEntryEight
                                 combatLogEntryEight = combatLogEntrySeven
@@ -452,12 +637,11 @@ def gameLoop():
                                 combatLogEntryTwo = combatLogEntryOne
                                 combatLogEntryOne = 'Enemy 4 Took ' + str(damageAmount) + ' Damage From Pioneer'
                                 pioneerVoidChargesCooldown = 50
-                elif 1720 > mouse[0] > 1370 and 430 > mouse[1] > 290:
-                    if click[0] == 1:
-                        if pioneerVoidChargesCooldown == 0:
+                    elif 1720 > mouse[0] > 1370 and 430 > mouse[1] > 290:
+                        if click[0] == 1:
                             if enemyFiveHealth > 0:
-                                enemyFiveHealth -= 25 * fleetDamageBoost
-                                damageAmount = 25 * fleetDamageBoost
+                                enemyFiveHealth -= 5 * fleetDamageBoost
+                                damageAmount = 5 * fleetDamageBoost
                                 combatLogEntryTen = combatLogEntryNine
                                 combatLogEntryNine = combatLogEntryEight
                                 combatLogEntryEight = combatLogEntrySeven
@@ -469,10 +653,98 @@ def gameLoop():
                                 combatLogEntryTwo = combatLogEntryOne
                                 combatLogEntryOne = 'Enemy 5 Took ' + str(damageAmount) + ' Damage From Pioneer'
                                 pioneerVoidChargesCooldown = 50
+                    elif 1728 > mouse[0] > 0 and 972 > mouse[1] > 0 and click[0] == 1:
+                        pioneerVoidChargesCooldown = 50
 
+            #Colossus weapon systems.
+            if fleetSlotOne == 'Colossus' and selectedSlot == 1 or fleetSlotTwo == 'Colossus' and selectedSlot == 2 or fleetSlotThree == 'Colossus' and selectedSlot == 3:
+                # Colossus' main weapon (Flak), used by left clicking enemies that the player wants to damage.
+                if colossusFlakCooldown == 0:
+                    if 1040 > mouse[0] > 690 and 340 > mouse[1] > 200:
+                        if click[0] == 1:
+                            if enemyOneHealth > 0:
+                                enemyOneHealth -= 5 * fleetDamageBoost
+                                damageAmount = 5 * fleetDamageBoost
+                                combatLogEntryTen = combatLogEntryNine
+                                combatLogEntryNine = combatLogEntryEight
+                                combatLogEntryEight = combatLogEntrySeven
+                                combatLogEntrySeven = combatLogEntrySix
+                                combatLogEntrySix = combatLogEntryFive
+                                combatLogEntryFive = combatLogEntryFour
+                                combatLogEntryFour = combatLogEntryThree
+                                combatLogEntryThree = combatLogEntryTwo
+                                combatLogEntryTwo = combatLogEntryOne
+                                combatLogEntryOne = 'Enemy 1 Took ' + str(damageAmount) + ' Damage From Colossus'
+                                colossusFlakCooldown = 50
 
+                    elif 700 > mouse[0] > 350 and 380 > mouse[1] > 240:
+                        if click[0] == 1:
+                            if enemyTwoHealth > 0:
+                                enemyTwoHealth -= 5 * fleetDamageBoost
+                                damageAmount = 5 * fleetDamageBoost
+                                combatLogEntryTen = combatLogEntryNine
+                                combatLogEntryNine = combatLogEntryEight
+                                combatLogEntryEight = combatLogEntrySeven
+                                combatLogEntrySeven = combatLogEntrySix
+                                combatLogEntrySix = combatLogEntryFive
+                                combatLogEntryFive = combatLogEntryFour
+                                combatLogEntryFour = combatLogEntryThree
+                                combatLogEntryThree = combatLogEntryTwo
+                                combatLogEntryTwo = combatLogEntryOne
+                                combatLogEntryOne = 'Enemy 2 Took ' + str(damageAmount) + ' Damage From Colossus'
+                                colossusFlakCooldown = 50
 
+                    elif 1380 > mouse[0] > 1030 and 380 > mouse[1] > 240:
+                        if click[0] == 1:
+                            if enemyThreeHealth > 0:
+                                enemyThreeHealth -= 5 * fleetDamageBoost
+                                damageAmount = 5 * fleetDamageBoost
+                                combatLogEntryTen = combatLogEntryNine
+                                combatLogEntryNine = combatLogEntryEight
+                                combatLogEntryEight = combatLogEntrySeven
+                                combatLogEntrySeven = combatLogEntrySix
+                                combatLogEntrySix = combatLogEntryFive
+                                combatLogEntryFive = combatLogEntryFour
+                                combatLogEntryFour = combatLogEntryThree
+                                combatLogEntryThree = combatLogEntryTwo
+                                combatLogEntryTwo = combatLogEntryOne
+                                combatLogEntryOne = 'Enemy 3 Took ' + str(damageAmount) + ' Damage From Colossus'
+                                colossusFlakCooldown = 50
 
+                    elif 360 > mouse[0] > 10 and 430 > mouse[1] > 290:
+                        if click[0] == 1:
+                            if enemyFourHealth > 0:
+                                enemyFourHealth -= 5 * fleetDamageBoost
+                                damageAmount = 5 * fleetDamageBoost
+                                combatLogEntryTen = combatLogEntryNine
+                                combatLogEntryNine = combatLogEntryEight
+                                combatLogEntryEight = combatLogEntrySeven
+                                combatLogEntrySeven = combatLogEntrySix
+                                combatLogEntrySix = combatLogEntryFive
+                                combatLogEntryFive = combatLogEntryFour
+                                combatLogEntryFour = combatLogEntryThree
+                                combatLogEntryThree = combatLogEntryTwo
+                                combatLogEntryTwo = combatLogEntryOne
+                                combatLogEntryOne = 'Enemy 4 Took ' + str(damageAmount) + ' Damage From Colossus'
+                                colossusFlakCooldown = 50
+                    elif 1720 > mouse[0] > 1370 and 430 > mouse[1] > 290:
+                        if click[0] == 1:
+                            if enemyFiveHealth > 0:
+                                enemyFiveHealth -= 5 * fleetDamageBoost
+                                damageAmount = 5 * fleetDamageBoost
+                                combatLogEntryTen = combatLogEntryNine
+                                combatLogEntryNine = combatLogEntryEight
+                                combatLogEntryEight = combatLogEntrySeven
+                                combatLogEntrySeven = combatLogEntrySix
+                                combatLogEntrySix = combatLogEntryFive
+                                combatLogEntryFive = combatLogEntryFour
+                                combatLogEntryFour = combatLogEntryThree
+                                combatLogEntryThree = combatLogEntryTwo
+                                combatLogEntryTwo = combatLogEntryOne
+                                combatLogEntryOne = 'Enemy 5 Took ' + str(damageAmount) + ' Damage From Colossus'
+                                colossusFlakCooldown = 50
+                    elif 1728 > mouse[0] > 0 and 972 > mouse[1] > 0 and click[0] == 1:
+                        colossusFlakCooldown = 50
 
 
 
@@ -541,28 +813,29 @@ def gameLoop():
                 pygame.draw.rect(screen, orange, [1050, 615, 250, 25])
 
 
+        #Deciding how much initial health and energy the player's ships have.
+        if assignEnergyAndHealth == True:
+            #For the Pioneer.
+            slotOneShipHealth = slotOneShipFullHealth
+            slotTwoShipHealth = slotTwoShipFullHealth
+            slotThreeShipHealth = slotThreeShipFullHealth
 
+            slotOneShipEnergy = slotOneShipFullEnergy
+            slotTwoShipEnergy = slotTwoShipFullEnergy
+            slotThreeShipEnergy = slotThreeShipFullEnergy
+            assignEnergyAndHealth = False
 
-        #Deciding how to draw player ships.
+        #Deciding which ships to draw and where based on which ones the player selected in the menu.
         if fleetSlotOne == 'Pioneer':
             pioneerInGameDisplay = pygame.image.load('pioneerInGame.png')
             screen.blit(pioneerInGameDisplay, (250, 450))
-
         if fleetSlotTwo == 'Colossus':
             colossusInGameDisplay = pygame.image.load('colossusInGame.png')
             screen.blit(colossusInGameDisplay, (689, 575))
-
         if fleetSlotThree == 'Venturer':
             venturerInGameDisplay = pygame.image.load('venturerInGame.png')
             screen.blit(venturerInGameDisplay, (1000, 460))
 
-        #Prototype enemy selection.
-        #
-
-
-        #
-        #
-        #
 
         printWhiteText(selectedEnemy, 90, 200, 200)
 
@@ -631,16 +904,144 @@ def gameLoop():
         printWhiteText(combatLogEntryTen, 18, 210, 915)
 
 
+        #Energy recharge for the player's ships (energy only recharges every few seconds).
+        if slotOneShipEnergy != slotOneShipFullEnergy and slotOneEnergyCooldown == True:
+            slotOneEnergyTimer += 1
+            if slotOneEnergyTimer == 10:
+                slotOneShipEnergy += 25
+                slotOneEnergyTimer = 0
+        if slotTwoShipEnergy != slotTwoShipFullEnergy and slotTwoEnergyCooldown == True:
+            slotTwoEnergyTimer += 1
+            if slotTwoEnergyTimer == 10:
+                slotTwoShipEnergy += 25
+                slotTwoEnergyTimer = 0
+        if slotThreeShipEnergy != slotThreeShipFullEnergy and slotThreeEnergyCooldown == True:
+            slotThreeEnergyTimer += 1
+            if slotThreeEnergyTimer == 10:
+                slotThreeShipEnergy += 25
+                slotThreeEnergyTimer = 0
+
+
+
         #Cooldown timers for the player's ship's weapons and abilities.
         cooldownBackground = pygame.image.load('FrameCooldown.png')
         cooldownBackgroundDark = pygame.image.load('FrameCooldown_dark.png')
+        activeBackground = pygame.image.load('FrameActive.png')
 
+        #Point defense (same for all ships).
+        #Point defense for ship one.
+        if slotOneShipPointDefenseCooldown != 0 and slotOneShipEnergy != 0:
+            slotOneShipPointDefenseCooldown -= 1
+            if selectedSlot == 1:
+                screen.blit(cooldownBackground, (772, 830))
+                screen.blit(cooldownBackgroundDark, (772, 830))
+                printWhiteText(str(slotOneShipPointDefenseCooldown), 30, 807, 868)
+        elif slotOneShipPointDefenseCooldown == 0:
+            if slotOneShipPointDefenseActive == True and slotOneShipPointDefenseCharge != 0 and slotOneShipEnergy != 0:
+                fleetShipOnePointDefenseEff = 0.5
+                slotOneShipPointDefenseCharge -= 1
+                slotOneShipEnergy -= 25
+                slotOneEnergyCooldown = False
+                if selectedSlot == 1:
+                    screen.blit(activeBackground, (772, 830))
+                    printWhiteText(str(slotOneShipPointDefenseCharge), 30, 807, 868)
+                if slotOneShipPointDefenseCharge == 0 or slotOneShipEnergy == 0:
+                    slotOneShipPointDefenseActive = False
+                    slotOneShipPointDefenseCooldown = 10
+                    slotOneEnergyCooldown = True
+            elif slotOneShipPointDefenseActive == False and slotOneShipPointDefenseCharge != 100:
+                slotOneShipPointDefenseCharge += 1
+                slotOneEnergyCooldown = True
+                if selectedSlot == 1:
+                    printWhiteText(str(slotOneShipPointDefenseCharge), 30, 807, 868)
+
+        #Point defense for ship two.
+        if slotTwoShipPointDefenseCooldown != 0:
+            slotTwoShipPointDefenseCooldown -= 1
+            if selectedSlot == 2:
+                screen.blit(cooldownBackground, (772, 830))
+                screen.blit(cooldownBackgroundDark, (772, 830))
+                printWhiteText(str(slotTwoShipPointDefenseCooldown), 30, 807, 868)
+        elif slotTwoShipPointDefenseCooldown == 0:
+            if slotTwoShipPointDefenseActive == True and slotTwoShipPointDefenseCharge != 0:
+                fleetShipTwoPointDefenseEff = 0.5
+                slotTwoShipPointDefenseCharge -= 1
+                slotTwoShipEnergy -= 25
+                slotTwoEnergyCooldown = False
+                if selectedSlot == 2:
+                    screen.blit(activeBackground, (772, 830))
+                    printWhiteText(str(slotTwoShipPointDefenseCharge), 30, 807, 868)
+                if slotTwoShipPointDefenseCharge == 0:
+                    slotTwoShipPointDefenseActive = False
+                    slotTwoShipPointDefenseCooldown = 10
+                    slotTwoEnergyCooldown = True
+            elif slotTwoShipPointDefenseActive == False and slotTwoShipPointDefenseCharge != 100:
+                slotTwoShipPointDefenseCharge += 1
+                slotTwoEnergyCooldown = True
+                if selectedSlot == 2:
+                    printWhiteText(str(slotTwoShipPointDefenseCharge), 30, 807, 868)
+
+        # Point defense for ship three.
+        if slotThreeShipPointDefenseCooldown != 0:
+            slotThreeShipPointDefenseCooldown -= 1
+            if selectedSlot == 3:
+                screen.blit(cooldownBackground, (772, 830))
+                screen.blit(cooldownBackgroundDark, (772, 830))
+                printWhiteText(str(slotThreeShipPointDefenseCooldown), 30, 807, 868)
+        elif slotThreeShipPointDefenseCooldown == 0:
+            if slotThreeShipPointDefenseActive == True and slotThreeShipPointDefenseCharge != 0:
+                fleetShipThreePointDefenseEff = 0.5
+                slotThreeShipPointDefenseCharge -= 1
+                slotThreeShipEnergy -= 25
+                slotThreeEnergyCooldown = False
+                if selectedSlot == 3:
+                    screen.blit(activeBackground, (772, 830))
+                    printWhiteText(str(slotThreeShipPointDefenseCharge), 30, 807, 868)
+                if slotThreeShipPointDefenseCharge == 0:
+                    slotThreeShipPointDefenseActive = False
+                    slotThreeShipPointDefenseCooldown = 10
+                    slotThreeEnergyCooldown = True
+            elif slotThreeShipPointDefenseActive == False and slotThreeShipPointDefenseCharge != 100:
+                slotThreeShipPointDefenseCharge += 1
+                slotThreeEnergyCooldown = True
+                if selectedSlot == 3:
+                    printWhiteText(str(slotThreeShipPointDefenseCharge), 30, 807, 868)
+
+
+        #Pioneer.
         if pioneerVoidChargesCooldown != 0:
             pioneerVoidChargesCooldown -= 1
             if fleetSlotOne == 'Pioneer' and selectedSlot == 1 or fleetSlotTwo == 'Pioneer' and selectedSlot == 2 or fleetSlotThree == 'Pioneer' and selectedSlot == 3:
                 screen.blit(cooldownBackground, (1108, 830))
                 screen.blit(cooldownBackgroundDark, (1108, 830))
                 printWhiteText(str(pioneerVoidChargesCooldown), 30, 1143, 868)
+        if pioneerMissilesCooldown != 0:
+            pioneerMissilesCooldown -= 1
+            if fleetSlotOne == 'Pioneer' and selectedSlot == 1 or fleetSlotTwo == 'Pioneer' and selectedSlot == 2 or fleetSlotThree == 'Pioneer' and selectedSlot == 3:
+                screen.blit(cooldownBackground, (660, 830))
+                screen.blit(cooldownBackgroundDark, (660, 830))
+                printWhiteText(str(pioneerMissilesCooldown), 30, 695, 868)
+
+        #Colossus.
+        if colossusFlakCooldown != 0:
+            colossusFlakCooldown -= 1
+            if fleetSlotOne == 'Colossus' and selectedSlot == 1 or fleetSlotTwo == 'Colossus' and selectedSlot == 2 or fleetSlotThree == 'Colossus' and selectedSlot == 3:
+                screen.blit(cooldownBackground, (1108, 830))
+                screen.blit(cooldownBackgroundDark, (1108, 830))
+                printWhiteText(str(colossusFlakCooldown), 30, 1143, 868)
+
+
+
+        #Printing statiscics of various ships.
+        printWhiteText('Health: ' + str(slotOneShipHealth), 30, 330, 668)
+        printWhiteText('Energy: ' + str(slotOneShipEnergy), 30, 330, 698)
+
+        printWhiteText('Health: ' + str(slotTwoShipHealth), 30, 820, 768)
+        printWhiteText('Energy: ' + str(slotTwoShipEnergy), 30, 820, 798)
+
+        printWhiteText('Health: ' + str(slotThreeShipHealth), 30, 1160, 668)
+        printWhiteText('Energy: ' + str(slotThreeShipEnergy), 30, 1160, 698)
+
 
         pygame.display.update()
         clock.tick(60)
