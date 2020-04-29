@@ -1,0 +1,35 @@
+#Check if any of the ships' health is equal to 0, and if so, move enemies in the fleet's sector to outpost
+        if slotOneShipHealth == 0:
+            if fleetSector == 'alpha':
+                if enemyOneSector == 'alpha':
+                    enemyOneSector = 'outpost'
+                elif enemyTwoSector == 'alpha':
+                    enemyTwoSector = 'outpost'
+                elif enemyThreeSector == 'alpha':
+                    ememyThreeSector = 'outpost'
+                elif enemyFourSector == 'alpha':
+                    enemyFourSector = 'outpost'
+                elif enemyFiveSector == 'alpha':
+                    ememyFiveSector = 'outpost'
+            elif fleetSector == 'delta':
+                if enemyOneSector == 'delta':
+                    enemyOneSector = 'outpost'
+                elif enemyTwoSector == 'delta':
+                    enemyTwoSector = 'outpost'
+                elif enemyThreeSector == 'delta':
+                    ememyThreeSector = 'outpost'
+                elif enemyFourSector == 'delta':
+                    enemyFourSector = 'outpost'
+                elif enemyFiveSector == 'delta':
+                    ememyFiveSector = 'outpost'
+            elif fleetSector == 'beta':
+                if enemyOneSector == 'beta':
+                    enemyOneSector = 'outpost'
+                elif enemyTwoSector == 'beta':
+                    enemyTwoSector = 'outpost'
+                elif enemyThreeSector == 'beta':
+                    ememyThreeSector = 'outpost'
+                elif enemyFourSector == 'beta':
+                    enemyFourSector = 'outpost'
+                elif enemyFiveSector == 'beta':
+                    ememyFiveSector = 'outpost'
