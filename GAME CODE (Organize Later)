@@ -14,7 +14,7 @@ clock = pygame.time.Clock()
 
 #Title and Icon
 pygame.display.set_caption('Last Stand')
-icon = pygame.image.load('icon.png')
+icon = pygame.image.load('Used Images/icon.png')
 pygame.display.set_icon(icon)
 
 
@@ -70,7 +70,7 @@ def battleButton(action=None):
 
 #The large button with picture, enters player into the game and also runs select enemies function (should be above this one in the code).
 def enterGameButton(action=None):
-    enterGameButton = pygame.image.load('lastStand.png')
+    enterGameButton = pygame.image.load('Used Images/lastStand.png')
     enterGameButtonX = 502
     enterGameButtonY = 180
 
@@ -122,14 +122,14 @@ def gameMenu():
         screen.fill(black)
 
         #Drawing upper background (behind battle button).
-        upperBackground = pygame.image.load('upperBackground.png')
+        upperBackground = pygame.image.load('Used Images/upperBackground.png')
         upperBackgroundX = 0
         upperBackgroundY = 0
 
         screen.blit(upperBackground, (upperBackgroundX, upperBackgroundY))
 
         # Backgrounds behind selectable ships.
-        Background = pygame.image.load('shipSelectionBackground.png')
+        Background = pygame.image.load('Used Images/shipSelectionBackground.png')
         screen.blit(Background, (17, 810))
         screen.blit(Background, (304, 810))
         screen.blit(Background, (585, 810))
@@ -138,11 +138,11 @@ def gameMenu():
         screen.blit(Background, (1436, 810))
 
         #Logos on top of backgrounds.
-        logoUSR = pygame.image.load('logoUSR.png')
+        logoUSR = pygame.image.load('Used Images/logoUSR.png')
         screen.blit(logoUSR, (45, 830))
         screen.blit(logoUSR, (335, 830))
 
-        logoZRK = pygame.image.load('logoZRK.png')
+        logoZRK = pygame.image.load('Used Images/logoZRK.png')
         screen.blit(logoZRK, (615, 830))
 
         battleButton("play")
@@ -163,7 +163,7 @@ def confirmationScreen():
                 pygame.quit()
                 quit()
 
-        confirmationBackground = pygame.image.load('confirmationBackground.png')
+        confirmationBackground = pygame.image.load('Used Images/confirmationBackground.png')
         confirmationBackgroundX = 0
         confirmationBackgroundY = 90
 
@@ -184,7 +184,7 @@ def confirmationScreen():
 #General HUD appearance.
 def displayHUD():
     #The circular backgrounds of abilities and pictures of abilities the same for every ship.
-    abilityBackground = pygame.image.load('Frame-fade.png')
+    abilityBackground = pygame.image.load('Used Images/Frame-fade.png')
     screen.blit(abilityBackground, (772, 830))
     screen.blit(abilityBackground, (660, 830))
     screen.blit(abilityBackground, (548, 830))
@@ -192,10 +192,10 @@ def displayHUD():
     screen.blit(abilityBackground, (996, 830))
     screen.blit(abilityBackground, (1108, 830))
 
-    pointDefenseSkill = pygame.image.load('pointDefense.png')
+    pointDefenseSkill = pygame.image.load('Used Images/pointDefense.png')
     screen.blit(pointDefenseSkill, (783, 841))
 
-    warpSkill = pygame.image.load('warp.png')
+    warpSkill = pygame.image.load('Used Images/warp.png')
     screen.blit(warpSkill, (895, 841))
     screen.blit(warpSkill, (1007, 841))
 
@@ -220,7 +220,7 @@ def displayHUD():
 
 
     #Background to base/turret health indicator at top of screen.
-    baseDisplay = pygame.image.load('baseDisplay.png')
+    baseDisplay = pygame.image.load('Used Images/baseDisplay.png')
     screen.blit(baseDisplay, (499, 25))
 
 
@@ -239,6 +239,9 @@ slotThreeShipFullHealth = 0
 slotOneShipFullEnergy = 0
 slotTwoShipFullEnergy = 0
 slotThreeShipFullEnergy = 0
+
+#Outpost full health
+outpostFullHealth = 10000
 
 #When this value is true, the maximum health of each ship in the player's fleet will be set- this only happens at the beginning of the game because the value can later be modified by upgrades.
 assignFullEnergyAndHealth = True
@@ -301,7 +304,8 @@ def gameLoop():
     slotTwoShipEnergy = 0
     slotThreeShipEnergy = 0
 
-
+    #Outpost health
+    outpostHealth = outpostFullHealth
 
     #Only when this variable has a value of True will a player's ship's energy begin to recharge.
     slotOneEnergyCooldown = True
@@ -323,7 +327,12 @@ def gameLoop():
     enemyFourHealth = 0
     enemyFiveHealth = 0
 
-
+    #Sector of enemy ships
+    enemyOneSector = 'None'
+    enemyTwoSector = 'None'
+    enemyThreeSector = 'None'
+    enemyFourSector = 'None'
+    enemyFiveSector = 'None'
 
     #Aspects of the enemy.
     selectedEnemyHealth = 0
@@ -433,6 +442,11 @@ def gameLoop():
 
     #Colossus
     colossusFlakCooldown = 0
+
+    #Timer
+    maxWaveTime = 30
+    timing = False
+    start = None
 
     while gameRunning:
 
@@ -801,11 +815,11 @@ def gameLoop():
             printWhiteText('Pioneer Missiles', 12, 695, 915)
             printWhiteText('Void Charges', 12, 1143, 915)
 
-            detect = pygame.image.load('Detect.png')
+            detect = pygame.image.load('Used Images/Detect.png')
             screen.blit(detect, (559, 841))
-            missiles = pygame.image.load('missiles.png')
+            missiles = pygame.image.load('Used Images/missiles.png')
             screen.blit(missiles, (670, 841))
-            cannon = pygame.image.load('cannon.png')
+            cannon = pygame.image.load('Used Images/cannon.png')
             screen.blit(cannon, (1119, 841))
 
             #Change below display bars to match up with all ship spots!!!!!!!!!!
@@ -822,11 +836,11 @@ def gameLoop():
             printWhiteText('Colossus Fighters', 12, 695, 915)
             printWhiteText('Flak', 12, 1143, 915)
 
-            boost = pygame.image.load('boost.png')
+            boost = pygame.image.load('Used Images/boost.png')
             screen.blit(boost, (559, 841))
-            fighters = pygame.image.load('fighters.png')
+            fighters = pygame.image.load('Used Images/fighters.png')
             screen.blit(fighters, (670, 841))
-            cannonFlak = pygame.image.load('cannon-flak.png')
+            cannonFlak = pygame.image.load('Used Images/cannon-flak.png')
             screen.blit(cannonFlak, (1119, 841))
 
             if fleetSlotOne == 'Colossus':
@@ -842,11 +856,11 @@ def gameLoop():
             printWhiteText('Plasma Missiles', 12, 695, 915)
             printWhiteText('Mining Laser', 12, 1143, 915)
 
-            repairPulse = pygame.image.load('pulse-repair.png')
+            repairPulse = pygame.image.load('Used Images/pulse-repair.png')
             screen.blit(repairPulse, (559, 841))
-            plasmaMissiles = pygame.image.load('missiles-plasma.png')
+            plasmaMissiles = pygame.image.load('Used Images/missiles-plasma.png')
             screen.blit(plasmaMissiles, (670, 841))
-            miningLasers = pygame.image.load('laser-big.png')
+            miningLasers = pygame.image.load('Used Images/laser-big.png')
             screen.blit(miningLasers, (1119, 841))
 
             if fleetSlotOne == 'Venturer':
@@ -870,13 +884,13 @@ def gameLoop():
 
         #Deciding which ships to draw and where based on which ones the player selected in the menu.
         if fleetSlotOne == 'Pioneer':
-            pioneerInGameDisplay = pygame.image.load('pioneerInGame.png')
+            pioneerInGameDisplay = pygame.image.load('Used Images/pioneerInGame.png')
             screen.blit(pioneerInGameDisplay, (250, 450))
         if fleetSlotTwo == 'Colossus':
-            colossusInGameDisplay = pygame.image.load('colossusInGame.png')
+            colossusInGameDisplay = pygame.image.load('Used Images/colossusInGame.png')
             screen.blit(colossusInGameDisplay, (689, 575))
         if fleetSlotThree == 'Venturer':
-            venturerInGameDisplay = pygame.image.load('venturerInGame.png')
+            venturerInGameDisplay = pygame.image.load('Used Images/venturerInGame.png')
             screen.blit(venturerInGameDisplay, (1000, 460))
 
 
@@ -896,18 +910,71 @@ def gameLoop():
             printWhiteText(str(enemyThreeHealth), 30, 1500, 275)
 
         #Spawning enemies for wave one.
-        pioneerEnemy = pygame.image.load('pioneerInGame.png')
-        protectorEnemy = pygame.image.load('protectorInGame.png')
+        pioneerEnemy = pygame.image.load('Used Images/pioneerInGame.png')
+        protectorEnemy = pygame.image.load('Used Images/protectorInGame.png')
 
         if startWaveOne == True:
             pioneerIsEnemyOneFleetOne = True
+            enemyOneSector = 'alpha'
             enemyOneHealth = 100
             pioneerIsEnemyTwoFleetOne = True
+            enemyTwoSector = 'alpha'
             enemyTwoHealth = 100
             protectorIsEnemyThreeFleetOne = True
+            enemyThreeSector = 'alpha'
             enemyThreeHealth = 80
+            timing = True
+            start = time.time()
             startWaveOne = False
 
+
+        #Check if wave time ran out, and if so, moves enemies to outpost
+        if timing == True:
+            if time.time() - start >= maxWaveTime:
+                if enemyOneSector == 'alpha':
+                    enemyOneSector = 'outpost'
+                elif enemyOneSector == 'delta':
+                    enemyOneSector = 'outpost'
+                elif enemyOneSector == 'beta':
+                    enemyOneSector = 'outpost'
+                if enemyTwoSector == 'alpha':
+                    enemyTwoSector = 'outpost'
+                elif enemyTwoSector == 'delta':
+                    enemyTwoSector = 'outpost'
+                elif enemyTwoSector == 'beta':
+                    enemyTwoSector = 'outpost'
+                if enemyThreeSector == 'alpha':
+                    ememyThreeSector = 'outpost'
+                elif enemyThreeSector == 'delta':
+                    ememyThreeSector = 'outpost'
+                elif enemyThreeSector == 'beta':
+                    ememyThreeSector = 'outpost'
+                if enemyFourSector == 'alpha':
+                    enemyFourSector = 'outpost'
+                elif enemyFourSector == 'delta':
+                    enemyFourSector = 'outpost'
+                elif enemyFourSector == 'beta':
+                    enemyFourSector = 'outpost'
+                if enemyFiveSector == 'alpha':
+                    ememyFiveSector = 'outpost'
+                elif enemyFiveSector == 'delta':
+                    ememyFiveSector = 'outpost'
+                elif enemyFiveSector == 'beta':
+                    ememyFiveSector = 'outpost'
+                timing = False
+
+        #Check if enemies are attacking outpost, and if so, makes outpost take damage
+        if enemyOneSector == 'outpost':
+            outpostHealth -= 1
+        if enemyTwoSector == 'outpost':
+            outpostHealth -= 1
+        if enemyThreeSector == 'outpost':
+            outpostHealth -= 1
+        if enemyFourSector == 'outpost':
+            outpostHealth -= 1
+        if enemyFiveSector == 'outpost':
+            outpostHealth -= 1
+        printWhiteText("outpost health: " + str(outpostHealth), 15, 500, 800)
         displayHUD()
 
         if selectedEnemyFleet == 1:
@@ -967,9 +1034,9 @@ def gameLoop():
 
 
         #Cooldown timers for the player's ship's weapons and abilities.
-        cooldownBackground = pygame.image.load('FrameCooldown.png')
-        cooldownBackgroundDark = pygame.image.load('FrameCooldown_dark.png')
-        activeBackground = pygame.image.load('FrameActive.png')
+        cooldownBackground = pygame.image.load('Used Images/FrameCooldown.png')
+        cooldownBackgroundDark = pygame.image.load('Used Images/FrameCooldown_dark.png')
+        activeBackground = pygame.image.load('Used Images/FrameActive.png')
 
         #Point defense (same for all ships).
         #Point defense for ship one.
@@ -1093,12 +1160,12 @@ def gameLoop():
 
         # Minimap background.
         if showExpandedMap == False:
-            sector = pygame.image.load('sector.png')
+            sector = pygame.image.load('Used Images/sector.png')
             screen.blit(sector, (1280, 700))
             screen.blit(sector, (1404, 700))
             screen.blit(sector, (1528, 700))
 
-            outpostSector = pygame.image.load('outpostSector.png')
+            outpostSector = pygame.image.load('Used Images/outpostSector.png')
             screen.blit(outpostSector, (1384, 830))
 
             printWhiteText('Alpha', 18, 1330, 687)
@@ -1133,13 +1200,13 @@ def gameLoop():
 
 
         #Expanded map view.
-        expandedMapBackground = pygame.image.load('expandedMapBackground.png')
-        outpostSectorLarge = pygame.image.load('outpostSectorLarge.png')
-        sectorLarge = pygame.image.load('sectorLarge.png')
-        jumpPoint = pygame.image.load('jumpPoint.png')
-        jumpPointAvailable = pygame.image.load('jumpPointAvailable.png')
-        jumpPointHoverOver = pygame.image.load('jumpPointHoverOver.png')
-        fleet = pygame.image.load('fleet.png')
+        expandedMapBackground = pygame.image.load('Used Images/expandedMapBackground.png')
+        outpostSectorLarge = pygame.image.load('Used Images/outpostSectorLarge.png')
+        sectorLarge = pygame.image.load('Used Images/sectorLarge.png')
+        jumpPoint = pygame.image.load('Used Images/jumpPoint.png')
+        jumpPointAvailable = pygame.image.load('Used Images/jumpPointAvailable.png')
+        jumpPointHoverOver = pygame.image.load('Used Images/jumpPointHoverOver.png')
+        fleet = pygame.image.load('Used Images/fleet.png')
 
         if showExpandedMap == True:
             screen.blit(expandedMapBackground, (0, 0))
@@ -3196,8 +3263,6 @@ def gameLoop():
             printWhiteText('Delta', 22, 864, 285)
             printWhiteText('Beta', 22, 1112, 285)
             printWhiteText('Outpost', 22, 856, 530)
-
-
 
 
         pygame.display.update()
