@@ -1,0 +1,76 @@
+#Timer
+maxWaveTime = 30
+timing = False
+start = None
+
+#Outpost full health
+outpostFullHealth = 10000
+
+#Outpost health
+outpostHealth = outpostFullHealth
+
+while (gameRunning)
+{
+	if startWaveOne == True:
+		pioneerIsEnemyOneFleetOne = True
+		enemyOneSector = 'alpha'
+		enemyOneHealth = 100
+		pioneerIsEnemyTwoFleetOne = True
+		enemyTwoSector = 'alpha'
+		enemyTwoHealth = 100
+		protectorIsEnemyThreeFleetOne = True
+		enemyThreeSector = 'alpha'
+		enemyThreeHealth = 80
+		timing = True
+		start = time.time()
+		startWaveOne = False
+
+
+	#Check if wave time ran out, and if so, moves enemies to outpost
+	if timing == True:
+		if time.time() - start >= maxWaveTime:
+			if enemyOneSector == 'alpha':
+				enemyOneSector = 'outpost'
+			elif enemyOneSector == 'delta':
+				enemyOneSector = 'outpost'
+			elif enemyOneSector == 'beta':
+				enemyOneSector = 'outpost'
+			if enemyTwoSector == 'alpha':
+				enemyTwoSector = 'outpost'
+			elif enemyTwoSector == 'delta':
+				enemyTwoSector = 'outpost'
+			elif enemyTwoSector == 'beta':
+				enemyTwoSector = 'outpost'
+			if enemyThreeSector == 'alpha':
+				ememyThreeSector = 'outpost'
+			elif enemyThreeSector == 'delta':
+				ememyThreeSector = 'outpost'
+			elif enemyThreeSector == 'beta':
+				ememyThreeSector = 'outpost'
+			if enemyFourSector == 'alpha':
+				enemyFourSector = 'outpost'
+			elif enemyFourSector == 'delta':
+				enemyFourSector = 'outpost'
+			elif enemyFourSector == 'beta':
+				enemyFourSector = 'outpost'
+			if enemyFiveSector == 'alpha':
+				ememyFiveSector = 'outpost'
+			elif enemyFiveSector == 'delta':
+				ememyFiveSector = 'outpost'
+			elif enemyFiveSector == 'beta':
+				ememyFiveSector = 'outpost'
+			timing = False
+
+	#Check if enemies are attacking outpost, and if so, makes outpost take damage
+	if enemyOneSector == 'outpost':
+		outpostHealth -= 1
+	if enemyTwoSector == 'outpost':
+		outpostHealth -= 1
+	if enemyThreeSector == 'outpost':
+		outpostHealth -= 1
+	if enemyFourSector == 'outpost':
+		outpostHealth -= 1
+	if enemyFiveSector == 'outpost':
+		outpostHealth -= 1
+	printWhiteText("outpost health: " + str(outpostHealth), 15, 500, 800)
+}
