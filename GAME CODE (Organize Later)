@@ -443,10 +443,7 @@ def gameLoop():
     #Colossus
     colossusFlakCooldown = 0
 
-    #Timer
-    maxWaveTime = 30
-    timing = False
-    start = None
+    
 
     while gameRunning:
 
