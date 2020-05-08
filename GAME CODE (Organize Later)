@@ -1,5 +1,6 @@
 import pygame
 import time
+import random
 
 #Initialize Pygame.
 pygame.init()
@@ -24,6 +25,8 @@ lightGrey = (95, 95, 95)
 black = (0, 0, 0)
 orange = (225, 98, 0)
 lightOrange = (245, 118, 0)
+red = (255, 0, 0)
+green = (0, 255, 0)
 
 
 #Displaying text in various colours.
@@ -35,9 +38,29 @@ def textObjectsWhite(text, font):
     textSurface = font.render(text, True, white)
     return textSurface, textSurface.get_rect()
 
+def textObjectsRed(text, font):
+    textSurface = font.render(text, True, red)
+    return textSurface, textSurface.get_rect()
+
+def textObjectsGreen(text, font):
+    textSurface = font.render(text, True, green)
+    return textSurface, textSurface.get_rect()
+
 def printWhiteText(text, size, x, y ):
     descriptionText = pygame.font.Font('freesansbold.ttf', size)
     textSurf, textRect = textObjectsWhite(text, descriptionText)
+    textRect.center = (x, y)
+    screen.blit(textSurf, textRect)
+
+def printRedText(text, size, x, y):
+    descriptionText = pygame.font.Font('freesansbold.ttf', size)
+    textSurf, textRect = textObjectsRed(text, descriptionText)
+    textRect.center = (x, y)
+    screen.blit(textSurf, textRect)
+
+def printGreenText(text, size, x, y):
+    descriptionText = pygame.font.Font('freesansbold.ttf', size)
+    textSurf, textRect = textObjectsGreen(text, descriptionText)
     textRect.center = (x, y)
     screen.blit(textSurf, textRect)
 
@@ -111,6 +134,7 @@ fleetSlotThree = 'Venturer'
 
 #Menu screen.
 def gameMenu():
+    splashScreenVariable = True
     menu = True
 
     while menu:
@@ -118,6 +142,9 @@ def gameMenu():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
+
+        splashScreenBackground = pygame.image.load('Used Images/expandedMapBackground.png')
+        splashScreen = pygame.image.load('Used Images/splashScreen.png')
 
         screen.fill(black)
 
@@ -145,7 +172,94 @@ def gameMenu():
         logoZRK = pygame.image.load('Used Images/logoZRK.png')
         screen.blit(logoZRK, (615, 830))
 
-        battleButton("play")
+
+
+
+        if splashScreenVariable == False:
+            battleButton("play")
+
+        if splashScreenVariable == True:
+            pygame.draw.rect(screen, orange, [784, 13, 170, 60])
+            pygame.draw.rect(screen, orange, [770, 13, 7, 60])
+            pygame.draw.rect(screen, orange, [961, 13, 7, 60])
+            battleText = pygame.font.Font('freesansbold.ttf', 40)
+            textSurf, textRect = textObjectsBlack('BATTLE', battleText)
+            textRect.center = (869, 43)
+            screen.blit(textSurf, textRect)
+            screen.blit(splashScreenBackground, (1, 1))
+            pygame.draw.rect(screen, lightGrey, [496, 100, 736, 700])
+            screen.blit(splashScreen, (502, 106))
+
+            objective1Text = pygame.font.Font('freesansbold.ttf', 15)
+            textSurf, textRect101 = textObjectsWhite('Objective:', objective1Text)
+            textRect101.center = (541, 430)
+            screen.blit(textSurf, textRect101)
+            objective2Text = pygame.font.Font('freesansbold.ttf', 15)
+            textSurf, textRect102 = textObjectsWhite('Your main objective is to defend the outpost from the Swarm. Each wave, enemies will appear in a', objective2Text)
+            textRect102.center = (856, 450)
+            screen.blit(textSurf, textRect102)
+            objective3Text = pygame.font.Font('freesansbold.ttf', 15)
+            textSurf, textRect103 = textObjectsWhite("sector and advance towards that sector's base. If the enemies are not destroyed in a certain", objective3Text)
+            textRect103.center = (832, 470)
+            screen.blit(textSurf, textRect103)
+            objective4Text = pygame.font.Font('freesansbold.ttf', 15)
+            textSurf, textRect104 = textObjectsWhite("amount of time, they will capture the sector's base and move on to the outpost. From here, they", objective4Text)
+            textRect104.center = (843, 490)
+            screen.blit(textSurf, textRect104)
+            objective5Text = pygame.font.Font('freesansbold.ttf', 15)
+            textSurf, textRect105 = textObjectsWhite("will proceed to damage the base's turrets (which will also damage the enemies). When all three", objective5Text)
+            textRect105.center = (843, 510)
+            screen.blit(textSurf, textRect105)
+            objective6Text = pygame.font.Font('freesansbold.ttf', 15)
+            textSurf, textRect106 = textObjectsWhite("turrets are destroyed, the enemies in the outpost's sector will be able to damage the outpost", objective6Text)
+            textRect106.center = (834, 530)
+            screen.blit(textSurf, textRect106)
+            objective7Text = pygame.font.Font('freesansbold.ttf', 15)
+            textSurf, textRect107 = textObjectsWhite("until they are destroyed. If the base's health reaches zero, the game is over.", objective7Text)
+            textRect107.center = (772, 550)
+            screen.blit(textSurf, textRect107)
+
+            controls1Text = pygame.font.Font('freesansbold.ttf', 15)
+            textSurf, textRect1 = textObjectsWhite('Controls:', controls1Text)
+            textRect1.center = (536, 580)
+            screen.blit(textSurf, textRect1)
+            controls6Text = pygame.font.Font('freesansbold.ttf', 15)
+            textSurf, textRect6 = textObjectsWhite('F (Selects Enemy the Mouse is Hovered Over)', controls6Text)
+            textRect6.center = (668, 600)
+            screen.blit(textSurf, textRect6)
+            controls2Text = pygame.font.Font('freesansbold.ttf', 15)
+            textSurf, textRect2 = textObjectsWhite('Number Keys (Abilities; Use Missiles When Enemy is Selected)', controls2Text)
+            textRect2.center = (728, 620)
+            screen.blit(textSurf, textRect2)
+            controls3Text = pygame.font.Font('freesansbold.ttf', 15)
+            textSurf, textRect3 = textObjectsWhite('Left Mouse Click (Main Weapon)', controls3Text)
+            textRect3.center = (620, 640)
+            screen.blit(textSurf, textRect3)
+            controls4Text = pygame.font.Font('freesansbold.ttf', 15)
+            textSurf, textRect4 = textObjectsWhite('Tab (Open Expanded Map View, Click on Points to Move/Use Jump Drive)', controls4Text)
+            textRect4.center = (766, 660)
+            screen.blit(textSurf, textRect4)
+            controls5Text = pygame.font.Font('freesansbold.ttf', 15)
+            textSurf, textRect5 = textObjectsWhite('Left/Right Arrow Keys (Switch Selected Ship)', controls5Text)
+            textRect5.center = (668, 680)
+            screen.blit(textSurf, textRect5)
+
+
+            pygame.draw.rect(screen, orange, [790, 720, 150, 50])
+            splashText = pygame.font.Font('freesansbold.ttf', 40)
+            textSurf, textRect200 = textObjectsWhite('Start', splashText)
+            textRect200.center = (864, 748)
+            screen.blit(textSurf, textRect200)
+            mouse = pygame.mouse.get_pos()
+            click = pygame.mouse.get_pressed()
+            if 940 > mouse[0] > 790 and 870 > mouse[1] > 720:
+                pygame.draw.rect(screen, lightOrange, [790, 720, 150, 50])
+                splashText = pygame.font.Font('freesansbold.ttf', 40)
+                textSurf, textRect200 = textObjectsWhite('Start', splashText)
+                textRect200.center = (864, 748)
+                screen.blit(textSurf, textRect200)
+                if click[0] == 1:
+                    splashScreenVariable = False
 
 
         pygame.display.update()
@@ -169,17 +283,68 @@ def confirmationScreen():
 
         screen.blit(confirmationBackground, (confirmationBackgroundX, confirmationBackgroundY))
 
-        descriptionText = pygame.font.Font('freesansbold.ttf', 40)
-        textSurf, textRect = textObjectsWhite('Add a description  of the game here.', descriptionText)
-        textRect.center = (869, 600)
+        descriptionText = pygame.font.Font('freesansbold.ttf', 20)
+        textSurf, textRect = textObjectsWhite("System: Salomon's Rift", descriptionText)
+        textRect.center = (617, 520)
         screen.blit(textSurf, textRect)
+
+        description1Text = pygame.font.Font('freesansbold.ttf', 20)
+        textSurf, textRect1 = textObjectsWhite("2332       A group of A.I. establish their first settlement: Provenance. In", description1Text)
+        textRect1.center = (850, 560)
+        screen.blit(textSurf, textRect1)
+        description2Text = pygame.font.Font('freesansbold.ttf', 20)
+        textSurf, textRect2 = textObjectsWhite("the years that follow, the A.I. claim more worlds and tensions", description2Text)
+        textRect2.center = (893, 580)
+        screen.blit(textSurf, textRect2)
+        description3Text = pygame.font.Font('freesansbold.ttf', 20)
+        textSurf, textRect3 = textObjectsWhite("increase in neighboring human colonies.", description3Text)
+        textRect3.center = (792, 600)
+        screen.blit(textSurf, textRect3)
+
+        description6Text = pygame.font.Font('freesansbold.ttf', 20)
+        textSurf, textRect6 = textObjectsWhite("2683       A group of zealots crash a TDS Aegis into the heart of", description6Text)
+        textRect6.center = (810, 640)
+        screen.blit(textSurf, textRect6)
+        description7Text = pygame.font.Font('freesansbold.ttf', 20)
+        textSurf, textRect7 = textObjectsWhite("Provenance's capital and detonate the jump drive, destroying", description7Text)
+        textRect7.center = (891, 660)
+        screen.blit(textSurf, textRect7)
+        description8Text = pygame.font.Font('freesansbold.ttf', 20)
+        textSurf, textRect8 = textObjectsWhite("the city. In response, the A.I. develop the Swarm to ensure the", description8Text)
+        textRect8.center = (894, 680)
+        screen.blit(textSurf, textRect8)
+        description9Text = pygame.font.Font('freesansbold.ttf', 20)
+        textSurf, textRect9 = textObjectsWhite("safety of their home.", description9Text)
+        textRect9.center = (690, 700)
+        screen.blit(textSurf, textRect9)
+
+        description10Text = pygame.font.Font('freesansbold.ttf', 20)
+        textSurf, textRect10 = textObjectsWhite("The Swarm's Objective: Clear out every human colony within a 50", description10Text)
+        textRect10.center = (827, 740)
+        screen.blit(textSurf, textRect10)
+        description11Text = pygame.font.Font('freesansbold.ttf', 20)
+        textSurf, textRect11 = textObjectsWhite("light year radius of Provenance. The Swarm has", description11Text)
+        textRect11.center = (980, 760)
+        screen.blit(textSurf, textRect11)
+        description12Text = pygame.font.Font('freesansbold.ttf', 20)
+        textSurf, textRect12 = textObjectsWhite("proven to be unstoppable. All any capital ship", description12Text)
+        textRect12.center = (970, 780)
+        screen.blit(textSurf, textRect12)
+        description13Text = pygame.font.Font('freesansbold.ttf', 20)
+        textSurf, textRect13 = textObjectsWhite(" commander can hope to do is hold back the tide", description13Text)
+        textRect13.center = (977, 800)
+        screen.blit(textSurf, textRect13)
+        description14Text = pygame.font.Font('freesansbold.ttf', 20)
+        textSurf, textRect14 = textObjectsWhite("tide until the civilians escape.", description14Text)
+        textRect14.center = (896, 820)
+        screen.blit(textSurf, textRect14)
+
 
         battleButton("play")
         enterGameButton("play")
 
         pygame.display.update()
     clock.tick(60)
-
 
 #General HUD appearance.
 def displayHUD():
@@ -242,6 +407,10 @@ slotThreeShipFullEnergy = 0
 
 #Outpost full health
 outpostFullHealth = 10000
+
+#Turret full health
+turret1FullHealth = 1000
+turret2FullHealth = 1000
 
 #When this value is true, the maximum health of each ship in the player's fleet will be set- this only happens at the beginning of the game because the value can later be modified by upgrades.
 assignFullEnergyAndHealth = True
@@ -443,7 +612,13 @@ def gameLoop():
     #Colossus
     colossusFlakCooldown = 0
 
-    
+    #Timer
+    maxWaveTime = 30
+    start = None
+    timing = False
+
+    turret1Health = turret2FullHealth
+    turret2Health = turret2FullHealth
 
     while gameRunning:
 
@@ -625,8 +800,8 @@ def gameLoop():
                         if 1040 > mouse[0] > 690 and 340 > mouse[1] > 200:
                             if click[0] == 1:
                                 if enemyOneHealth > 0:
-                                    enemyOneHealth -= 5 * fleetDamageBoost
-                                    damageAmount = 5 * fleetDamageBoost
+                                    enemyOneHealth -= 50 * fleetDamageBoost
+                                    damageAmount = 50 * fleetDamageBoost
                                     combatLogEntryTen = combatLogEntryNine
                                     combatLogEntryNine = combatLogEntryEight
                                     combatLogEntryEight = combatLogEntrySeven
@@ -642,8 +817,8 @@ def gameLoop():
                         elif 700 > mouse[0] > 350 and 380 > mouse[1] > 240:
                             if click[0] == 1:
                                 if enemyTwoHealth > 0:
-                                    enemyTwoHealth -= 5 * fleetDamageBoost
-                                    damageAmount = 5 * fleetDamageBoost
+                                    enemyTwoHealth -= 50 * fleetDamageBoost
+                                    damageAmount = 50 * fleetDamageBoost
                                     combatLogEntryTen = combatLogEntryNine
                                     combatLogEntryNine = combatLogEntryEight
                                     combatLogEntryEight = combatLogEntrySeven
@@ -659,8 +834,8 @@ def gameLoop():
                         elif 1380 > mouse[0] > 1030 and 380 > mouse[1] > 240:
                             if click[0] == 1:
                                 if enemyThreeHealth > 0:
-                                    enemyThreeHealth -= 5 * fleetDamageBoost
-                                    damageAmount = 5 * fleetDamageBoost
+                                    enemyThreeHealth -= 50 * fleetDamageBoost
+                                    damageAmount = 50 * fleetDamageBoost
                                     combatLogEntryTen = combatLogEntryNine
                                     combatLogEntryNine = combatLogEntryEight
                                     combatLogEntryEight = combatLogEntrySeven
@@ -676,8 +851,8 @@ def gameLoop():
                         elif 360 > mouse[0] > 10 and 430 > mouse[1] > 290:
                             if click[0] == 1:
                                 if enemyFourHealth > 0:
-                                    enemyFourHealth -= 5 * fleetDamageBoost
-                                    damageAmount = 5 * fleetDamageBoost
+                                    enemyFourHealth -= 50 * fleetDamageBoost
+                                    damageAmount = 50 * fleetDamageBoost
                                     combatLogEntryTen = combatLogEntryNine
                                     combatLogEntryNine = combatLogEntryEight
                                     combatLogEntryEight = combatLogEntrySeven
@@ -692,8 +867,8 @@ def gameLoop():
                         elif 1720 > mouse[0] > 1370 and 430 > mouse[1] > 290:
                             if click[0] == 1:
                                 if enemyFiveHealth > 0:
-                                    enemyFiveHealth -= 5 * fleetDamageBoost
-                                    damageAmount = 5 * fleetDamageBoost
+                                    enemyFiveHealth -= 50 * fleetDamageBoost
+                                    damageAmount = 50 * fleetDamageBoost
                                     combatLogEntryTen = combatLogEntryNine
                                     combatLogEntryNine = combatLogEntryEight
                                     combatLogEntryEight = combatLogEntrySeven
@@ -715,8 +890,8 @@ def gameLoop():
                         if 1040 > mouse[0] > 690 and 340 > mouse[1] > 200:
                             if click[0] == 1:
                                 if enemyOneHealth > 0:
-                                    enemyOneHealth -= 5 * fleetDamageBoost
-                                    damageAmount = 5 * fleetDamageBoost
+                                    enemyOneHealth -= 50 * fleetDamageBoost
+                                    damageAmount = 50 * fleetDamageBoost
                                     combatLogEntryTen = combatLogEntryNine
                                     combatLogEntryNine = combatLogEntryEight
                                     combatLogEntryEight = combatLogEntrySeven
@@ -732,8 +907,8 @@ def gameLoop():
                         elif 700 > mouse[0] > 350 and 380 > mouse[1] > 240:
                             if click[0] == 1:
                                 if enemyTwoHealth > 0:
-                                    enemyTwoHealth -= 5 * fleetDamageBoost
-                                    damageAmount = 5 * fleetDamageBoost
+                                    enemyTwoHealth -= 50 * fleetDamageBoost
+                                    damageAmount = 50 * fleetDamageBoost
                                     combatLogEntryTen = combatLogEntryNine
                                     combatLogEntryNine = combatLogEntryEight
                                     combatLogEntryEight = combatLogEntrySeven
@@ -749,8 +924,8 @@ def gameLoop():
                         elif 1380 > mouse[0] > 1030 and 380 > mouse[1] > 240:
                             if click[0] == 1:
                                 if enemyThreeHealth > 0:
-                                    enemyThreeHealth -= 5 * fleetDamageBoost
-                                    damageAmount = 5 * fleetDamageBoost
+                                    enemyThreeHealth -= 50 * fleetDamageBoost
+                                    damageAmount = 50 * fleetDamageBoost
                                     combatLogEntryTen = combatLogEntryNine
                                     combatLogEntryNine = combatLogEntryEight
                                     combatLogEntryEight = combatLogEntrySeven
@@ -766,8 +941,8 @@ def gameLoop():
                         elif 360 > mouse[0] > 10 and 430 > mouse[1] > 290:
                             if click[0] == 1:
                                 if enemyFourHealth > 0:
-                                    enemyFourHealth -= 5 * fleetDamageBoost
-                                    damageAmount = 5 * fleetDamageBoost
+                                    enemyFourHealth -= 50 * fleetDamageBoost
+                                    damageAmount = 50 * fleetDamageBoost
                                     combatLogEntryTen = combatLogEntryNine
                                     combatLogEntryNine = combatLogEntryEight
                                     combatLogEntryEight = combatLogEntrySeven
@@ -782,8 +957,8 @@ def gameLoop():
                         elif 1720 > mouse[0] > 1370 and 430 > mouse[1] > 290:
                             if click[0] == 1:
                                 if enemyFiveHealth > 0:
-                                    enemyFiveHealth -= 5 * fleetDamageBoost
-                                    damageAmount = 5 * fleetDamageBoost
+                                    enemyFiveHealth -= 50 * fleetDamageBoost
+                                    damageAmount = 50 * fleetDamageBoost
                                     combatLogEntryTen = combatLogEntryNine
                                     combatLogEntryNine = combatLogEntryEight
                                     combatLogEntryEight = combatLogEntrySeven
@@ -804,6 +979,9 @@ def gameLoop():
                     if event.key == pygame.K_TAB:
                         showExpandedMap = False
 
+        #Draw background
+        back = pygame.image.load('Used Images/thumbnail_background.png')
+        screen.blit(back, (0, 0))
 
         # What will happen if a certain fleet ship is selected.
         # For the Pioneer.
@@ -902,24 +1080,34 @@ def gameLoop():
         if enemyThreeHealth > 0:
             printWhiteText(str(enemyThreeHealth), 30, 1200, 235)
         if enemyFourHealth > 0:
-            printWhiteText(str(enemyThreeHealth), 30, 150, 275)
+            printWhiteText(str(enemyFourHealth), 30, 150, 275)
         if enemyFiveHealth > 0:
-            printWhiteText(str(enemyThreeHealth), 30, 1500, 275)
+            printWhiteText(str(enemyFiveHealth), 30, 1500, 275)
 
         #Spawning enemies for wave one.
         pioneerEnemy = pygame.image.load('Used Images/pioneerInGame.png')
         protectorEnemy = pygame.image.load('Used Images/protectorInGame.png')
 
         if startWaveOne == True:
+            sectorRandom = random.randint(1, 3)
+            if sectorRandom == 1:
+                enemyOneSector = 'alpha'
+                enemyTwoSector = 'alpha'
+                enemyThreeSector = 'alpha'
+            elif sectorRandom == 2:
+                enemyOneSector = 'delta'
+                enemyTwoSector = 'delta'
+                enemyThreeSector = 'delta'
+            elif sectorRandom == 3:
+                enemyOneSector = 'beta'
+                enemyTwoSector = 'beta'
+                enemyThreeSector = 'beta'
             pioneerIsEnemyOneFleetOne = True
-            enemyOneSector = 'alpha'
-            enemyOneHealth = 100
+            enemyOneHealth = 1200
             pioneerIsEnemyTwoFleetOne = True
-            enemyTwoSector = 'alpha'
-            enemyTwoHealth = 100
+            enemyTwoHealth = 1200
             protectorIsEnemyThreeFleetOne = True
-            enemyThreeSector = 'alpha'
-            enemyThreeHealth = 80
+            enemyThreeHealth = 1000
             timing = True
             start = time.time()
             startWaveOne = False
@@ -927,52 +1115,76 @@ def gameLoop():
 
         #Check if wave time ran out, and if so, moves enemies to outpost
         if timing == True:
+            printWhiteText("Time remaining: " + str(int(maxWaveTime - (time.time() - start))), 15, 300, 100)
             if time.time() - start >= maxWaveTime:
-                if enemyOneSector == 'alpha':
-                    enemyOneSector = 'outpost'
-                elif enemyOneSector == 'delta':
-                    enemyOneSector = 'outpost'
-                elif enemyOneSector == 'beta':
-                    enemyOneSector = 'outpost'
-                if enemyTwoSector == 'alpha':
-                    enemyTwoSector = 'outpost'
-                elif enemyTwoSector == 'delta':
-                    enemyTwoSector = 'outpost'
-                elif enemyTwoSector == 'beta':
-                    enemyTwoSector = 'outpost'
-                if enemyThreeSector == 'alpha':
-                    ememyThreeSector = 'outpost'
-                elif enemyThreeSector == 'delta':
-                    ememyThreeSector = 'outpost'
-                elif enemyThreeSector == 'beta':
-                    ememyThreeSector = 'outpost'
-                if enemyFourSector == 'alpha':
-                    enemyFourSector = 'outpost'
-                elif enemyFourSector == 'delta':
-                    enemyFourSector = 'outpost'
-                elif enemyFourSector == 'beta':
-                    enemyFourSector = 'outpost'
-                if enemyFiveSector == 'alpha':
-                    ememyFiveSector = 'outpost'
-                elif enemyFiveSector == 'delta':
-                    ememyFiveSector = 'outpost'
-                elif enemyFiveSector == 'beta':
-                    ememyFiveSector = 'outpost'
+                enemyOneSector = 'outpost'
+                enemyTwoSector = 'outpost'
+                enemyThreeSector = 'outpost'
                 timing = False
+        elif timing == False:
+            printWhiteText("Time remaining: 0", 15, 300, 100)
 
         #Check if enemies are attacking outpost, and if so, makes outpost take damage
         if enemyOneSector == 'outpost':
-            outpostHealth -= 1
+            if enemyOneHealth >= 0:
+                enemyOneHealth -= 1
+            if turret1Health == 0 and turret2Health == 0:
+                outpostHealth -= 1
+            elif turret1Health == 0 and turret2Health != 0:
+                turret2Health -= 1
+            elif turret1Health != 0 and turret2Health != 0:
+                turret1Health -= 1
         if enemyTwoSector == 'outpost':
-            outpostHealth -= 1
+            if enemyTwoHealth >= 0:
+                enemyTwoHealth -= 1
+            if turret1Health == 0 and turret2Health == 0:
+                outpostHealth -= 1
+            elif turret1Health == 0 and turret2Health != 0:
+                turret2Health -= 1
+            elif turret1Health != 0 and turret2Health != 0:
+                turret1Health -= 1
         if enemyThreeSector == 'outpost':
-            outpostHealth -= 1
+            if enemyThreeHealth >= 0:
+                enemyThreeHealth -= 1
+            if turret1Health == 0 and turret2Health == 0:
+                outpostHealth -= 1
+            elif turret1Health == 0 and turret2Health != 0:
+                turret2Health -= 1
+            elif turret1Health != 0 and turret2Health != 0:
+                turret1Health -= 1
         if enemyFourSector == 'outpost':
-            outpostHealth -= 1
+            if enemyFourHealth >= 0:
+                enemyFourHealth -= 1
+            if turret1Health == 0 and turret2Health == 0:
+                outpostHealth -= 1
+            elif turret1Health == 0 and turret2Health != 0:
+                turret2Health -= 1
+            elif turret1Health != 0 and turret2Health != 0:
+                turret1Health -= 1
         if enemyFiveSector == 'outpost':
-            outpostHealth -= 1
-        printWhiteText("outpost health: " + str(outpostHealth), 15, 500, 800)
+            if enemyFiveHealth >= 0:
+                enemyFiveHealth -= 1
+            if turret1Health == 0 and turret2Health == 0:
+                outpostHealth -= 1
+            elif turret1Health == 0 and turret2Health != 0:
+                turret2Health -= 1
+            elif turret1Health != 0 and turret2Health != 0:
+                turret1Health -= 1
+        printWhiteText("Outpost Health: " + str(outpostHealth), 15, 450, 800)
+        printWhiteText("Turret 1 Health: " + str(turret1Health), 15, 450, 850)
+        printWhiteText("Turret 2 Health: " + str(turret2Health), 15, 450, 900)
         displayHUD()
+
+        #Check if outpost health is 0, and if so, game over
+        if outpostHealth <= 0:
+            printRedText("GAME OVER", 130, 450, 500)
+            gameRunning = False
+
+        #Check if enemies are dead, and if so, you win
+        if enemyOneHealth <= 0 and enemyTwoHealth <= 0 and enemyThreeHealth <= 0:
+            printGreenText("VICTORY", 130, 450, 500)
+            gameRunning = False
+
 
         if selectedEnemyFleet == 1:
             if pioneerIsEnemyOneFleetOne == True and enemyOneHealth > 0:
@@ -3264,6 +3476,7 @@ def gameLoop():
 
         pygame.display.update()
         clock.tick(60)
+    time.sleep(3)
 
 gameMenu()
 confirmationScreen()
