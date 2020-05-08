@@ -1,0 +1,3485 @@
+import pygame
+import time
+import random
+
+#Initialize Pygame.
+pygame.init()
+
+
+#Create screen.
+screen = pygame.display.set_mode((1728, 972))
+
+
+clock = pygame.time.Clock()
+
+
+#Title and Icon
+pygame.display.set_caption('Last Stand')
+icon = pygame.image.load('Used Images/icon.png')
+pygame.display.set_icon(icon)
+
+
+#Colours
+white = (255, 255, 255)
+lightGrey = (95, 95, 95)
+black = (0, 0, 0)
+orange = (225, 98, 0)
+lightOrange = (245, 118, 0)
+red = (255, 0, 0)
+green = (0, 255, 0)
+
+
+#Displaying text in various colours.
+def textObjectsBlack(text, font):
+    textSurface = font.render(text, True, black)
+    return textSurface, textSurface.get_rect()
+
+def textObjectsWhite(text, font):
+    textSurface = font.render(text, True, white)
+    return textSurface, textSurface.get_rect()
+
+def textObjectsRed(text, font):
+    textSurface = font.render(text, True, red)
+    return textSurface, textSurface.get_rect()
+
+def textObjectsGreen(text, font):
+    textSurface = font.render(text, True, green)
+    return textSurface, textSurface.get_rect()
+
+def printWhiteText(text, size, x, y ):
+    descriptionText = pygame.font.Font('freesansbold.ttf', size)
+    textSurf, textRect = textObjectsWhite(text, descriptionText)
+    textRect.center = (x, y)
+    screen.blit(textSurf, textRect)
+
+def printRedText(text, size, x, y):
+    descriptionText = pygame.font.Font('freesansbold.ttf', size)
+    textSurf, textRect = textObjectsRed(text, descriptionText)
+    textRect.center = (x, y)
+    screen.blit(textSurf, textRect)
+
+def printGreenText(text, size, x, y):
+    descriptionText = pygame.font.Font('freesansbold.ttf', size)
+    textSurf, textRect = textObjectsGreen(text, descriptionText)
+    textRect.center = (x, y)
+    screen.blit(textSurf, textRect)
+
+
+#Battle button needs a separate function due to its shape and function.
+def battleButton(action=None):
+    mouse = pygame.mouse.get_pos()
+    click = pygame.mouse.get_pressed()
+    if 968 > mouse[0] > 770 and 73 > mouse[1] > 13:
+        pygame.draw.rect(screen, lightOrange, [784, 13, 170, 60])
+        pygame.draw.rect(screen, lightOrange, [770, 13, 7, 60])
+        pygame.draw.rect(screen, lightOrange, [961, 13, 7, 60])
+        if click[0] == 1 and action != None:
+            if action == "play":
+                confirmationScreen()
+
+    # add sound later
+    else:
+        pygame.draw.rect(screen, orange, [784, 13, 170, 60])
+        pygame.draw.rect(screen, orange, [770, 13, 7, 60])
+        pygame.draw.rect(screen, orange, [961, 13, 7, 60])
+    battleText = pygame.font.Font('freesansbold.ttf', 40)
+    textSurf, textRect = textObjectsBlack('BATTLE', battleText)
+    textRect.center = (869, 43)
+    screen.blit(textSurf, textRect)
+
+
+
+
+
+#The large button with picture, enters player into the game and also runs select enemies function (should be above this one in the code).
+def enterGameButton(action=None):
+    enterGameButton = pygame.image.load('Used Images/lastStand.png')
+    enterGameButtonX = 502
+    enterGameButtonY = 180
+
+    mouse = pygame.mouse.get_pos()
+    click = pygame.mouse.get_pressed()
+    if 1226 > mouse[0] > 502 and 488 > mouse[1] > 180:
+        pygame.draw.rect(screen, orange, [500, 178, 728, 312])
+        screen.blit(enterGameButton, (enterGameButtonX, enterGameButtonY))
+        if click[0] == 1 and action != None:
+            if action == "play":
+                gameLoop()
+
+
+    # add sound later
+    else:
+        screen.blit(enterGameButton, (enterGameButtonX, enterGameButtonY))
+
+
+
+#General function for all rectangular buttons (currently not in use).
+def buttonFunc(message, x, y, w, h, inactive, active, textSize):
+    if x + w > mouse[0] > x and y + h > mouse[1] > y:
+        pygame.draw.rect(screen, active, (x, y, w, h))
+    else:
+        pygame.draw.rect(screen, inactive, (x, y, w, h))
+
+    largeText = pygame.font.Font('freesansbold.ttf', textSize)
+    textSurf, textRect = textObjects(message, largeText)
+    textRect.center = ( (x + (w / 2)), (y + (h / 2)) )
+    screen.blit(textSurf, textRect)
+
+
+#Selected ships.
+fleetSlotOne = 'Pioneer'
+fleetSlotTwo = 'Colossus'
+fleetSlotThree = 'Venturer'
+
+
+#Menu screen.
+def gameMenu():
+    splashScreenVariable = True
+    menu = True
+
+    while menu:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+
+        splashScreenBackground = pygame.image.load('Used Images/expandedMapBackground.png')
+        splashScreen = pygame.image.load('Used Images/splashScreen.png')
+
+        screen.fill(black)
+
+        #Drawing upper background (behind battle button).
+        upperBackground = pygame.image.load('Used Images/upperBackground.png')
+        upperBackgroundX = 0
+        upperBackgroundY = 0
+
+        screen.blit(upperBackground, (upperBackgroundX, upperBackgroundY))
+
+        # Backgrounds behind selectable ships.
+        Background = pygame.image.load('Used Images/shipSelectionBackground.png')
+        screen.blit(Background, (17, 810))
+        screen.blit(Background, (304, 810))
+        screen.blit(Background, (585, 810))
+        screen.blit(Background, (867, 810))
+        screen.blit(Background, (1150, 810))
+        screen.blit(Background, (1436, 810))
+
+        #Logos on top of backgrounds.
+        logoUSR = pygame.image.load('Used Images/logoUSR.png')
+        screen.blit(logoUSR, (45, 830))
+        screen.blit(logoUSR, (335, 830))
+
+        logoZRK = pygame.image.load('Used Images/logoZRK.png')
+        screen.blit(logoZRK, (615, 830))
+
+
+
+
+        if splashScreenVariable == False:
+            battleButton("play")
+
+        if splashScreenVariable == True:
+            pygame.draw.rect(screen, orange, [784, 13, 170, 60])
+            pygame.draw.rect(screen, orange, [770, 13, 7, 60])
+            pygame.draw.rect(screen, orange, [961, 13, 7, 60])
+            battleText = pygame.font.Font('freesansbold.ttf', 40)
+            textSurf, textRect = textObjectsBlack('BATTLE', battleText)
+            textRect.center = (869, 43)
+            screen.blit(textSurf, textRect)
+            screen.blit(splashScreenBackground, (1, 1))
+            pygame.draw.rect(screen, lightGrey, [496, 100, 736, 700])
+            screen.blit(splashScreen, (502, 106))
+
+            objective1Text = pygame.font.Font('freesansbold.ttf', 15)
+            textSurf, textRect101 = textObjectsWhite('Objective:', objective1Text)
+            textRect101.center = (541, 430)
+            screen.blit(textSurf, textRect101)
+            objective2Text = pygame.font.Font('freesansbold.ttf', 15)
+            textSurf, textRect102 = textObjectsWhite('Your main objective is to defend the outpost from the Swarm. Each wave, enemies will appear in a', objective2Text)
+            textRect102.center = (856, 450)
+            screen.blit(textSurf, textRect102)
+            objective3Text = pygame.font.Font('freesansbold.ttf', 15)
+            textSurf, textRect103 = textObjectsWhite("sector and advance towards that sector's base. If the enemies are not destroyed in a certain", objective3Text)
+            textRect103.center = (832, 470)
+            screen.blit(textSurf, textRect103)
+            objective4Text = pygame.font.Font('freesansbold.ttf', 15)
+            textSurf, textRect104 = textObjectsWhite("amount of time, they will capture the sector's base and move on to the outpost. From here, they", objective4Text)
+            textRect104.center = (843, 490)
+            screen.blit(textSurf, textRect104)
+            objective5Text = pygame.font.Font('freesansbold.ttf', 15)
+            textSurf, textRect105 = textObjectsWhite("will proceed to damage the base's turrets (which will also damage the enemies). When all three", objective5Text)
+            textRect105.center = (843, 510)
+            screen.blit(textSurf, textRect105)
+            objective6Text = pygame.font.Font('freesansbold.ttf', 15)
+            textSurf, textRect106 = textObjectsWhite("turrets are destroyed, the enemies in the outpost's sector will be able to damage the outpost", objective6Text)
+            textRect106.center = (834, 530)
+            screen.blit(textSurf, textRect106)
+            objective7Text = pygame.font.Font('freesansbold.ttf', 15)
+            textSurf, textRect107 = textObjectsWhite("until they are destroyed. If the base's health reaches zero, the game is over.", objective7Text)
+            textRect107.center = (772, 550)
+            screen.blit(textSurf, textRect107)
+
+            controls1Text = pygame.font.Font('freesansbold.ttf', 15)
+            textSurf, textRect1 = textObjectsWhite('Controls:', controls1Text)
+            textRect1.center = (536, 580)
+            screen.blit(textSurf, textRect1)
+            controls6Text = pygame.font.Font('freesansbold.ttf', 15)
+            textSurf, textRect6 = textObjectsWhite('F (Selects Enemy the Mouse is Hovered Over)', controls6Text)
+            textRect6.center = (668, 600)
+            screen.blit(textSurf, textRect6)
+            controls2Text = pygame.font.Font('freesansbold.ttf', 15)
+            textSurf, textRect2 = textObjectsWhite('Number Keys (Abilities; Use Missiles When Enemy is Selected)', controls2Text)
+            textRect2.center = (728, 620)
+            screen.blit(textSurf, textRect2)
+            controls3Text = pygame.font.Font('freesansbold.ttf', 15)
+            textSurf, textRect3 = textObjectsWhite('Left Mouse Click (Main Weapon)', controls3Text)
+            textRect3.center = (620, 640)
+            screen.blit(textSurf, textRect3)
+            controls4Text = pygame.font.Font('freesansbold.ttf', 15)
+            textSurf, textRect4 = textObjectsWhite('Tab (Open Expanded Map View, Click on Points to Move/Use Jump Drive)', controls4Text)
+            textRect4.center = (766, 660)
+            screen.blit(textSurf, textRect4)
+            controls5Text = pygame.font.Font('freesansbold.ttf', 15)
+            textSurf, textRect5 = textObjectsWhite('Left/Right Arrow Keys (Switch Selected Ship)', controls5Text)
+            textRect5.center = (668, 680)
+            screen.blit(textSurf, textRect5)
+
+
+            pygame.draw.rect(screen, orange, [790, 720, 150, 50])
+            splashText = pygame.font.Font('freesansbold.ttf', 40)
+            textSurf, textRect200 = textObjectsWhite('Start', splashText)
+            textRect200.center = (864, 748)
+            screen.blit(textSurf, textRect200)
+            mouse = pygame.mouse.get_pos()
+            click = pygame.mouse.get_pressed()
+            if 940 > mouse[0] > 790 and 870 > mouse[1] > 720:
+                pygame.draw.rect(screen, lightOrange, [790, 720, 150, 50])
+                splashText = pygame.font.Font('freesansbold.ttf', 40)
+                textSurf, textRect200 = textObjectsWhite('Start', splashText)
+                textRect200.center = (864, 748)
+                screen.blit(textSurf, textRect200)
+                if click[0] == 1:
+                    splashScreenVariable = False
+
+
+        pygame.display.update()
+        clock.tick(60)
+
+
+#Confirmation to enter the game.
+def confirmationScreen():
+    confirmation = True
+
+    while confirmation:
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+
+        confirmationBackground = pygame.image.load('Used Images/confirmationBackground.png')
+        confirmationBackgroundX = 0
+        confirmationBackgroundY = 90
+
+        screen.blit(confirmationBackground, (confirmationBackgroundX, confirmationBackgroundY))
+
+        descriptionText = pygame.font.Font('freesansbold.ttf', 20)
+        textSurf, textRect = textObjectsWhite("System: Salomon's Rift", descriptionText)
+        textRect.center = (617, 520)
+        screen.blit(textSurf, textRect)
+
+        description1Text = pygame.font.Font('freesansbold.ttf', 20)
+        textSurf, textRect1 = textObjectsWhite("2332       A group of A.I. establish their first settlement: Provenance. In", description1Text)
+        textRect1.center = (850, 560)
+        screen.blit(textSurf, textRect1)
+        description2Text = pygame.font.Font('freesansbold.ttf', 20)
+        textSurf, textRect2 = textObjectsWhite("the years that follow, the A.I. claim more worlds and tensions", description2Text)
+        textRect2.center = (893, 580)
+        screen.blit(textSurf, textRect2)
+        description3Text = pygame.font.Font('freesansbold.ttf', 20)
+        textSurf, textRect3 = textObjectsWhite("increase in neighboring human colonies.", description3Text)
+        textRect3.center = (792, 600)
+        screen.blit(textSurf, textRect3)
+
+        description6Text = pygame.font.Font('freesansbold.ttf', 20)
+        textSurf, textRect6 = textObjectsWhite("2683       A group of zealots crash a TDS Aegis into the heart of", description6Text)
+        textRect6.center = (810, 640)
+        screen.blit(textSurf, textRect6)
+        description7Text = pygame.font.Font('freesansbold.ttf', 20)
+        textSurf, textRect7 = textObjectsWhite("Provenance's capital and detonate the jump drive, destroying", description7Text)
+        textRect7.center = (891, 660)
+        screen.blit(textSurf, textRect7)
+        description8Text = pygame.font.Font('freesansbold.ttf', 20)
+        textSurf, textRect8 = textObjectsWhite("the city. In response, the A.I. develop the Swarm to ensure the", description8Text)
+        textRect8.center = (894, 680)
+        screen.blit(textSurf, textRect8)
+        description9Text = pygame.font.Font('freesansbold.ttf', 20)
+        textSurf, textRect9 = textObjectsWhite("safety of their home.", description9Text)
+        textRect9.center = (690, 700)
+        screen.blit(textSurf, textRect9)
+
+        description10Text = pygame.font.Font('freesansbold.ttf', 20)
+        textSurf, textRect10 = textObjectsWhite("The Swarm's Objective: Clear out every human colony within a 50", description10Text)
+        textRect10.center = (827, 740)
+        screen.blit(textSurf, textRect10)
+        description11Text = pygame.font.Font('freesansbold.ttf', 20)
+        textSurf, textRect11 = textObjectsWhite("light year radius of Provenance. The Swarm has", description11Text)
+        textRect11.center = (980, 760)
+        screen.blit(textSurf, textRect11)
+        description12Text = pygame.font.Font('freesansbold.ttf', 20)
+        textSurf, textRect12 = textObjectsWhite("proven to be unstoppable. All any capital ship", description12Text)
+        textRect12.center = (970, 780)
+        screen.blit(textSurf, textRect12)
+        description13Text = pygame.font.Font('freesansbold.ttf', 20)
+        textSurf, textRect13 = textObjectsWhite(" commander can hope to do is hold back the tide", description13Text)
+        textRect13.center = (977, 800)
+        screen.blit(textSurf, textRect13)
+        description14Text = pygame.font.Font('freesansbold.ttf', 20)
+        textSurf, textRect14 = textObjectsWhite("tide until the civilians escape.", description14Text)
+        textRect14.center = (896, 820)
+        screen.blit(textSurf, textRect14)
+
+
+        battleButton("play")
+        enterGameButton("play")
+
+        pygame.display.update()
+    clock.tick(60)
+
+#General HUD appearance.
+def displayHUD():
+    #The circular backgrounds of abilities and pictures of abilities the same for every ship.
+    abilityBackground = pygame.image.load('Used Images/Frame-fade.png')
+    screen.blit(abilityBackground, (772, 830))
+    screen.blit(abilityBackground, (660, 830))
+    screen.blit(abilityBackground, (548, 830))
+    screen.blit(abilityBackground, (884, 830))
+    screen.blit(abilityBackground, (996, 830))
+    screen.blit(abilityBackground, (1108, 830))
+
+    pointDefenseSkill = pygame.image.load('Used Images/pointDefense.png')
+    screen.blit(pointDefenseSkill, (783, 841))
+
+    warpSkill = pygame.image.load('Used Images/warp.png')
+    screen.blit(warpSkill, (895, 841))
+    screen.blit(warpSkill, (1007, 841))
+
+    #The numbers, signifying which key to press to activate each ability, above each ability.
+    printWhiteText('1', 12, 583, 820)
+    printWhiteText('2', 12, 695, 820)
+    printWhiteText('3', 12, 807, 820)
+    printWhiteText('(Tab)', 12, 919, 820)
+    printWhiteText('4', 12, 1031, 820)
+    printWhiteText('(LMB)', 12, 1143, 820)
+
+    #The names of default abilities (point defense, jump drive, jump home).
+    printWhiteText('Point Defense', 12, 807, 915)
+    printWhiteText('Jump Drive', 12, 919, 915)
+    printWhiteText('Jump Home', 12, 1031, 915)
+
+
+
+
+    #Combat log.
+    printWhiteText('Combat Log:', 18, 100, 700)
+
+
+    #Background to base/turret health indicator at top of screen.
+    baseDisplay = pygame.image.load('Used Images/baseDisplay.png')
+    screen.blit(baseDisplay, (499, 25))
+
+
+
+
+#Functions to spawn in different types of enemies.
+
+
+
+
+# The values of each of the player's ships' full health- these values will be modified by upgrades. THESE VALUES WILL CHANGE DEPENDING ON WHICH SHIPS THE PLAYER HAS SELECTED IN THE MENU.
+slotOneShipFullHealth = 0
+slotTwoShipFullHealth = 0
+slotThreeShipFullHealth = 0
+
+slotOneShipFullEnergy = 0
+slotTwoShipFullEnergy = 0
+slotThreeShipFullEnergy = 0
+
+#Outpost full health
+outpostFullHealth = 10000
+
+#Turret full health
+turret1FullHealth = 1000
+turret2FullHealth = 1000
+
+#When this value is true, the maximum health of each ship in the player's fleet will be set- this only happens at the beginning of the game because the value can later be modified by upgrades.
+assignFullEnergyAndHealth = True
+
+#Change this to include all ships when we add more. Also, make sure values appear in the menu.---------------------------------------------------------------------------------------------------------------------------------------------------------------
+if assignFullEnergyAndHealth == True:
+    if fleetSlotOne == 'Pioneer':
+        slotOneShipFullHealth = 9000
+        slotOneShipFullEnergy = 5000
+        slotOneShipSpeed = 59
+    elif fleetSlotTwo == 'Pioneer':
+        slotTwoShipFullHealth = 9000
+        slotTwoShipFullEnergy = 5000
+        slotTwoShipSpeed = 59
+    elif fleetSlotThree == 'Pioneer':
+        slotThreeShipFullHealth = 9000
+        slotThreeShipFullEnergy = 5000
+        slotThreeShipSpeed = 59
+    if fleetSlotOne == 'Colossus':
+        slotOneShipFullHealth = 9000
+        slotOneShipFullEnergy = 5000
+        slotOneShipSpeed = 41
+    elif fleetSlotTwo == 'Colossus':
+        slotTwoShipFullHealth = 9000
+        slotTwoShipFullEnergy = 5000
+        slotTwoShipSpeed = 41
+    elif fleetSlotThree == 'Colossus':
+        slotThreeShipFullHealth = 9000
+        slotThreeShipFullEnergy = 5000
+        slotThreeShipSpeed = 41
+    if fleetSlotOne == 'Venturer':
+        slotOneShipFullHealth = 9000
+        slotOneShipFullEnergy = 5000
+        slotOneShipSpeed = 43
+    elif fleetSlotTwo == 'Venturer':
+        slotTwoShipFullHealth = 9000
+        slotTwoShipFullEnergy = 5000
+        slotTwoShipSpeed = 43
+    elif fleetSlotThree == 'Venturer':
+        slotThreeShipFullHealth = 9000
+        slotThreeShipFullEnergy = 5000
+        slotThreeShipSpeed = 43
+
+    fleetSpeed = (slotOneShipSpeed + slotTwoShipSpeed + slotTwoShipSpeed) / 3
+
+    assignFullEnergyAndHealth = False
+
+
+def gameLoop():
+    gameRunning = True
+
+    selectedSlot = 1
+
+    #Health and energy and speed of player's ships (values will change depending on ships selected).
+    slotOneShipHealth = 0
+    slotTwoShipHealth = 0
+    slotThreeShipHealth = 0
+
+    slotOneShipEnergy = 0
+    slotTwoShipEnergy = 0
+    slotThreeShipEnergy = 0
+
+    #Outpost health
+    outpostHealth = outpostFullHealth
+
+    #Only when this variable has a value of True will a player's ship's energy begin to recharge.
+    slotOneEnergyCooldown = True
+    slotTwoEnergyCooldown = True
+    slotThreeEnergyCooldown = True
+
+    #This timer allows energy to be added to a ship only once per given time period.
+    slotOneEnergyTimer = 0
+    slotTwoEnergyTimer = 0
+    slotThreeEnergyTimer = 0
+
+    #When this value is true, all player ships will be assigned full health (used at the beginning of the game).
+    assignEnergyAndHealth = True
+
+    #Health of enemy ships (values will change depending on enemies on screen).
+    enemyOneHealth = 0
+    enemyTwoHealth = 0
+    enemyThreeHealth = 0
+    enemyFourHealth = 0
+    enemyFiveHealth = 0
+
+    #Sector of enemy ships
+    enemyOneSector = 'None'
+    enemyTwoSector = 'None'
+    enemyThreeSector = 'None'
+    enemyFourSector = 'None'
+    enemyFiveSector = 'None'
+
+    #Aspects of the enemy.
+    selectedEnemyHealth = 0
+
+    #Modifications to player fleet effects.
+
+
+    selectedEnemy = 'None'
+
+
+    damageAmount = 0
+
+    #How much additional damage the fleet will do based on abilities.
+    fleetDamageBoost = 1
+
+    #Which group of enemies will be displayed on-screen and will be available to attack. Enemies not displayed will still deal damage.
+    selectedEnemyFleet = 1
+
+
+    #How effective the player's ships's point defense will be/point defense cooldown variables for the player's ships.
+    slotOneShipPointDefenseActive = False
+    slotTwoShipPointDefenseActive = False
+    slotThreeShipPointDefenseActive = False
+
+    slotOneShipPointDefenseCooldown = 0
+    slotTwoShipPointDefenseCooldown = 0
+    slotThreeShipPointDefenseCooldown = 0
+
+    slotOneShipPointDefenseCharge = 100
+    slotTwoShipPointDefenseCharge = 100
+    slotThreeShipPointDefenseCharge = 100
+
+    fleetShipOnePointDefenseEff = 1
+    fleetShipTwoPointDefenseEff = 1
+    fleetShipThreePointDefenseEff = 1
+
+
+    #How effective the enemies' point defense will be.
+    enemyOnePointDefenseEff = 1
+    enemyTwoPointDefenseEff = 1
+    enemyThreePointDefenseEff = 1
+    enemyFourPointDefenseEff = 1
+    enemyFivePointDefenseEff = 1
+
+
+    #Showing different ships in different slots.
+    pioneerIsEnemyOneFleetOne = False
+    pioneerIsEnemyTwoFleetOne = False
+    pioneerIsEnemyThreeFleetOne = False
+    pioneerIsEnemyFourFleetOne = False
+    pioneerIsEnemyFiveFleetOne = False
+
+    protectorIsEnemyOneFleetOne = False
+    protectorIsEnemyTwoFleetOne = False
+    protectorIsEnemyThreeFleetOne = False
+    protectorIsEnemyFourFleetOne = False
+    protectorIsEnemyFiveFleetOne = False
+
+    #Deciding when to start a new wave and assign new values.
+    startWaveOne = True
+    startWaveTwo = False
+    startWaveThree = False
+    startWaveFour = False
+
+    #Map and coordinate variables.
+    #Whether or not the map will be displayed on the screen.
+    showExpandedMap = False
+
+    #Coordinates.
+
+    fleetSector = 'outpost'
+    fleetX = 35000
+    fleetY = 20000
+    targetfleetX = 35000
+    targetfleetY = 20000
+
+    #Fleet will only jump once the timer reaches zero.
+    jumpTimer = 0
+
+    #Fleet will only move to a new spot once this timer reaches zero, affected by fleet mobility and distance.
+    distanceToTargetLocation = 0
+
+    #Which sector the players wants to jump the fleet to (variable changed by clicking jump points in map).
+    targetSector = 'outpost'
+
+    #The combat log, which will display a message once any ship has taken damage or arrived in a new sector.
+    combatLogEntryOne = ''
+    combatLogEntryTwo = ''
+    combatLogEntryThree = ''
+    combatLogEntryFour = ''
+    combatLogEntryFive = ''
+    combatLogEntrySix = ''
+    combatLogEntrySeven = ''
+    combatLogEntryEight = ''
+    combatLogEntryNine = ''
+    combatLogEntryTen = ''
+
+
+    #Score
+    score = 0
+
+
+    #Cooldown variables.
+    #Pioneer
+    pioneerVoidChargesCooldown = 0
+    pioneerMissilesCooldown = 0
+
+    #Colossus
+    colossusFlakCooldown = 0
+
+    #Timer
+    maxWaveTime = 30
+    start = None
+    timing = False
+
+    turret1Health = turret2FullHealth
+    turret2Health = turret2FullHealth
+
+    while gameRunning:
+
+
+
+        mouse = pygame.mouse.get_pos()
+        click = pygame.mouse.get_pressed()
+
+        screen.fill(black)
+
+
+        #Player input loop.
+        for event in pygame.event.get():
+
+
+
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            if showExpandedMap == False:
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_TAB:
+                        showExpandedMap = True
+
+                    if event.key == pygame.K_LEFT and selectedSlot == 1:
+                        selectedSlot = 3
+                    elif event.key == pygame.K_LEFT and selectedSlot == 3:
+                        selectedSlot = 2
+                    elif event.key == pygame.K_LEFT and selectedSlot == 2:
+                        selectedSlot = 1
+                    elif event.key == pygame.K_RIGHT and selectedSlot == 1:
+                        selectedSlot = 2
+                    elif event.key == pygame.K_RIGHT and selectedSlot == 2:
+                        selectedSlot = 3
+                    elif event.key == pygame.K_RIGHT and selectedSlot == 3:
+                        selectedSlot = 1
+
+                    #Selecting enemies.
+                    if 1040 > mouse[0] > 690 and 340 > mouse[1] > 200:
+                        if event.key == pygame.K_f and enemyOneHealth > 0:
+                            selectedEnemy = 'One'
+                    elif 700 > mouse[0] > 350 and 380 > mouse[1] > 240:
+                        if event.key == pygame.K_f and enemyTwoHealth > 0:
+                            selectedEnemy = 'Two'
+                    elif 1380 > mouse[0] > 1030 and 380 > mouse[1] > 240:
+                        if event.key == pygame.K_f and enemyThreeHealth > 0:
+                            selectedEnemy = 'Three'
+                    elif 360 > mouse[0] > 10 and 430 > mouse[1] > 290:
+                        if event.key == pygame.K_f and enemyFourHealth > 0:
+                            selectedEnemy = 'Four'
+                    elif 1720 > mouse[0] > 1370 and 430 > mouse[1] > 290:
+                        if event.key == pygame.K_f and enemyFiveHealth > 0:
+                            selectedEnemy = 'Five'
+
+
+
+
+                    #Ship abilities
+                    #Point defense (same for all ships).
+                    if slotOneShipPointDefenseCooldown == 0:
+                        if selectedSlot == 1:
+                            if event.key == pygame.K_3 and slotOneShipPointDefenseActive == False:
+                                if slotOneShipPointDefenseCharge != 0:
+                                    slotOneShipPointDefenseActive = True
+                            elif event.key == pygame.K_3 and slotOneShipPointDefenseActive == True:
+                                slotOneShipPointDefenseActive = False
+                                slotOneShipPointDefenseCooldown = 10
+                    if slotTwoShipPointDefenseCooldown == 0:
+                        if selectedSlot == 2:
+                            if event.key == pygame.K_3 and slotTwoShipPointDefenseActive == False:
+                                if slotTwoShipPointDefenseCharge != 0:
+                                    slotTwoShipPointDefenseActive = True
+                            elif event.key == pygame.K_3 and slotTwoShipPointDefenseActive == True:
+                                slotTwoShipPointDefenseActive = False
+                                slotTwoShipPointDefenseCooldown = 10
+                    if slotThreeShipPointDefenseCooldown == 0:
+                        if selectedSlot == 3:
+                            if event.key == pygame.K_3 and slotThreeShipPointDefenseActive == False:
+                                if slotThreeShipPointDefenseCharge != 0:
+                                    slotThreeShipPointDefenseActive = True
+                            elif event.key == pygame.K_3 and slotThreeShipPointDefenseActive == True:
+                                slotThreeShipPointDefenseActive = False
+                                slotThreeShipPointDefenseCooldown = 10
+
+
+                    #Pioneer abilities.
+                    if fleetSlotOne == 'Pioneer' and selectedSlot == 1 or fleetSlotTwo == 'Pioneer' and selectedSlot == 2 or fleetSlotThree == 'Pioneer' and selectedSlot == 3:
+                        #Pioneer missiles.
+                        if pioneerMissilesCooldown == 0:
+                            if selectedEnemy == 'One':
+                                if event.key == pygame.K_2:
+                                    if enemyOneHealth > 0:
+                                        enemyOneHealth -= (15 * fleetDamageBoost) * enemyOnePointDefenseEff
+                                        damageAmount = (15 * fleetDamageBoost) * enemyOnePointDefenseEff
+                                        combatLogEntryTen = combatLogEntryNine
+                                        combatLogEntryNine = combatLogEntryEight
+                                        combatLogEntryEight = combatLogEntrySeven
+                                        combatLogEntrySeven = combatLogEntrySix
+                                        combatLogEntrySix = combatLogEntryFive
+                                        combatLogEntryFive = combatLogEntryFour
+                                        combatLogEntryFour = combatLogEntryThree
+                                        combatLogEntryThree = combatLogEntryTwo
+                                        combatLogEntryTwo = combatLogEntryOne
+                                        combatLogEntryOne = 'Enemy 1 Took ' + str(damageAmount) + ' Damage From Pioneer'
+                                        pioneerMissilesCooldown = 100
+                            elif selectedEnemy == 'Two':
+                                if event.key == pygame.K_2:
+                                    if enemyTwoHealth > 0:
+                                        enemyTwoHealth -= (15 * fleetDamageBoost) * enemyOnePointDefenseEff
+                                        damageAmount = (15 * fleetDamageBoost) * enemyOnePointDefenseEff
+                                        combatLogEntryTen = combatLogEntryNine
+                                        combatLogEntryNine = combatLogEntryEight
+                                        combatLogEntryEight = combatLogEntrySeven
+                                        combatLogEntrySeven = combatLogEntrySix
+                                        combatLogEntrySix = combatLogEntryFive
+                                        combatLogEntryFive = combatLogEntryFour
+                                        combatLogEntryFour = combatLogEntryThree
+                                        combatLogEntryThree = combatLogEntryTwo
+                                        combatLogEntryTwo = combatLogEntryOne
+                                        combatLogEntryOne = 'Enemy 2 Took ' + str(damageAmount) + ' Damage From Pioneer'
+                                        pioneerMissilesCooldown = 100
+                            elif selectedEnemy == 'Three':
+                                if event.key == pygame.K_2:
+                                    if enemyThreeHealth > 0:
+                                        enemyThreeHealth -= (15 * fleetDamageBoost) * enemyOnePointDefenseEff
+                                        damageAmount = (15 * fleetDamageBoost) * enemyOnePointDefenseEff
+                                        combatLogEntryTen = combatLogEntryNine
+                                        combatLogEntryNine = combatLogEntryEight
+                                        combatLogEntryEight = combatLogEntrySeven
+                                        combatLogEntrySeven = combatLogEntrySix
+                                        combatLogEntrySix = combatLogEntryFive
+                                        combatLogEntryFive = combatLogEntryFour
+                                        combatLogEntryFour = combatLogEntryThree
+                                        combatLogEntryThree = combatLogEntryTwo
+                                        combatLogEntryTwo = combatLogEntryOne
+                                        combatLogEntryOne = 'Enemy 3 Took ' + str(damageAmount) + ' Damage From Pioneer'
+                                        pioneerMissilesCooldown = 100
+                            elif selectedEnemy == 'Four':
+                                if event.key == pygame.K_2:
+                                    if enemyFourHealth > 0:
+                                        enemyFourHealth -= (15 * fleetDamageBoost) * enemyOnePointDefenseEff
+                                        damageAmount = (15 * fleetDamageBoost) * enemyOnePointDefenseEff
+                                        combatLogEntryTen = combatLogEntryNine
+                                        combatLogEntryNine = combatLogEntryEight
+                                        combatLogEntryEight = combatLogEntrySeven
+                                        combatLogEntrySeven = combatLogEntrySix
+                                        combatLogEntrySix = combatLogEntryFive
+                                        combatLogEntryFive = combatLogEntryFour
+                                        combatLogEntryFour = combatLogEntryThree
+                                        combatLogEntryThree = combatLogEntryTwo
+                                        combatLogEntryTwo = combatLogEntryOne
+                                        combatLogEntryOne = 'Enemy 4 Took ' + str(damageAmount) + ' Damage From Pioneer'
+                                        pioneerMissilesCooldown = 100
+                            elif selectedEnemy == 'Five':
+                                if event.key == pygame.K_2:
+                                    if enemyFiveHealth > 0:
+                                        enemyFiveHealth -= (15 * fleetDamageBoost) * enemyOnePointDefenseEff
+                                        damageAmount = (15 * fleetDamageBoost) * enemyOnePointDefenseEff
+                                        combatLogEntryTen = combatLogEntryNine
+                                        combatLogEntryNine = combatLogEntryEight
+                                        combatLogEntryEight = combatLogEntrySeven
+                                        combatLogEntrySeven = combatLogEntrySix
+                                        combatLogEntrySix = combatLogEntryFive
+                                        combatLogEntryFive = combatLogEntryFour
+                                        combatLogEntryFour = combatLogEntryThree
+                                        combatLogEntryThree = combatLogEntryTwo
+                                        combatLogEntryTwo = combatLogEntryOne
+                                        combatLogEntryOne = 'Enemy 5 Took ' + str(damageAmount) + ' Damage From Pioneer'
+                                        pioneerMissilesCooldown = 100
+
+
+
+
+
+                #Pioneer weapon systems.
+                if fleetSlotOne == 'Pioneer' and selectedSlot == 1 or fleetSlotTwo == 'Pioneer' and selectedSlot == 2 or fleetSlotThree == 'Pioneer' and selectedSlot == 3:
+                    #Pioneer's main weapon (Void Cannon), used by left clicking enemies that the player wants to damage.
+                    if pioneerVoidChargesCooldown == 0:
+                        if 1040 > mouse[0] > 690 and 340 > mouse[1] > 200:
+                            if click[0] == 1:
+                                if enemyOneHealth > 0:
+                                    enemyOneHealth -= 50 * fleetDamageBoost
+                                    damageAmount = 50 * fleetDamageBoost
+                                    combatLogEntryTen = combatLogEntryNine
+                                    combatLogEntryNine = combatLogEntryEight
+                                    combatLogEntryEight = combatLogEntrySeven
+                                    combatLogEntrySeven = combatLogEntrySix
+                                    combatLogEntrySix = combatLogEntryFive
+                                    combatLogEntryFive = combatLogEntryFour
+                                    combatLogEntryFour = combatLogEntryThree
+                                    combatLogEntryThree = combatLogEntryTwo
+                                    combatLogEntryTwo = combatLogEntryOne
+                                    combatLogEntryOne = 'Enemy 1 Took ' + str(damageAmount) + ' Damage From Pioneer'
+                                    pioneerVoidChargesCooldown = 50
+
+                        elif 700 > mouse[0] > 350 and 380 > mouse[1] > 240:
+                            if click[0] == 1:
+                                if enemyTwoHealth > 0:
+                                    enemyTwoHealth -= 50 * fleetDamageBoost
+                                    damageAmount = 50 * fleetDamageBoost
+                                    combatLogEntryTen = combatLogEntryNine
+                                    combatLogEntryNine = combatLogEntryEight
+                                    combatLogEntryEight = combatLogEntrySeven
+                                    combatLogEntrySeven = combatLogEntrySix
+                                    combatLogEntrySix = combatLogEntryFive
+                                    combatLogEntryFive = combatLogEntryFour
+                                    combatLogEntryFour = combatLogEntryThree
+                                    combatLogEntryThree = combatLogEntryTwo
+                                    combatLogEntryTwo = combatLogEntryOne
+                                    combatLogEntryOne = 'Enemy 2 Took ' + str(damageAmount) + ' Damage From Pioneer'
+                                    pioneerVoidChargesCooldown = 50
+
+                        elif 1380 > mouse[0] > 1030 and 380 > mouse[1] > 240:
+                            if click[0] == 1:
+                                if enemyThreeHealth > 0:
+                                    enemyThreeHealth -= 50 * fleetDamageBoost
+                                    damageAmount = 50 * fleetDamageBoost
+                                    combatLogEntryTen = combatLogEntryNine
+                                    combatLogEntryNine = combatLogEntryEight
+                                    combatLogEntryEight = combatLogEntrySeven
+                                    combatLogEntrySeven = combatLogEntrySix
+                                    combatLogEntrySix = combatLogEntryFive
+                                    combatLogEntryFive = combatLogEntryFour
+                                    combatLogEntryFour = combatLogEntryThree
+                                    combatLogEntryThree = combatLogEntryTwo
+                                    combatLogEntryTwo = combatLogEntryOne
+                                    combatLogEntryOne = 'Enemy 3 Took ' + str(damageAmount) + ' Damage From Pioneer'
+                                    pioneerVoidChargesCooldown = 50
+
+                        elif 360 > mouse[0] > 10 and 430 > mouse[1] > 290:
+                            if click[0] == 1:
+                                if enemyFourHealth > 0:
+                                    enemyFourHealth -= 50 * fleetDamageBoost
+                                    damageAmount = 50 * fleetDamageBoost
+                                    combatLogEntryTen = combatLogEntryNine
+                                    combatLogEntryNine = combatLogEntryEight
+                                    combatLogEntryEight = combatLogEntrySeven
+                                    combatLogEntrySeven = combatLogEntrySix
+                                    combatLogEntrySix = combatLogEntryFive
+                                    combatLogEntryFive = combatLogEntryFour
+                                    combatLogEntryFour = combatLogEntryThree
+                                    combatLogEntryThree = combatLogEntryTwo
+                                    combatLogEntryTwo = combatLogEntryOne
+                                    combatLogEntryOne = 'Enemy 4 Took ' + str(damageAmount) + ' Damage From Pioneer'
+                                    pioneerVoidChargesCooldown = 50
+                        elif 1720 > mouse[0] > 1370 and 430 > mouse[1] > 290:
+                            if click[0] == 1:
+                                if enemyFiveHealth > 0:
+                                    enemyFiveHealth -= 50 * fleetDamageBoost
+                                    damageAmount = 50 * fleetDamageBoost
+                                    combatLogEntryTen = combatLogEntryNine
+                                    combatLogEntryNine = combatLogEntryEight
+                                    combatLogEntryEight = combatLogEntrySeven
+                                    combatLogEntrySeven = combatLogEntrySix
+                                    combatLogEntrySix = combatLogEntryFive
+                                    combatLogEntryFive = combatLogEntryFour
+                                    combatLogEntryFour = combatLogEntryThree
+                                    combatLogEntryThree = combatLogEntryTwo
+                                    combatLogEntryTwo = combatLogEntryOne
+                                    combatLogEntryOne = 'Enemy 5 Took ' + str(damageAmount) + ' Damage From Pioneer'
+                                    pioneerVoidChargesCooldown = 50
+                        elif 1728 > mouse[0] > 0 and 972 > mouse[1] > 0 and click[0] == 1:
+                            pioneerVoidChargesCooldown = 50
+
+                #Colossus weapon systems.
+                if fleetSlotOne == 'Colossus' and selectedSlot == 1 or fleetSlotTwo == 'Colossus' and selectedSlot == 2 or fleetSlotThree == 'Colossus' and selectedSlot == 3:
+                    # Colossus' main weapon (Flak), used by left clicking enemies that the player wants to damage.
+                    if colossusFlakCooldown == 0:
+                        if 1040 > mouse[0] > 690 and 340 > mouse[1] > 200:
+                            if click[0] == 1:
+                                if enemyOneHealth > 0:
+                                    enemyOneHealth -= 50 * fleetDamageBoost
+                                    damageAmount = 50 * fleetDamageBoost
+                                    combatLogEntryTen = combatLogEntryNine
+                                    combatLogEntryNine = combatLogEntryEight
+                                    combatLogEntryEight = combatLogEntrySeven
+                                    combatLogEntrySeven = combatLogEntrySix
+                                    combatLogEntrySix = combatLogEntryFive
+                                    combatLogEntryFive = combatLogEntryFour
+                                    combatLogEntryFour = combatLogEntryThree
+                                    combatLogEntryThree = combatLogEntryTwo
+                                    combatLogEntryTwo = combatLogEntryOne
+                                    combatLogEntryOne = 'Enemy 1 Took ' + str(damageAmount) + ' Damage From Colossus'
+                                    colossusFlakCooldown = 50
+
+                        elif 700 > mouse[0] > 350 and 380 > mouse[1] > 240:
+                            if click[0] == 1:
+                                if enemyTwoHealth > 0:
+                                    enemyTwoHealth -= 50 * fleetDamageBoost
+                                    damageAmount = 50 * fleetDamageBoost
+                                    combatLogEntryTen = combatLogEntryNine
+                                    combatLogEntryNine = combatLogEntryEight
+                                    combatLogEntryEight = combatLogEntrySeven
+                                    combatLogEntrySeven = combatLogEntrySix
+                                    combatLogEntrySix = combatLogEntryFive
+                                    combatLogEntryFive = combatLogEntryFour
+                                    combatLogEntryFour = combatLogEntryThree
+                                    combatLogEntryThree = combatLogEntryTwo
+                                    combatLogEntryTwo = combatLogEntryOne
+                                    combatLogEntryOne = 'Enemy 2 Took ' + str(damageAmount) + ' Damage From Colossus'
+                                    colossusFlakCooldown = 50
+
+                        elif 1380 > mouse[0] > 1030 and 380 > mouse[1] > 240:
+                            if click[0] == 1:
+                                if enemyThreeHealth > 0:
+                                    enemyThreeHealth -= 50 * fleetDamageBoost
+                                    damageAmount = 50 * fleetDamageBoost
+                                    combatLogEntryTen = combatLogEntryNine
+                                    combatLogEntryNine = combatLogEntryEight
+                                    combatLogEntryEight = combatLogEntrySeven
+                                    combatLogEntrySeven = combatLogEntrySix
+                                    combatLogEntrySix = combatLogEntryFive
+                                    combatLogEntryFive = combatLogEntryFour
+                                    combatLogEntryFour = combatLogEntryThree
+                                    combatLogEntryThree = combatLogEntryTwo
+                                    combatLogEntryTwo = combatLogEntryOne
+                                    combatLogEntryOne = 'Enemy 3 Took ' + str(damageAmount) + ' Damage From Colossus'
+                                    colossusFlakCooldown = 50
+
+                        elif 360 > mouse[0] > 10 and 430 > mouse[1] > 290:
+                            if click[0] == 1:
+                                if enemyFourHealth > 0:
+                                    enemyFourHealth -= 50 * fleetDamageBoost
+                                    damageAmount = 50 * fleetDamageBoost
+                                    combatLogEntryTen = combatLogEntryNine
+                                    combatLogEntryNine = combatLogEntryEight
+                                    combatLogEntryEight = combatLogEntrySeven
+                                    combatLogEntrySeven = combatLogEntrySix
+                                    combatLogEntrySix = combatLogEntryFive
+                                    combatLogEntryFive = combatLogEntryFour
+                                    combatLogEntryFour = combatLogEntryThree
+                                    combatLogEntryThree = combatLogEntryTwo
+                                    combatLogEntryTwo = combatLogEntryOne
+                                    combatLogEntryOne = 'Enemy 4 Took ' + str(damageAmount) + ' Damage From Colossus'
+                                    colossusFlakCooldown = 50
+                        elif 1720 > mouse[0] > 1370 and 430 > mouse[1] > 290:
+                            if click[0] == 1:
+                                if enemyFiveHealth > 0:
+                                    enemyFiveHealth -= 50 * fleetDamageBoost
+                                    damageAmount = 50 * fleetDamageBoost
+                                    combatLogEntryTen = combatLogEntryNine
+                                    combatLogEntryNine = combatLogEntryEight
+                                    combatLogEntryEight = combatLogEntrySeven
+                                    combatLogEntrySeven = combatLogEntrySix
+                                    combatLogEntrySix = combatLogEntryFive
+                                    combatLogEntryFive = combatLogEntryFour
+                                    combatLogEntryFour = combatLogEntryThree
+                                    combatLogEntryThree = combatLogEntryTwo
+                                    combatLogEntryTwo = combatLogEntryOne
+                                    combatLogEntryOne = 'Enemy 5 Took ' + str(damageAmount) + ' Damage From Colossus'
+                                    colossusFlakCooldown = 50
+                        elif 1728 > mouse[0] > 0 and 972 > mouse[1] > 0 and click[0] == 1:
+                            colossusFlakCooldown = 50
+
+
+            if showExpandedMap == True:
+                if event.type == pygame.KEYUP:
+                    if event.key == pygame.K_TAB:
+                        showExpandedMap = False
+
+        #Draw background
+        back = pygame.image.load('Used Images/thumbnail_background.png')
+        screen.blit(back, (0, 0))
+
+        # What will happen if a certain fleet ship is selected.
+        # For the Pioneer.
+        if fleetSlotOne == 'Pioneer' and selectedSlot == 1 or fleetSlotTwo == 'Pioneer' and selectedSlot == 2 or fleetSlotThree == 'Pioneer' and selectedSlot == 3:
+            printWhiteText('Reveal Sector', 12, 583, 915)
+            printWhiteText('Pioneer Missiles', 12, 695, 915)
+            printWhiteText('Void Charges', 12, 1143, 915)
+
+            detect = pygame.image.load('Used Images/Detect.png')
+            screen.blit(detect, (559, 841))
+            missiles = pygame.image.load('Used Images/missiles.png')
+            screen.blit(missiles, (670, 841))
+            cannon = pygame.image.load('Used Images/cannon.png')
+            screen.blit(cannon, (1119, 841))
+
+            #Change below display bars to match up with all ship spots!!!!!!!!!!
+            if fleetSlotOne == 'Pioneer':
+                pygame.draw.rect(screen, orange, [265, 615, 250, 25])
+            elif fleetSlotTwo == 'Pioneer':
+                pygame.draw.rect(screen, orange, [725, 735, 250, 25])
+            elif fleetSlotThree == 'Pioneer':
+                pygame.draw.rect(screen, orange, [265, 615, 250, 25])
+
+        # For the Colossus.
+        if fleetSlotOne == 'Colossus' and selectedSlot == 1 or fleetSlotTwo == 'Colossus' and selectedSlot == 2 or fleetSlotThree == 'Colossus' and selectedSlot == 3:
+            printWhiteText('Boost', 12, 583, 915)
+            printWhiteText('Colossus Fighters', 12, 695, 915)
+            printWhiteText('Flak', 12, 1143, 915)
+
+            boost = pygame.image.load('Used Images/boost.png')
+            screen.blit(boost, (559, 841))
+            fighters = pygame.image.load('Used Images/fighters.png')
+            screen.blit(fighters, (670, 841))
+            cannonFlak = pygame.image.load('Used Images/cannon-flak.png')
+            screen.blit(cannonFlak, (1119, 841))
+
+            if fleetSlotOne == 'Colossus':
+                pygame.draw.rect(screen, orange, [265, 615, 250, 25])
+            elif fleetSlotTwo == 'Colossus':
+                pygame.draw.rect(screen, orange, [725, 735, 250, 25])
+            elif fleetSlotThree == 'Colossus':
+                pygame.draw.rect(screen, orange, [265, 615, 250, 25])
+
+        # For the Venturer.
+        if fleetSlotOne == 'Venturer' and selectedSlot == 1 or fleetSlotTwo == 'Venturer' and selectedSlot == 2 or fleetSlotThree == 'Venturer' and selectedSlot == 3:
+            printWhiteText('Repair Pulse', 12, 583, 915)
+            printWhiteText('Plasma Missiles', 12, 695, 915)
+            printWhiteText('Mining Laser', 12, 1143, 915)
+
+            repairPulse = pygame.image.load('Used Images/pulse-repair.png')
+            screen.blit(repairPulse, (559, 841))
+            plasmaMissiles = pygame.image.load('Used Images/missiles-plasma.png')
+            screen.blit(plasmaMissiles, (670, 841))
+            miningLasers = pygame.image.load('Used Images/laser-big.png')
+            screen.blit(miningLasers, (1119, 841))
+
+            if fleetSlotOne == 'Venturer':
+                pygame.draw.rect(screen, orange, [265, 615, 250, 25])
+            elif fleetSlotTwo == 'Venturer':
+                pygame.draw.rect(screen, orange, [725, 735, 250, 25])
+            elif fleetSlotThree == 'Venturer':
+                pygame.draw.rect(screen, orange, [1050, 615, 250, 25])
+
+
+        #Deciding how much initial health and energy the player's ships have.
+        if assignEnergyAndHealth == True:
+            slotOneShipHealth = slotOneShipFullHealth
+            slotTwoShipHealth = slotTwoShipFullHealth
+            slotThreeShipHealth = slotThreeShipFullHealth
+
+            slotOneShipEnergy = slotOneShipFullEnergy
+            slotTwoShipEnergy = slotTwoShipFullEnergy
+            slotThreeShipEnergy = slotThreeShipFullEnergy
+            assignEnergyAndHealth = False
+
+        #Deciding which ships to draw and where based on which ones the player selected in the menu.
+        if fleetSlotOne == 'Pioneer':
+            pioneerInGameDisplay = pygame.image.load('Used Images/pioneerInGame.png')
+            screen.blit(pioneerInGameDisplay, (250, 450))
+        if fleetSlotTwo == 'Colossus':
+            colossusInGameDisplay = pygame.image.load('Used Images/colossusInGame.png')
+            screen.blit(colossusInGameDisplay, (689, 575))
+        if fleetSlotThree == 'Venturer':
+            venturerInGameDisplay = pygame.image.load('Used Images/venturerInGame.png')
+            screen.blit(venturerInGameDisplay, (1000, 460))
+
+
+        printWhiteText(selectedEnemy, 90, 200, 200)
+
+
+        #Deciding whether to show enemy health or not (will not show a value of 0 or any value of a ship is not there).
+        if enemyOneHealth > 0:
+            printWhiteText(str(enemyOneHealth), 30, 800, 185)
+        if enemyTwoHealth > 0:
+            printWhiteText(str(enemyTwoHealth), 30, 550, 235)
+        if enemyThreeHealth > 0:
+            printWhiteText(str(enemyThreeHealth), 30, 1200, 235)
+        if enemyFourHealth > 0:
+            printWhiteText(str(enemyFourHealth), 30, 150, 275)
+        if enemyFiveHealth > 0:
+            printWhiteText(str(enemyFiveHealth), 30, 1500, 275)
+
+        #Spawning enemies for wave one.
+        pioneerEnemy = pygame.image.load('Used Images/pioneerInGame.png')
+        protectorEnemy = pygame.image.load('Used Images/protectorInGame.png')
+
+        if startWaveOne == True:
+            sectorRandom = random.randint(1, 3)
+            if sectorRandom == 1:
+                enemyOneSector = 'alpha'
+                enemyTwoSector = 'alpha'
+                enemyThreeSector = 'alpha'
+            elif sectorRandom == 2:
+                enemyOneSector = 'delta'
+                enemyTwoSector = 'delta'
+                enemyThreeSector = 'delta'
+            elif sectorRandom == 3:
+                enemyOneSector = 'beta'
+                enemyTwoSector = 'beta'
+                enemyThreeSector = 'beta'
+            pioneerIsEnemyOneFleetOne = True
+            enemyOneHealth = 1200
+            pioneerIsEnemyTwoFleetOne = True
+            enemyTwoHealth = 1200
+            protectorIsEnemyThreeFleetOne = True
+            enemyThreeHealth = 1000
+            timing = True
+            start = time.time()
+            startWaveOne = False
+
+
+        #Check if wave time ran out, and if so, moves enemies to outpost
+        if timing == True:
+            printWhiteText("Time remaining: " + str(int(maxWaveTime - (time.time() - start))), 15, 300, 100)
+            if time.time() - start >= maxWaveTime:
+                enemyOneSector = 'outpost'
+                enemyTwoSector = 'outpost'
+                enemyThreeSector = 'outpost'
+                timing = False
+        elif timing == False:
+            printWhiteText("Time remaining: 0", 15, 300, 100)
+
+        #Check if enemies are attacking outpost, and if so, makes outpost take damage
+        if enemyOneSector == 'outpost':
+            if enemyOneHealth >= 0:
+                enemyOneHealth -= 1
+            if turret1Health == 0 and turret2Health == 0:
+                outpostHealth -= 1
+            elif turret1Health == 0 and turret2Health != 0:
+                turret2Health -= 1
+            elif turret1Health != 0 and turret2Health != 0:
+                turret1Health -= 1
+        if enemyTwoSector == 'outpost':
+            if enemyTwoHealth >= 0:
+                enemyTwoHealth -= 1
+            if turret1Health == 0 and turret2Health == 0:
+                outpostHealth -= 1
+            elif turret1Health == 0 and turret2Health != 0:
+                turret2Health -= 1
+            elif turret1Health != 0 and turret2Health != 0:
+                turret1Health -= 1
+        if enemyThreeSector == 'outpost':
+            if enemyThreeHealth >= 0:
+                enemyThreeHealth -= 1
+            if turret1Health == 0 and turret2Health == 0:
+                outpostHealth -= 1
+            elif turret1Health == 0 and turret2Health != 0:
+                turret2Health -= 1
+            elif turret1Health != 0 and turret2Health != 0:
+                turret1Health -= 1
+        if enemyFourSector == 'outpost':
+            if enemyFourHealth >= 0:
+                enemyFourHealth -= 1
+            if turret1Health == 0 and turret2Health == 0:
+                outpostHealth -= 1
+            elif turret1Health == 0 and turret2Health != 0:
+                turret2Health -= 1
+            elif turret1Health != 0 and turret2Health != 0:
+                turret1Health -= 1
+        if enemyFiveSector == 'outpost':
+            if enemyFiveHealth >= 0:
+                enemyFiveHealth -= 1
+            if turret1Health == 0 and turret2Health == 0:
+                outpostHealth -= 1
+            elif turret1Health == 0 and turret2Health != 0:
+                turret2Health -= 1
+            elif turret1Health != 0 and turret2Health != 0:
+                turret1Health -= 1
+        printWhiteText("Outpost Health: " + str(outpostHealth), 15, 450, 800)
+        printWhiteText("Turret 1 Health: " + str(turret1Health), 15, 450, 850)
+        printWhiteText("Turret 2 Health: " + str(turret2Health), 15, 450, 900)
+        displayHUD()
+
+        #Check if outpost health is 0, and if so, game over
+        if outpostHealth <= 0:
+            printRedText("GAME OVER", 130, 450, 500)
+            gameRunning = False
+
+        #Check if enemies are dead, and if so, you win
+        if enemyOneHealth <= 0 and enemyTwoHealth <= 0 and enemyThreeHealth <= 0:
+            printGreenText("VICTORY", 130, 450, 500)
+            gameRunning = False
+
+
+        if selectedEnemyFleet == 1:
+            if pioneerIsEnemyOneFleetOne == True and enemyOneHealth > 0:
+                screen.blit(pioneerEnemy, (690, 200))
+            if pioneerIsEnemyTwoFleetOne == True and enemyTwoHealth > 0:
+                screen.blit(pioneerEnemy, (350, 240))
+            if pioneerIsEnemyThreeFleetOne == True and enemyThreeHealth > 0:
+                screen.blit(pioneerEnemy, (1030, 240))
+            if pioneerIsEnemyFourFleetOne == True and enemyFourHealth > 0:
+                screen.blit(pioneerEnemy, (10, 290))
+            if pioneerIsEnemyFiveFleetOne == True and enemyFiveHealth > 0:
+                screen.blit(pioneerEnemy, (1370, 290))
+
+            if protectorIsEnemyOneFleetOne == True and enemyOneHealth > 0:
+                screen.blit(protectorEnemy, (690, 200))
+            if protectorIsEnemyTwoFleetOne == True and enemyTwoHealth > 0:
+                screen.blit(protectorEnemy, (350, 240))
+            if protectorIsEnemyThreeFleetOne == True and enemyThreeHealth > 0:
+                screen.blit(protectorEnemy, (1030, 240))
+            if protectorIsEnemyFourFleetOne == True and enemyFourHealth > 0:
+                screen.blit(protectorEnemy, (10, 290))
+            if protectorIsEnemyFiveFleetOne == True and enemyFiveHealth > 0:
+                screen.blit(protectorEnemy, (1370, 290))
+
+
+        #Displaying combat log entries.
+        printWhiteText(combatLogEntryOne, 18, 210, 735)
+        printWhiteText(combatLogEntryTwo, 18, 210, 755)
+        printWhiteText(combatLogEntryThree, 18, 210, 775)
+        printWhiteText(combatLogEntryFour, 18, 210, 795)
+        printWhiteText(combatLogEntryFive, 18, 210, 815)
+        printWhiteText(combatLogEntrySix, 18, 210, 835)
+        printWhiteText(combatLogEntrySeven, 18, 210, 855)
+        printWhiteText(combatLogEntryEight, 18, 210, 875)
+        printWhiteText(combatLogEntryNine, 18, 210, 895)
+        printWhiteText(combatLogEntryTen, 18, 210, 915)
+
+
+        #Energy recharge for the player's ships (energy only recharges every few seconds).
+        if slotOneShipEnergy != slotOneShipFullEnergy and slotOneEnergyCooldown == True:
+            slotOneEnergyTimer += 1
+            if slotOneEnergyTimer == 10:
+                slotOneShipEnergy += 25
+                slotOneEnergyTimer = 0
+        if slotTwoShipEnergy != slotTwoShipFullEnergy and slotTwoEnergyCooldown == True:
+            slotTwoEnergyTimer += 1
+            if slotTwoEnergyTimer == 10:
+                slotTwoShipEnergy += 25
+                slotTwoEnergyTimer = 0
+        if slotThreeShipEnergy != slotThreeShipFullEnergy and slotThreeEnergyCooldown == True:
+            slotThreeEnergyTimer += 1
+            if slotThreeEnergyTimer == 10:
+                slotThreeShipEnergy += 25
+                slotThreeEnergyTimer = 0
+
+
+
+        #Cooldown timers for the player's ship's weapons and abilities.
+        cooldownBackground = pygame.image.load('Used Images/FrameCooldown.png')
+        cooldownBackgroundDark = pygame.image.load('Used Images/FrameCooldown_dark.png')
+        activeBackground = pygame.image.load('Used Images/FrameActive.png')
+
+        #Point defense (same for all ships).
+        #Point defense for ship one.
+        if slotOneShipPointDefenseCooldown != 0 and slotOneShipEnergy != 0:
+            slotOneShipPointDefenseCooldown -= 1
+            if selectedSlot == 1:
+                screen.blit(cooldownBackground, (772, 830))
+                screen.blit(cooldownBackgroundDark, (772, 830))
+                printWhiteText(str(slotOneShipPointDefenseCooldown), 30, 807, 868)
+        elif slotOneShipPointDefenseCooldown == 0:
+            if slotOneShipPointDefenseActive == True and slotOneShipPointDefenseCharge != 0 and slotOneShipEnergy != 0:
+                fleetShipOnePointDefenseEff = 0.5
+                slotOneShipPointDefenseCharge -= 1
+                slotOneShipEnergy -= 25
+                slotOneEnergyCooldown = False
+                if selectedSlot == 1:
+                    screen.blit(activeBackground, (772, 830))
+                    printWhiteText(str(slotOneShipPointDefenseCharge), 30, 807, 868)
+                if slotOneShipPointDefenseCharge == 0 or slotOneShipEnergy == 0:
+                    slotOneShipPointDefenseActive = False
+                    slotOneShipPointDefenseCooldown = 10
+                    slotOneEnergyCooldown = True
+            elif slotOneShipPointDefenseActive == False and slotOneShipPointDefenseCharge != 100:
+                slotOneShipPointDefenseCharge += 1
+                slotOneEnergyCooldown = True
+                if selectedSlot == 1:
+                    printWhiteText(str(slotOneShipPointDefenseCharge), 30, 807, 868)
+
+        #Point defense for ship two.
+        if slotTwoShipPointDefenseCooldown != 0:
+            slotTwoShipPointDefenseCooldown -= 1
+            if selectedSlot == 2:
+                screen.blit(cooldownBackground, (772, 830))
+                screen.blit(cooldownBackgroundDark, (772, 830))
+                printWhiteText(str(slotTwoShipPointDefenseCooldown), 30, 807, 868)
+        elif slotTwoShipPointDefenseCooldown == 0:
+            if slotTwoShipPointDefenseActive == True and slotTwoShipPointDefenseCharge != 0:
+                fleetShipTwoPointDefenseEff = 0.5
+                slotTwoShipPointDefenseCharge -= 1
+                slotTwoShipEnergy -= 25
+                slotTwoEnergyCooldown = False
+                if selectedSlot == 2:
+                    screen.blit(activeBackground, (772, 830))
+                    printWhiteText(str(slotTwoShipPointDefenseCharge), 30, 807, 868)
+                if slotTwoShipPointDefenseCharge == 0:
+                    slotTwoShipPointDefenseActive = False
+                    slotTwoShipPointDefenseCooldown = 10
+                    slotTwoEnergyCooldown = True
+            elif slotTwoShipPointDefenseActive == False and slotTwoShipPointDefenseCharge != 100:
+                slotTwoShipPointDefenseCharge += 1
+                slotTwoEnergyCooldown = True
+                if selectedSlot == 2:
+                    printWhiteText(str(slotTwoShipPointDefenseCharge), 30, 807, 868)
+
+        # Point defense for ship three.
+        if slotThreeShipPointDefenseCooldown != 0:
+            slotThreeShipPointDefenseCooldown -= 1
+            if selectedSlot == 3:
+                screen.blit(cooldownBackground, (772, 830))
+                screen.blit(cooldownBackgroundDark, (772, 830))
+                printWhiteText(str(slotThreeShipPointDefenseCooldown), 30, 807, 868)
+        elif slotThreeShipPointDefenseCooldown == 0:
+            if slotThreeShipPointDefenseActive == True and slotThreeShipPointDefenseCharge != 0:
+                fleetShipThreePointDefenseEff = 0.5
+                slotThreeShipPointDefenseCharge -= 1
+                slotThreeShipEnergy -= 25
+                slotThreeEnergyCooldown = False
+                if selectedSlot == 3:
+                    screen.blit(activeBackground, (772, 830))
+                    printWhiteText(str(slotThreeShipPointDefenseCharge), 30, 807, 868)
+                if slotThreeShipPointDefenseCharge == 0:
+                    slotThreeShipPointDefenseActive = False
+                    slotThreeShipPointDefenseCooldown = 10
+                    slotThreeEnergyCooldown = True
+            elif slotThreeShipPointDefenseActive == False and slotThreeShipPointDefenseCharge != 100:
+                slotThreeShipPointDefenseCharge += 1
+                slotThreeEnergyCooldown = True
+                if selectedSlot == 3:
+                    printWhiteText(str(slotThreeShipPointDefenseCharge), 30, 807, 868)
+
+
+        #Pioneer.
+        if pioneerVoidChargesCooldown != 0:
+            pioneerVoidChargesCooldown -= 1
+            if fleetSlotOne == 'Pioneer' and selectedSlot == 1 or fleetSlotTwo == 'Pioneer' and selectedSlot == 2 or fleetSlotThree == 'Pioneer' and selectedSlot == 3:
+                screen.blit(cooldownBackground, (1108, 830))
+                screen.blit(cooldownBackgroundDark, (1108, 830))
+                printWhiteText(str(pioneerVoidChargesCooldown), 30, 1143, 868)
+        if pioneerMissilesCooldown != 0:
+            pioneerMissilesCooldown -= 1
+            if fleetSlotOne == 'Pioneer' and selectedSlot == 1 or fleetSlotTwo == 'Pioneer' and selectedSlot == 2 or fleetSlotThree == 'Pioneer' and selectedSlot == 3:
+                screen.blit(cooldownBackground, (660, 830))
+                screen.blit(cooldownBackgroundDark, (660, 830))
+                printWhiteText(str(pioneerMissilesCooldown), 30, 695, 868)
+
+        #Colossus.
+        if colossusFlakCooldown != 0:
+            colossusFlakCooldown -= 1
+            if fleetSlotOne == 'Colossus' and selectedSlot == 1 or fleetSlotTwo == 'Colossus' and selectedSlot == 2 or fleetSlotThree == 'Colossus' and selectedSlot == 3:
+                screen.blit(cooldownBackground, (1108, 830))
+                screen.blit(cooldownBackgroundDark, (1108, 830))
+                printWhiteText(str(colossusFlakCooldown), 30, 1143, 868)
+
+
+
+        #Printing statiscics of various ships.
+        printWhiteText('Health: ' + str(slotOneShipHealth), 30, 330, 668)
+        printWhiteText('Energy: ' + str(slotOneShipEnergy), 30, 330, 698)
+
+        printWhiteText('Health: ' + str(slotTwoShipHealth), 30, 820, 768)
+        printWhiteText('Energy: ' + str(slotTwoShipEnergy), 30, 820, 798)
+
+        printWhiteText('Health: ' + str(slotThreeShipHealth), 30, 1160, 668)
+        printWhiteText('Energy: ' + str(slotThreeShipEnergy), 30, 1160, 698)
+
+
+        #Print score and wave.
+        printWhiteText('Score: ' + str(score), 20, 875, 60)
+        printWhiteText('Wave', 20, 1170, 80)
+
+
+        # Minimap background.
+        if showExpandedMap == False:
+            sector = pygame.image.load('Used Images/sector.png')
+            screen.blit(sector, (1280, 700))
+            screen.blit(sector, (1404, 700))
+            screen.blit(sector, (1528, 700))
+
+            outpostSector = pygame.image.load('Used Images/outpostSector.png')
+            screen.blit(outpostSector, (1384, 830))
+
+            printWhiteText('Alpha', 18, 1330, 687)
+            printWhiteText('Delta', 18, 1453, 687)
+            printWhiteText('Beta', 18, 1575, 687)
+            printWhiteText('Outpost', 18, 1450, 817)
+
+        #Fleet will only jump to a new sector if jumpTimer == 0.
+        if jumpTimer != 0:
+            jumpTimer -= 1
+            printWhiteText('Jump Timer: ' + str(jumpTimer), 22, 1500, 190)
+        elif jumpTimer == 0:
+            fleetSector = targetSector
+
+
+        #Fleet will only move to a new location if distanceToTargetLocation == 0.
+
+        if distanceToTargetLocation != 0 and distanceToTargetLocation > 0:
+            distanceToTargetLocation -= fleetSpeed * 3
+        elif distanceToTargetLocation <= 0 and jumpTimer == 0:
+            fleetX = targetfleetX
+            fleetY = targetfleetY
+
+        if distanceToTargetLocation > 0:
+            printWhiteText('Distance: ' + str(distanceToTargetLocation) + ' Meters', 22, 1500, 190)
+
+        printWhiteText('sector == ' + fleetSector, 22, 1500, 100)
+        printWhiteText('fleetX == ' + str(fleetX), 22, 1500, 130)
+        printWhiteText('fleetY == ' + str(fleetY), 22, 1500, 160)
+
+        printWhiteText('fleetSpeed == ' + str(fleetSpeed), 22, 1500, 220)
+
+
+        #Expanded map view.
+        expandedMapBackground = pygame.image.load('Used Images/expandedMapBackground.png')
+        outpostSectorLarge = pygame.image.load('Used Images/outpostSectorLarge.png')
+        sectorLarge = pygame.image.load('Used Images/sectorLarge.png')
+        jumpPoint = pygame.image.load('Used Images/jumpPoint.png')
+        jumpPointAvailable = pygame.image.load('Used Images/jumpPointAvailable.png')
+        jumpPointHoverOver = pygame.image.load('Used Images/jumpPointHoverOver.png')
+        fleet = pygame.image.load('Used Images/fleet.png')
+
+        if showExpandedMap == True:
+            screen.blit(expandedMapBackground, (0, 0))
+
+            screen.blit(outpostSectorLarge, (724, 550))
+            screen.blit(sectorLarge, (514, 300))
+            screen.blit(sectorLarge, (764, 300))
+            screen.blit(sectorLarge, (1014, 300))
+
+
+
+
+
+            if fleetSector == 'outpost':
+                pygame.draw.circle(screen, lightGrey, (612, 440), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (549, 330), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (593, 330), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (637, 330), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (679, 330), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (549, 370), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (593, 370), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (637, 370), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (679, 370), 5, 5)
+
+                pygame.draw.circle(screen, lightGrey, (866, 440), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (799, 330), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (843, 330), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (887, 330), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (929, 330), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (799, 370), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (843, 370), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (887, 370), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (929, 370), 5, 5)
+
+                pygame.draw.circle(screen, lightGrey, (1113, 440), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (1049, 330), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (1093, 330), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (1137, 330), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (1179, 330), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (1049, 370), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (1093, 370), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (1137, 370), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (1179, 370), 5, 5)
+
+                screen.blit(jumpPointAvailable, (530, 420))
+                screen.blit(jumpPointAvailable, (665, 420))
+                screen.blit(jumpPointAvailable, (781, 420))
+                screen.blit(jumpPointAvailable, (917, 420))
+                screen.blit(jumpPointAvailable, (1030, 420))
+                screen.blit(jumpPointAvailable, (1165, 420))
+                screen.blit(jumpPoint, (749, 582))
+                screen.blit(jumpPoint, (851, 634))
+                screen.blit(jumpPoint, (949, 582))
+                if 571 > mouse[0] > 540 and 445 > mouse[1] > 420: #--------------------------------------------------------------------------------------------Change this if statement to change x, y coordinates
+                    screen.blit(jumpPointHoverOver, (526, 413))
+                    if click[0] == 1 and jumpTimer == 0:
+                        jumpTimer = 25
+                        targetSector = 'alpha'
+                        targetfleetX = 10000
+                        targetfleetY = 15000
+                elif 696 > mouse[0] > 665 and 445 > mouse[1] > 420:
+                    screen.blit(jumpPointHoverOver, (661, 413))
+                    if click[0] == 1 and jumpTimer == 0:
+                        jumpTimer = 25
+                        targetSector = 'alpha'
+                        targetfleetX = 40000
+                        targetfleetY = 15000
+                elif 812 > mouse[0] > 781 and 445 > mouse[1] > 420:
+                    screen.blit(jumpPointHoverOver, (777, 413))
+                    if click[0] == 1 and jumpTimer == 0:
+                        jumpTimer = 25
+                        targetSector = 'delta'
+                        targetfleetX = 10000
+                        targetfleetY = 15000
+                elif 948 > mouse[0] > 917 and 445 > mouse[1] > 420:
+                    screen.blit(jumpPointHoverOver, (913, 413))
+                    if click[0] == 1 and jumpTimer == 0:
+                        jumpTimer = 25
+                        targetSector = 'delta'
+                        targetfleetX = 40000
+                        targetfleetY = 15000
+                elif 1061 > mouse[0] > 1030 and 445 > mouse[1] > 420:
+                    screen.blit(jumpPointHoverOver, (1026, 413))
+                    if click[0] == 1 and jumpTimer == 0:
+                        jumpTimer = 25
+                        targetSector = 'beta'
+                        targetfleetX = 10000
+                        targetfleetY = 15000
+                elif 1196 > mouse[0] > 1165 and 445 > mouse[1] > 420:
+                    screen.blit(jumpPointHoverOver, (1161, 413))
+                    if click[0] == 1 and jumpTimer == 0:
+                        jumpTimer = 25
+                        targetSector = 'beta'
+                        targetfleetX = 40000
+                        targetfleetY = 15000
+
+                if fleetX == 35000 and fleetY == 20000:
+                    pygame.draw.circle(screen, lightGrey, (866, 660), 5, 5)
+                    pygame.draw.circle(screen, white, (764, 608), 5, 5)
+                    pygame.draw.circle(screen, white, (964, 608), 5, 5)
+                    screen.blit(fleet, (850, 657))
+                    if 778 > mouse[0] > 760 and 622 > mouse[1] > 604:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 32000
+                            targetfleetX = 10000
+                            targetfleetY = 40000
+                    elif 978 > mouse[0] > 960 and 622 > mouse[1] > 604:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 32000
+                            targetfleetX = 60000
+                            targetfleetY = 40000
+                elif fleetX == 10000 and fleetY == 40000:
+                    pygame.draw.circle(screen, white, (866, 660), 5, 5)
+                    pygame.draw.circle(screen, lightGrey, (764, 608), 5, 5)
+                    pygame.draw.circle(screen, white, (964, 608), 5, 5)
+                    screen.blit(fleet, (748, 605))
+                    if 880 > mouse[0] > 862 and 674 > mouse[1] > 656:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 32000
+                            targetfleetX = 35000
+                            targetfleetY = 20000
+                    elif 978 > mouse[0] > 960 and 622 > mouse[1] > 604:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 50000
+                            targetfleetX = 60000
+                            targetfleetY = 40000
+                elif fleetX == 60000 and fleetY == 40000:
+                    pygame.draw.circle(screen, white, (866, 660), 5, 5)
+                    pygame.draw.circle(screen, white, (764, 608), 5, 5)
+                    pygame.draw.circle(screen, lightGrey, (964, 608), 5, 5)
+                    screen.blit(fleet, (948, 605))
+                    if 880 > mouse[0] > 862 and 674 > mouse[1] > 656:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 32000
+                            targetfleetX = 35000
+                            targetfleetY = 20000
+                    elif 778 > mouse[0] > 760 and 622 > mouse[1] > 604:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 50000
+                            targetfleetX = 10000
+                            targetfleetY = 40000
+
+
+            elif fleetSector == 'alpha':
+
+                if fleetX == 10000 and fleetY == 15000 or fleetX == 40000 and fleetY == 15000:
+                    pygame.draw.circle(screen, white, (612, 440), 5, 5)
+                    pygame.draw.circle(screen, white, (549, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (593, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (637, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (679, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (549, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (593, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (637, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (679, 370), 5, 5)
+
+
+                pygame.draw.circle(screen, lightGrey, (866, 440), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (799, 330), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (843, 330), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (887, 330), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (929, 330), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (799, 370), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (843, 370), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (887, 370), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (929, 370), 5, 5)
+
+                pygame.draw.circle(screen, lightGrey, (1113, 440), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (1049, 330), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (1093, 330), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (1137, 330), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (1179, 330), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (1049, 370), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (1093, 370), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (1137, 370), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (1179, 370), 5, 5)
+
+                pygame.draw.circle(screen, lightGrey, (866, 660), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (764, 608), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (964, 608), 5, 5)
+
+                screen.blit(jumpPoint, (530, 420))
+                screen.blit(jumpPoint, (665, 420))
+                screen.blit(jumpPointAvailable, (781, 420))
+                screen.blit(jumpPoint, (917, 420))
+                screen.blit(jumpPoint, (1030, 420))
+                screen.blit(jumpPoint, (1165, 420))
+                screen.blit(jumpPointAvailable, (749, 582))
+                screen.blit(jumpPointAvailable, (851, 634))
+                screen.blit(jumpPoint, (949, 582))
+
+
+
+                if fleetX == 10000 and fleetY == 15000:
+                    screen.blit(fleet, (529, 433))
+                    if 563 > mouse[0] > 545 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 25000
+                            targetfleetX = 10000
+                            targetfleetY = 40000
+                    elif 607 > mouse[0] > 589 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 27000
+                            targetfleetX = 20000
+                            targetfleetY = 40000
+                    elif 651 > mouse[0] > 633 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 32000
+                            targetfleetX = 30000
+                            targetfleetY = 40000
+                    elif 695 > mouse[0] > 677 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 39000
+                            targetfleetX = 40000
+                            targetfleetY = 40000
+                    elif 563 > mouse[0] > 545 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 15000
+                            targetfleetX = 10000
+                            targetfleetY = 30000
+                    elif 607 > mouse[0] > 589 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 18000
+                            targetfleetX = 20000
+                            targetfleetY = 30000
+                    elif 651 > mouse[0] > 633 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 25000
+                            targetfleetX = 30000
+                            targetfleetY = 30000
+                    elif 695 > mouse[0] > 677 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 33000
+                            targetfleetX = 40000
+                            targetfleetY = 30000
+                    elif 626 > mouse[0] > 608 and 454 > mouse[1] > 436:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 15000
+                            targetfleetX = 25000
+                            targetfleetY = 15000
+
+                elif fleetX == 40000 and fleetY == 15000:
+                    screen.blit(fleet, (664, 433))
+                    if 563 > mouse[0] > 545 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 39000
+                            targetfleetX = 10000
+                            targetfleetY = 40000
+                    elif 607 > mouse[0] > 589 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 20000
+                            targetfleetX = 20000
+                            targetfleetY = 40000
+                    elif 651 > mouse[0] > 633 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 27000
+                            targetfleetX = 30000
+                            targetfleetY = 40000
+                    elif 695 > mouse[0] > 677 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 25000
+                            targetfleetX = 40000
+                            targetfleetY = 40000
+                    elif 563 > mouse[0] > 545 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 33000
+                            targetfleetX = 10000
+                            targetfleetY = 30000
+                    elif 607 > mouse[0] > 589 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 25000
+                            targetfleetX = 20000
+                            targetfleetY = 30000
+                    elif 651 > mouse[0] > 633 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 18000
+                            targetfleetX = 30000
+                            targetfleetY = 30000
+                    elif 695 > mouse[0] > 677 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 15000
+                            targetfleetX = 40000
+                            targetfleetY = 30000
+                    elif 626 > mouse[0] > 608 and 454 > mouse[1] > 436:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 15000
+                            targetfleetX = 25000
+                            targetfleetY = 15000
+
+
+                elif fleetX == 25000 and fleetY == 15000:
+                    pygame.draw.circle(screen, lightGrey, (612, 440), 5, 5)
+                    pygame.draw.circle(screen, white, (549, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (593, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (637, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (679, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (549, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (593, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (637, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (679, 370), 5, 5)
+                    screen.blit(fleet, (596, 438))
+                    if 563 > mouse[0] > 545 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 29000
+                            targetfleetX = 10000
+                            targetfleetY = 40000
+                    elif 607 > mouse[0] > 589 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 25000
+                            targetfleetX = 20000
+                            targetfleetY = 40000
+                    elif 651 > mouse[0] > 633 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 25000
+                            targetfleetX = 30000
+                            targetfleetY = 40000
+                    elif 695 > mouse[0] > 677 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 29000
+                            targetfleetX = 40000
+                            targetfleetY = 40000
+                    elif 563 > mouse[0] > 545 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 21000
+                            targetfleetX = 10000
+                            targetfleetY = 30000
+                    elif 607 > mouse[0] > 589 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 16000
+                            targetfleetX = 20000
+                            targetfleetY = 30000
+                    elif 651 > mouse[0] > 633 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 16000
+                            targetfleetX = 30000
+                            targetfleetY = 30000
+                    elif 695 > mouse[0] > 677 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 21000
+                            targetfleetX = 40000
+                            targetfleetY = 30000
+
+
+                elif fleetX == 10000 and fleetY == 40000:
+                    pygame.draw.circle(screen, white, (612, 440), 5, 5)
+                    pygame.draw.circle(screen, lightGrey, (549, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (593, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (637, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (679, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (549, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (593, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (637, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (679, 370), 5, 5)
+                    screen.blit(fleet, (533, 328))
+                    if 607 > mouse[0] > 589 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 10000
+                            targetfleetX = 20000
+                            targetfleetY = 40000
+                    elif 651 > mouse[0] > 633 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 20000
+                            targetfleetX = 30000
+                            targetfleetY = 40000
+                    elif 695 > mouse[0] > 677 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 30000
+                            targetfleetX = 40000
+                            targetfleetY = 40000
+                    elif 563 > mouse[0] > 545 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 10000
+                            targetfleetX = 10000
+                            targetfleetY = 30000
+                    elif 607 > mouse[0] > 589 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 14000
+                            targetfleetX = 20000
+                            targetfleetY = 30000
+                    elif 651 > mouse[0] > 633 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 22000
+                            targetfleetX = 30000
+                            targetfleetY = 30000
+                    elif 695 > mouse[0] > 677 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 32000
+                            targetfleetX = 40000
+                            targetfleetY = 30000
+                    elif 626 > mouse[0] > 608 and 454 > mouse[1] > 436:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 29000
+                            targetfleetX = 25000
+                            targetfleetY = 15000
+
+                elif fleetX == 20000 and fleetY == 40000:
+                    pygame.draw.circle(screen, white, (612, 440), 5, 5)
+                    pygame.draw.circle(screen, white, (549, 330), 5, 5)
+                    pygame.draw.circle(screen, lightGrey, (593, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (637, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (679, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (549, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (593, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (637, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (679, 370), 5, 5)
+                    screen.blit(fleet, (577, 328))
+                    if 563 > mouse[0] > 545 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 10000
+                            targetfleetX = 10000
+                            targetfleetY = 40000
+                    elif 651 > mouse[0] > 633 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 10000
+                            targetfleetX = 30000
+                            targetfleetY = 40000
+                    elif 695 > mouse[0] > 677 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 20000
+                            targetfleetX = 40000
+                            targetfleetY = 40000
+                    elif 563 > mouse[0] > 545 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 14000
+                            targetfleetX = 10000
+                            targetfleetY = 30000
+                    elif 607 > mouse[0] > 589 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 10000
+                            targetfleetX = 20000
+                            targetfleetY = 30000
+                    elif 651 > mouse[0] > 633 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 14000
+                            targetfleetX = 30000
+                            targetfleetY = 30000
+                    elif 695 > mouse[0] > 677 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 25000
+                            targetfleetX = 40000
+                            targetfleetY = 30000
+                    elif 626 > mouse[0] > 608 and 454 > mouse[1] > 436:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 29000
+                            targetfleetX = 25000
+                            targetfleetY = 15000
+
+                elif fleetX == 30000 and fleetY == 40000:
+                    pygame.draw.circle(screen, white, (612, 440), 5, 5)
+                    pygame.draw.circle(screen, white, (549, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (593, 330), 5, 5)
+                    pygame.draw.circle(screen, lightGrey, (637, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (679, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (549, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (593, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (637, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (679, 370), 5, 5)
+                    screen.blit(fleet, (621, 328))
+                    if 563 > mouse[0] > 545 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 20000
+                            targetfleetX = 10000
+                            targetfleetY = 40000
+                    elif 607 > mouse[0] > 589 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 10000
+                            targetfleetX = 20000
+                            targetfleetY = 40000
+                    elif 695 > mouse[0] > 677 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 10000
+                            targetfleetX = 40000
+                            targetfleetY = 40000
+                    elif 563 > mouse[0] > 545 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 22000
+                            targetfleetX = 10000
+                            targetfleetY = 30000
+                    elif 607 > mouse[0] > 589 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 14000
+                            targetfleetX = 20000
+                            targetfleetY = 30000
+                    elif 651 > mouse[0] > 633 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 10000
+                            targetfleetX = 30000
+                            targetfleetY = 30000
+                    elif 695 > mouse[0] > 677 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 50000
+                            targetfleetX = 40000
+                            targetfleetY = 30000
+                    elif 626 > mouse[0] > 608 and 454 > mouse[1] > 436:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 29000
+                            targetfleetX = 25000
+                            targetfleetY = 15000
+
+                elif fleetX == 40000 and fleetY == 40000:
+                    pygame.draw.circle(screen, white, (612, 440), 5, 5)
+                    pygame.draw.circle(screen, white, (549, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (593, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (637, 330), 5, 5)
+                    pygame.draw.circle(screen, lightGrey, (679, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (549, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (593, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (637, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (679, 370), 5, 5)
+                    screen.blit(fleet, (663, 328))
+                    if 563 > mouse[0] > 545 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 30000
+                            targetfleetX = 10000
+                            targetfleetY = 40000
+                    elif 607 > mouse[0] > 589 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 20000
+                            targetfleetX = 20000
+                            targetfleetY = 40000
+                    elif 651 > mouse[0] > 633 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 10000
+                            targetfleetX = 30000
+                            targetfleetY = 40000
+                    elif 563 > mouse[0] > 545 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 32000
+                            targetfleetX = 10000
+                            targetfleetY = 30000
+                    elif 607 > mouse[0] > 589 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 22000
+                            targetfleetX = 20000
+                            targetfleetY = 30000
+                    elif 651 > mouse[0] > 633 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 14000
+                            targetfleetX = 30000
+                            targetfleetY = 30000
+                    elif 695 > mouse[0] > 677 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 10000
+                            targetfleetX = 40000
+                            targetfleetY = 30000
+                    elif 626 > mouse[0] > 608 and 454 > mouse[1] > 436:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 29000
+                            targetfleetX = 25000
+                            targetfleetY = 15000
+
+                elif fleetX == 10000 and fleetY == 30000:
+                    pygame.draw.circle(screen, white, (612, 440), 5, 5)
+                    pygame.draw.circle(screen, white, (549, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (593, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (637, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (679, 330), 5, 5)
+                    pygame.draw.circle(screen, lightGrey, (549, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (593, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (637, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (679, 370), 5, 5)
+                    screen.blit(fleet, (533, 367))
+                    if 563 > mouse[0] > 545 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 10000
+                            targetfleetX = 10000
+                            targetfleetY = 40000
+                    elif 607 > mouse[0] > 589 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 14000
+                            targetfleetX = 20000
+                            targetfleetY = 40000
+                    elif 651 > mouse[0] > 633 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 22000
+                            targetfleetX = 30000
+                            targetfleetY = 40000
+                    elif 695 > mouse[0] > 677 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 32000
+                            targetfleetX = 40000
+                            targetfleetY = 40000
+                    elif 607 > mouse[0] > 589 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 10000
+                            targetfleetX = 20000
+                            targetfleetY = 30000
+                    elif 651 > mouse[0] > 633 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 20000
+                            targetfleetX = 30000
+                            targetfleetY = 30000
+                    elif 695 > mouse[0] > 677 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 30000
+                            targetfleetX = 40000
+                            targetfleetY = 30000
+                    elif 626 > mouse[0] > 608 and 454 > mouse[1] > 436:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 21000
+                            targetfleetX = 25000
+                            targetfleetY = 15000
+
+
+
+                elif fleetX == 20000 and fleetY == 30000:
+                    pygame.draw.circle(screen, white, (612, 440), 5, 5)
+                    pygame.draw.circle(screen, white, (549, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (593, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (637, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (679, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (549, 370), 5, 5)
+                    pygame.draw.circle(screen, lightGrey, (593, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (637, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (679, 370), 5, 5)
+                    screen.blit(fleet, (577, 367))
+                    if 563 > mouse[0] > 545 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 14000
+                            targetfleetX = 10000
+                            targetfleetY = 40000
+                    elif 607 > mouse[0] > 589 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 10000
+                            targetfleetX = 20000
+                            targetfleetY = 40000
+                    elif 651 > mouse[0] > 633 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 14000
+                            targetfleetX = 30000
+                            targetfleetY = 40000
+                    elif 695 > mouse[0] > 677 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 229000
+                            targetfleetX = 40000
+                            targetfleetY = 40000
+                    elif 563 > mouse[0] > 545 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 10000
+                            targetfleetX = 10000
+                            targetfleetY = 30000
+                    elif 651 > mouse[0] > 633 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 10000
+                            targetfleetX = 30000
+                            targetfleetY = 30000
+                    elif 695 > mouse[0] > 677 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 20000
+                            targetfleetX = 40000
+                            targetfleetY = 30000
+                    elif 626 > mouse[0] > 608 and 454 > mouse[1] > 436:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 16000
+                            targetfleetX = 25000
+                            targetfleetY = 15000
+
+                elif fleetX == 30000 and fleetY == 30000:
+                    pygame.draw.circle(screen, white, (612, 440), 5, 5)
+                    pygame.draw.circle(screen, white, (549, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (593, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (637, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (679, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (549, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (593, 370), 5, 5)
+                    pygame.draw.circle(screen, lightGrey, (637, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (679, 370), 5, 5)
+                    screen.blit(fleet, (621, 367))
+                    if 563 > mouse[0] > 545 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 22000
+                            targetfleetX = 10000
+                            targetfleetY = 40000
+                    elif 607 > mouse[0] > 589 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 14000
+                            targetfleetX = 20000
+                            targetfleetY = 40000
+                    elif 651 > mouse[0] > 633 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 10000
+                            targetfleetX = 30000
+                            targetfleetY = 40000
+                    elif 695 > mouse[0] > 677 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 14000
+                            targetfleetX = 40000
+                            targetfleetY = 40000
+                    elif 563 > mouse[0] > 545 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 20000
+                            targetfleetX = 10000
+                            targetfleetY = 30000
+                    elif 607 > mouse[0] > 589 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 10000
+                            targetfleetX = 20000
+                            targetfleetY = 30000
+                    elif 695 > mouse[0] > 677 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 10000
+                            targetfleetX = 40000
+                            targetfleetY = 30000
+                    elif 626 > mouse[0] > 608 and 454 > mouse[1] > 436:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 16000
+                            targetfleetX = 25000
+                            targetfleetY = 15000
+
+                elif fleetX == 40000 and fleetY == 30000:
+                    pygame.draw.circle(screen, white, (612, 440), 5, 5)
+                    pygame.draw.circle(screen, white, (549, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (593, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (637, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (679, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (549, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (593, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (637, 370), 5, 5)
+                    pygame.draw.circle(screen, lightGrey, (679, 370), 5, 5)
+                    screen.blit(fleet, (663, 367))
+                    if 563 > mouse[0] > 545 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 32000
+                            targetfleetX = 10000
+                            targetfleetY = 40000
+                    elif 607 > mouse[0] > 589 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 22000
+                            targetfleetX = 20000
+                            targetfleetY = 40000
+                    elif 651 > mouse[0] > 633 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 14000
+                            targetfleetX = 30000
+                            targetfleetY = 40000
+                    elif 695 > mouse[0] > 677 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 10000
+                            targetfleetX = 40000
+                            targetfleetY = 40000
+                    elif 563 > mouse[0] > 545 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 30000
+                            targetfleetX = 10000
+                            targetfleetY = 30000
+                    elif 607 > mouse[0] > 589 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 20000
+                            targetfleetX = 20000
+                            targetfleetY = 30000
+                    elif 651 > mouse[0] > 633 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 10000
+                            targetfleetX = 30000
+                            targetfleetY = 30000
+                    elif 626 > mouse[0] > 608 and 454 > mouse[1] > 436:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 21000
+                            targetfleetX = 25000
+                            targetfleetY = 15000
+
+                if 812 > mouse[0] > 781 and 445 > mouse[1] > 420:
+                    screen.blit(jumpPointHoverOver, (777, 413))
+                    if click[0] == 1 and jumpTimer == 0:
+                        jumpTimer = 25
+                        targetSector = 'delta'
+                elif 780 > mouse[0] > 749 and 607 > mouse[1] > 582:
+                    screen.blit(jumpPointHoverOver, (745, 575))
+                    if click[0] == 1 and jumpTimer == 0:
+                        jumpTimer = 25
+                        targetSector = 'outpost'
+                elif 882 > mouse[0] > 851 and 665 > mouse[1] > 634:
+                    screen.blit(jumpPointHoverOver, (847, 627))
+                    if click[0] == 1 and jumpTimer == 0:
+                        jumpTimer = 25
+                        targetSector = 'outpost'
+
+            elif fleetSector == 'delta':
+                if fleetX == 10000 and fleetY == 15000 or fleetX == 40000 and fleetY == 15000:
+                    pygame.draw.circle(screen, white, (866, 440), 5, 5)
+                    pygame.draw.circle(screen, white, (799, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (843, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (887, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (929, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (799, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (843, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (887, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (929, 370), 5, 5)
+
+                pygame.draw.circle(screen, lightGrey, (612, 440), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (549, 330), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (593, 330), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (637, 330), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (679, 330), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (549, 370), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (593, 370), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (637, 370), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (679, 370), 5, 5)
+
+                pygame.draw.circle(screen, lightGrey, (1113, 440), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (1049, 330), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (1093, 330), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (1137, 330), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (1179, 330), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (1049, 370), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (1093, 370), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (1137, 370), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (1179, 370), 5, 5)
+
+                pygame.draw.circle(screen, lightGrey, (866, 660), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (764, 608), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (964, 608), 5, 5)
+
+                screen.blit(jumpPoint, (530, 420))
+                screen.blit(jumpPointAvailable, (665, 420))
+                screen.blit(jumpPoint, (781, 420))
+                screen.blit(jumpPoint, (917, 420))
+                screen.blit(jumpPointAvailable, (1030, 420))
+                screen.blit(jumpPoint, (1165, 420))
+                screen.blit(jumpPointAvailable, (749, 582))
+                screen.blit(jumpPointAvailable, (851, 634))
+                screen.blit(jumpPointAvailable, (949, 582))
+
+                if fleetX == 10000 and fleetY == 15000:
+                    screen.blit(fleet, (780, 433))
+                    if 813 > mouse[0] > 795 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 25000
+                            targetfleetX = 10000
+                            targetfleetY = 40000
+                    elif 857 > mouse[0] > 839 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 27000
+                            targetfleetX = 20000
+                            targetfleetY = 40000
+                    elif 901 > mouse[0] > 883 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 32000
+                            targetfleetX = 30000
+                            targetfleetY = 40000
+                    elif 945 > mouse[0] > 927 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 39000
+                            targetfleetX = 40000
+                            targetfleetY = 40000
+                    elif 813 > mouse[0] > 795 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 15000
+                            targetfleetX = 10000
+                            targetfleetY = 30000
+                    elif 857 > mouse[0] > 839 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 18000
+                            targetfleetX = 20000
+                            targetfleetY = 30000
+                    elif 901 > mouse[0] > 883 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 25000
+                            targetfleetX = 30000
+                            targetfleetY = 30000
+                    elif 945 > mouse[0] > 927 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 33000
+                            targetfleetX = 40000
+                            targetfleetY = 30000
+                    elif 876 > mouse[0] > 858 and 454 > mouse[1] > 436:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 15000
+                            targetfleetX = 25000
+                            targetfleetY = 15000
+
+                elif fleetX == 40000 and fleetY == 15000:
+                    screen.blit(fleet, (916, 433))
+                    if 813 > mouse[0] > 795 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 39000
+                            targetfleetX = 10000
+                            targetfleetY = 40000
+                    elif 857 > mouse[0] > 839 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 20000
+                            targetfleetX = 20000
+                            targetfleetY = 40000
+                    elif 901 > mouse[0] > 883 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 27000
+                            targetfleetX = 30000
+                            targetfleetY = 40000
+                    elif 945 > mouse[0] > 927 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 25000
+                            targetfleetX = 40000
+                            targetfleetY = 40000
+                    elif 813 > mouse[0] > 795 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 33000
+                            targetfleetX = 10000
+                            targetfleetY = 30000
+                    elif 857 > mouse[0] > 839 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 25000
+                            targetfleetX = 20000
+                            targetfleetY = 30000
+                    elif 901 > mouse[0] > 883 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 18000
+                            targetfleetX = 30000
+                            targetfleetY = 30000
+                    elif 945 > mouse[0] > 927 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 15000
+                            targetfleetX = 40000
+                            targetfleetY = 30000
+                    elif 876 > mouse[0] > 858 and 454 > mouse[1] > 436:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 15000
+                            targetfleetX = 25000
+                            targetfleetY = 15000
+
+
+                elif fleetX == 25000 and fleetY == 15000:
+                    pygame.draw.circle(screen, lightGrey, (866, 440), 5, 5)
+                    pygame.draw.circle(screen, white, (799, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (843, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (887, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (929, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (799, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (843, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (887, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (929, 370), 5, 5)
+                    screen.blit(fleet, (850, 438))
+                    if 813 > mouse[0] > 795 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 29000
+                            targetfleetX = 10000
+                            targetfleetY = 40000
+                    elif 857 > mouse[0] > 839 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 25000
+                            targetfleetX = 20000
+                            targetfleetY = 40000
+                    elif 901 > mouse[0] > 883 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 25000
+                            targetfleetX = 30000
+                            targetfleetY = 40000
+                    elif 945 > mouse[0] > 927 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 29000
+                            targetfleetX = 40000
+                            targetfleetY = 40000
+                    elif 813 > mouse[0] > 795 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 21000
+                            targetfleetX = 10000
+                            targetfleetY = 30000
+                    elif 857 > mouse[0] > 839 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 16000
+                            targetfleetX = 20000
+                            targetfleetY = 30000
+                    elif 901 > mouse[0] > 883 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 16000
+                            targetfleetX = 30000
+                            targetfleetY = 30000
+                    elif 945 > mouse[0] > 927 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 21000
+                            targetfleetX = 40000
+                            targetfleetY = 30000
+
+
+                elif fleetX == 10000 and fleetY == 40000:
+                    pygame.draw.circle(screen, white, (866, 440), 5, 5)
+                    pygame.draw.circle(screen, lightGrey, (799, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (843, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (887, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (929, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (799, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (843, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (887, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (929, 370), 5, 5)
+                    screen.blit(fleet, (783, 328))
+                    if 857 > mouse[0] > 839 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 10000
+                            targetfleetX = 20000
+                            targetfleetY = 40000
+                    elif 901 > mouse[0] > 883 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 20000
+                            targetfleetX = 30000
+                            targetfleetY = 40000
+                    elif 945 > mouse[0] > 927 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 30000
+                            targetfleetX = 40000
+                            targetfleetY = 40000
+                    elif 813 > mouse[0] > 795 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 10000
+                            targetfleetX = 10000
+                            targetfleetY = 30000
+                    elif 857 > mouse[0] > 839 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 14000
+                            targetfleetX = 20000
+                            targetfleetY = 30000
+                    elif 901 > mouse[0] > 883 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 22000
+                            targetfleetX = 30000
+                            targetfleetY = 30000
+                    elif 945 > mouse[0] > 927 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 32000
+                            targetfleetX = 40000
+                            targetfleetY = 30000
+                    elif 876 > mouse[0] > 858 and 454 > mouse[1] > 436:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 29000
+                            targetfleetX = 25000
+                            targetfleetY = 15000
+
+                elif fleetX == 20000 and fleetY == 40000:
+                    pygame.draw.circle(screen, white, (866, 440), 5, 5)
+                    pygame.draw.circle(screen, white, (799, 330), 5, 5)
+                    pygame.draw.circle(screen, lightGrey, (843, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (887, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (929, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (799, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (843, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (887, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (929, 370), 5, 5)
+                    screen.blit(fleet, (827, 328))
+                    if 813 > mouse[0] > 795 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 10000
+                            targetfleetX = 10000
+                            targetfleetY = 40000
+                    elif  901 > mouse[0] > 883 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 10000
+                            targetfleetX = 30000
+                            targetfleetY = 40000
+                    elif 945 > mouse[0] > 927 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 20000
+                            targetfleetX = 40000
+                            targetfleetY = 40000
+                    elif 813 > mouse[0] > 795 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 14000
+                            targetfleetX = 10000
+                            targetfleetY = 30000
+                    elif 857 > mouse[0] > 839 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 10000
+                            targetfleetX = 20000
+                            targetfleetY = 30000
+                    elif 901 > mouse[0] > 883 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 14000
+                            targetfleetX = 30000
+                            targetfleetY = 30000
+                    elif 945 > mouse[0] > 927 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 25000
+                            targetfleetX = 40000
+                            targetfleetY = 30000
+                    elif 876 > mouse[0] > 858 and 454 > mouse[1] > 436:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 29000
+                            targetfleetX = 25000
+                            targetfleetY = 15000
+
+                elif fleetX == 30000 and fleetY == 40000:
+                    pygame.draw.circle(screen, white, (866, 440), 5, 5)
+                    pygame.draw.circle(screen, white, (799, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (843, 330), 5, 5)
+                    pygame.draw.circle(screen, lightGrey, (887, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (929, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (799, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (843, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (887, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (929, 370), 5, 5)
+                    screen.blit(fleet, (871, 328))
+                    if 813 > mouse[0] > 795 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 20000
+                            targetfleetX = 10000
+                            targetfleetY = 40000
+                    elif 857 > mouse[0] > 839 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 10000
+                            targetfleetX = 20000
+                            targetfleetY = 40000
+                    elif 945 > mouse[0] > 927 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 10000
+                            targetfleetX = 40000
+                            targetfleetY = 40000
+                    elif 813 > mouse[0] > 795 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 22000
+                            targetfleetX = 10000
+                            targetfleetY = 30000
+                    elif 857 > mouse[0] > 839 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 14000
+                            targetfleetX = 20000
+                            targetfleetY = 30000
+                    elif 901 > mouse[0] > 883 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 10000
+                            targetfleetX = 30000
+                            targetfleetY = 30000
+                    elif 945 > mouse[0] > 927 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 50000
+                            targetfleetX = 40000
+                            targetfleetY = 30000
+                    elif 876 > mouse[0] > 858 and 454 > mouse[1] > 436:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 29000
+                            targetfleetX = 25000
+                            targetfleetY = 15000
+
+                elif fleetX == 40000 and fleetY == 40000:
+                    pygame.draw.circle(screen, white, (866, 440), 5, 5)
+                    pygame.draw.circle(screen, white, (799, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (843, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (887, 330), 5, 5)
+                    pygame.draw.circle(screen, lightGrey, (929, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (799, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (843, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (887, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (929, 370), 5, 5)
+                    screen.blit(fleet, (914, 328))
+                    if 813 > mouse[0] > 795 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 30000
+                            targetfleetX = 10000
+                            targetfleetY = 40000
+                    elif 857 > mouse[0] > 839 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 20000
+                            targetfleetX = 20000
+                            targetfleetY = 40000
+                    elif 901 > mouse[0] > 883 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 10000
+                            targetfleetX = 30000
+                            targetfleetY = 40000
+                    elif 813 > mouse[0] > 795 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 32000
+                            targetfleetX = 10000
+                            targetfleetY = 30000
+                    elif 857 > mouse[0] > 839 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 22000
+                            targetfleetX = 20000
+                            targetfleetY = 30000
+                    elif 901 > mouse[0] > 883 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 14000
+                            targetfleetX = 30000
+                            targetfleetY = 30000
+                    elif 945 > mouse[0] > 927 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 10000
+                            targetfleetX = 40000
+                            targetfleetY = 30000
+                    elif 876 > mouse[0] > 858 and 454 > mouse[1] > 436:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 29000
+                            targetfleetX = 25000
+                            targetfleetY = 15000
+
+                elif fleetX == 10000 and fleetY == 30000:
+                    pygame.draw.circle(screen, white, (866, 440), 5, 5)
+                    pygame.draw.circle(screen, white, (799, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (843, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (887, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (929, 330), 5, 5)
+                    pygame.draw.circle(screen, lightGrey, (799, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (843, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (887, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (929, 370), 5, 5)
+                    screen.blit(fleet, (783, 367))
+                    if 813 > mouse[0] > 795 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 10000
+                            targetfleetX = 10000
+                            targetfleetY = 40000
+                    elif 857 > mouse[0] > 839 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 14000
+                            targetfleetX = 20000
+                            targetfleetY = 40000
+                    elif 901 > mouse[0] > 883 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 22000
+                            targetfleetX = 30000
+                            targetfleetY = 40000
+                    elif 945 > mouse[0] > 927 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 32000
+                            targetfleetX = 40000
+                            targetfleetY = 40000
+                    elif 857 > mouse[0] > 839 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 10000
+                            targetfleetX = 20000
+                            targetfleetY = 30000
+                    elif 901 > mouse[0] > 883 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 20000
+                            targetfleetX = 30000
+                            targetfleetY = 30000
+                    elif 945 > mouse[0] > 927 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 30000
+                            targetfleetX = 40000
+                            targetfleetY = 30000
+                    elif 876 > mouse[0] > 858 and 454 > mouse[1] > 436:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 21000
+                            targetfleetX = 25000
+                            targetfleetY = 15000
+
+
+
+                elif fleetX == 20000 and fleetY == 30000:
+                    pygame.draw.circle(screen, white, (866, 440), 5, 5)
+                    pygame.draw.circle(screen, white, (799, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (843, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (887, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (929, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (799, 370), 5, 5)
+                    pygame.draw.circle(screen, lightGrey, (843, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (887, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (929, 370), 5, 5)
+                    screen.blit(fleet, (827, 367))
+                    if 813 > mouse[0] > 795 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 14000
+                            targetfleetX = 10000
+                            targetfleetY = 40000
+                    elif 857 > mouse[0] > 839 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 10000
+                            targetfleetX = 20000
+                            targetfleetY = 40000
+                    elif 901 > mouse[0] > 883 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 14000
+                            targetfleetX = 30000
+                            targetfleetY = 40000
+                    elif 945 > mouse[0] > 927 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 229000
+                            targetfleetX = 40000
+                            targetfleetY = 40000
+                    elif 813 > mouse[0] > 795 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 10000
+                            targetfleetX = 10000
+                            targetfleetY = 30000
+                    elif 901 > mouse[0] > 883 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 10000
+                            targetfleetX = 30000
+                            targetfleetY = 30000
+                    elif 945 > mouse[0] > 927 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 20000
+                            targetfleetX = 40000
+                            targetfleetY = 30000
+                    elif 876 > mouse[0] > 858 and 454 > mouse[1] > 436:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 16000
+                            targetfleetX = 25000
+                            targetfleetY = 15000
+
+                elif fleetX == 30000 and fleetY == 30000:
+                    pygame.draw.circle(screen, white, (866, 440), 5, 5)
+                    pygame.draw.circle(screen, white, (799, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (843, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (887, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (929, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (799, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (843, 370), 5, 5)
+                    pygame.draw.circle(screen, lightGrey, (887, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (929, 370), 5, 5)
+                    screen.blit(fleet, (871, 367))
+                    if 813 > mouse[0] > 795 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 22000
+                            targetfleetX = 10000
+                            targetfleetY = 40000
+                    elif 857 > mouse[0] > 839 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 14000
+                            targetfleetX = 20000
+                            targetfleetY = 40000
+                    elif 901 > mouse[0] > 883 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 10000
+                            targetfleetX = 30000
+                            targetfleetY = 40000
+                    elif 945 > mouse[0] > 927 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 14000
+                            targetfleetX = 40000
+                            targetfleetY = 40000
+                    elif 813 > mouse[0] > 795 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 20000
+                            targetfleetX = 10000
+                            targetfleetY = 30000
+                    elif 857 > mouse[0] > 839 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 10000
+                            targetfleetX = 20000
+                            targetfleetY = 30000
+                    elif 945 > mouse[0] > 927 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 10000
+                            targetfleetX = 40000
+                            targetfleetY = 30000
+                    elif 876 > mouse[0] > 858 and 454 > mouse[1] > 436:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 16000
+                            targetfleetX = 25000
+                            targetfleetY = 15000
+
+                elif fleetX == 40000 and fleetY == 30000:
+                    pygame.draw.circle(screen, white, (866, 440), 5, 5)
+                    pygame.draw.circle(screen, white, (799, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (843, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (887, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (929, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (799, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (843, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (887, 370), 5, 5)
+                    pygame.draw.circle(screen, lightGrey, (929, 370), 5, 5)
+                    screen.blit(fleet, (913, 367))
+                    if 813 > mouse[0] > 795 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 32000
+                            targetfleetX = 10000
+                            targetfleetY = 40000
+                    elif 857 > mouse[0] > 839 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 22000
+                            targetfleetX = 20000
+                            targetfleetY = 40000
+                    elif 901 > mouse[0] > 883 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 14000
+                            targetfleetX = 30000
+                            targetfleetY = 40000
+                    elif 945 > mouse[0] > 927 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 10000
+                            targetfleetX = 40000
+                            targetfleetY = 40000
+                    elif 813 > mouse[0] > 795 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 30000
+                            targetfleetX = 10000
+                            targetfleetY = 30000
+                    elif 857 > mouse[0] > 839 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 20000
+                            targetfleetX = 20000
+                            targetfleetY = 30000
+                    elif 901 > mouse[0] > 883 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 10000
+                            targetfleetX = 30000
+                            targetfleetY = 30000
+                    elif 876 > mouse[0] > 858 and 454 > mouse[1] > 436:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 21000
+                            targetfleetX = 25000
+                            targetfleetY = 15000
+
+                if 696 > mouse[0] > 665 and 445 > mouse[1] > 420:
+                    screen.blit(jumpPointHoverOver, (661, 413))
+                    if click[0] == 1 and jumpTimer == 0:
+                        jumpTimer = 25
+                        targetSector = 'alpha'
+                elif 780 > mouse[0] > 749 and 607 > mouse[1] > 582:
+                    screen.blit(jumpPointHoverOver, (745, 575))
+                    if click[0] == 1 and jumpTimer == 0:
+                        jumpTimer = 25
+                        targetSector = 'outpost'
+                elif 882 > mouse[0] > 851 and 665 > mouse[1] > 634:
+                    screen.blit(jumpPointHoverOver, (847, 627))
+                    if click[0] == 1 and jumpTimer == 0:
+                        jumpTimer = 25
+                        targetSector = 'outpost'
+                elif 980 > mouse[0] > 949 and 607 > mouse[1] > 582:
+                    screen.blit(jumpPointHoverOver, (945, 575))
+                    if click[0] == 1 and jumpTimer == 0:
+                        jumpTimer = 25
+                        targetSector = 'outpost'
+                elif 1061 > mouse[0] > 1030 and 445 > mouse[1] > 420:
+                    screen.blit(jumpPointHoverOver, (1026, 413))
+                    if click[0] == 1 and jumpTimer == 0:
+                        jumpTimer = 25
+                        targetSector = 'beta'
+
+            elif fleetSector == 'beta':
+                if fleetX == 10000 and fleetY == 15000 or fleetX == 40000 and fleetY == 15000:
+                    pygame.draw.circle(screen, white, (1113, 440), 5, 5)
+                    pygame.draw.circle(screen, white, (1049, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (1093, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (1137, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (1179, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (1049, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (1093, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (1137, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (1179, 370), 5, 5)
+
+                pygame.draw.circle(screen, lightGrey, (612, 440), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (549, 330), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (593, 330), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (637, 330), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (679, 330), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (549, 370), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (593, 370), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (637, 370), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (679, 370), 5, 5)
+
+                pygame.draw.circle(screen, lightGrey, (866, 440), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (799, 330), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (843, 330), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (887, 330), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (929, 330), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (799, 370), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (843, 370), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (887, 370), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (929, 370), 5, 5)
+
+                pygame.draw.circle(screen, lightGrey, (866, 660), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (764, 608), 5, 5)
+                pygame.draw.circle(screen, lightGrey, (964, 608), 5, 5)
+
+                screen.blit(jumpPoint, (530, 420))
+                screen.blit(jumpPoint, (665, 420))
+                screen.blit(jumpPoint, (781, 420))
+                screen.blit(jumpPointAvailable, (917, 420))
+                screen.blit(jumpPoint, (1030, 420))
+                screen.blit(jumpPoint, (1165, 420))
+                screen.blit(jumpPoint, (749, 582))
+                screen.blit(jumpPointAvailable, (851, 634))
+                screen.blit(jumpPointAvailable, (949, 582))
+
+                if fleetX == 10000 and fleetY == 15000:
+                    screen.blit(fleet, (1029, 433))
+                    if 1063 > mouse[0] > 1045 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 25000
+                            targetfleetX = 10000
+                            targetfleetY = 40000
+                    elif 1107 > mouse[0] > 1089 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 27000
+                            targetfleetX = 20000
+                            targetfleetY = 40000
+                    elif 1151 > mouse[0] > 1133 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 32000
+                            targetfleetX = 30000
+                            targetfleetY = 40000
+                    elif 1195 > mouse[0] > 1177 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 39000
+                            targetfleetX = 40000
+                            targetfleetY = 40000
+                    elif 1063 > mouse[0] > 1045 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 15000
+                            targetfleetX = 10000
+                            targetfleetY = 30000
+                    elif 1107 > mouse[0] > 1089 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 18000
+                            targetfleetX = 20000
+                            targetfleetY = 30000
+                    elif 1151 > mouse[0] > 1133 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 25000
+                            targetfleetX = 30000
+                            targetfleetY = 30000
+                    elif 1195 > mouse[0] > 1177 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 33000
+                            targetfleetX = 40000
+                            targetfleetY = 30000
+                    elif 1126 > mouse[0] > 1108 and 454 > mouse[1] > 436:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 15000
+                            targetfleetX = 25000
+                            targetfleetY = 15000
+
+                elif fleetX == 40000 and fleetY == 15000:
+                    screen.blit(fleet, (1164, 433))
+                    if 1063 > mouse[0] > 1045 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 39000
+                            targetfleetX = 10000
+                            targetfleetY = 40000
+                    elif 1107 > mouse[0] > 1089 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 32000
+                            targetfleetX = 20000
+                            targetfleetY = 40000
+                    elif 1151 > mouse[0] > 1133 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 27000
+                            targetfleetX = 30000
+                            targetfleetY = 40000
+                    elif 1195 > mouse[0] > 1177 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 25000
+                            targetfleetX = 40000
+                            targetfleetY = 40000
+                    elif 1063 > mouse[0] > 1045 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 34000
+                            targetfleetX = 10000
+                            targetfleetY = 30000
+                    elif 1107 > mouse[0] > 1089 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 25000
+                            targetfleetX = 20000
+                            targetfleetY = 30000
+                    elif 1151 > mouse[0] > 1133 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 18000
+                            targetfleetX = 30000
+                            targetfleetY = 30000
+                    elif 1195 > mouse[0] > 1177 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 15000
+                            targetfleetX = 40000
+                            targetfleetY = 30000
+                    elif 1126 > mouse[0] > 1108 and 454 > mouse[1] > 436:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 15000
+                            targetfleetX = 25000
+                            targetfleetY = 15000
+
+
+                elif fleetX == 25000 and fleetY == 15000:
+                    pygame.draw.circle(screen, lightGrey, (1113, 440), 5, 5)
+                    pygame.draw.circle(screen, white, (1049, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (1093, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (1137, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (1179, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (1049, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (1093, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (1137, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (1179, 370), 5, 5)
+                    screen.blit(fleet, (1097, 438))
+                    if 1063 > mouse[0] > 1045 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 25000
+                            targetfleetX = 10000
+                            targetfleetY = 40000
+                    elif 1107 > mouse[0] > 1089 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 27000
+                            targetfleetX = 20000
+                            targetfleetY = 40000
+                    elif 1151 > mouse[0] > 1133 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 32000
+                            targetfleetX = 30000
+                            targetfleetY = 40000
+                    elif 1195 > mouse[0] > 1177 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 39000
+                            targetfleetX = 40000
+                            targetfleetY = 40000
+                    elif 1063 > mouse[0] > 1045 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 15000
+                            targetfleetX = 10000
+                            targetfleetY = 30000
+                    elif 1107 > mouse[0] > 1089 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 18000
+                            targetfleetX = 20000
+                            targetfleetY = 30000
+                    elif 1151 > mouse[0] > 1133 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 25000
+                            targetfleetX = 30000
+                            targetfleetY = 30000
+                    elif 1195 > mouse[0] > 1177 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 29000
+                            targetfleetX = 40000
+                            targetfleetY = 30000
+
+                elif fleetX == 10000 and fleetY == 40000:
+                    pygame.draw.circle(screen, white, (1113, 440), 5, 5)
+                    pygame.draw.circle(screen, lightGrey, (1049, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (1093, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (1137, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (1179, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (1049, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (1093, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (1137, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (1179, 370), 5, 5)
+                    screen.blit(fleet, (1033, 328))
+                    if 1107 > mouse[0] > 1089 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 10000
+                            targetfleetX = 20000
+                            targetfleetY = 40000
+                    elif 1151 > mouse[0] > 1133 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 20000
+                            targetfleetX = 30000
+                            targetfleetY = 40000
+                    elif 1195 > mouse[0] > 1177 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 30000
+                            targetfleetX = 40000
+                            targetfleetY = 40000
+                    elif 1063 > mouse[0] > 1045 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 10000
+                            targetfleetX = 10000
+                            targetfleetY = 30000
+                    elif 1107 > mouse[0] > 1089 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 14000
+                            targetfleetX = 20000
+                            targetfleetY = 30000
+                    elif 1151 > mouse[0] > 1133 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 22000
+                            targetfleetX = 30000
+                            targetfleetY = 30000
+                    elif 1195 > mouse[0] > 1177 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 32000
+                            targetfleetX = 40000
+                            targetfleetY = 30000
+                    elif 1126 > mouse[0] > 1108 and 454 > mouse[1] > 436:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 29000
+                            targetfleetX = 25000
+                            targetfleetY = 15000
+
+                elif fleetX == 20000 and fleetY == 40000:
+                    pygame.draw.circle(screen, white, (1113, 440), 5, 5)
+                    pygame.draw.circle(screen, white, (1049, 330), 5, 5)
+                    pygame.draw.circle(screen, lightGrey, (1093, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (1137, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (1179, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (1049, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (1093, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (1137, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (1179, 370), 5, 5)
+                    screen.blit(fleet, (1077, 328))
+                    if 1063 > mouse[0] > 1045 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 1000
+                            targetfleetX = 10000
+                            targetfleetY = 40000
+                    elif 1151 > mouse[0] > 1133 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 10000
+                            targetfleetX = 30000
+                            targetfleetY = 40000
+                    elif 1195 > mouse[0] > 1177 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 20000
+                            targetfleetX = 40000
+                            targetfleetY = 40000
+                    elif 1063 > mouse[0] > 1045 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 14000
+                            targetfleetX = 10000
+                            targetfleetY = 30000
+                    elif 1107 > mouse[0] > 1089 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 10000
+                            targetfleetX = 20000
+                            targetfleetY = 30000
+                    elif 1151 > mouse[0] > 1133 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 14000
+                            targetfleetX = 30000
+                            targetfleetY = 30000
+                    elif 1195 > mouse[0] > 1177 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 22000
+                            targetfleetX = 40000
+                            targetfleetY = 30000
+                    elif 1126 > mouse[0] > 1108 and 454 > mouse[1] > 436:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 25000
+                            targetfleetX = 25000
+                            targetfleetY = 15000
+
+                elif fleetX == 30000 and fleetY == 40000:
+                    pygame.draw.circle(screen, white, (1113, 440), 5, 5)
+                    pygame.draw.circle(screen, white, (1049, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (1093, 330), 5, 5)
+                    pygame.draw.circle(screen, lightGrey, (1137, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (1179, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (1049, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (1093, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (1137, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (1179, 370), 5, 5)
+                    screen.blit(fleet, (1121, 328))
+                    if 1063 > mouse[0] > 1045 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 20000
+                            targetfleetX = 10000
+                            targetfleetY = 40000
+                    elif 1107 > mouse[0] > 1089 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 10000
+                            targetfleetX = 20000
+                            targetfleetY = 40000
+                    elif 1195 > mouse[0] > 1177 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 10000
+                            targetfleetX = 40000
+                            targetfleetY = 40000
+                    elif 1063 > mouse[0] > 1045 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 22000
+                            targetfleetX = 10000
+                            targetfleetY = 30000
+                    elif 1107 > mouse[0] > 1089 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 14000
+                            targetfleetX = 20000
+                            targetfleetY = 30000
+                    elif 1151 > mouse[0] > 1133 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 10000
+                            targetfleetX = 30000
+                            targetfleetY = 30000
+                    elif 1195 > mouse[0] > 1177 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 14000
+                            targetfleetX = 40000
+                            targetfleetY = 30000
+                    elif 1126 > mouse[0] > 1108 and 454 > mouse[1] > 436:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 25000
+                            targetfleetX = 25000
+                            targetfleetY = 15000
+
+                elif fleetX == 40000 and fleetY == 40000:
+                    pygame.draw.circle(screen, white, (1113, 440), 5, 5)
+                    pygame.draw.circle(screen, white, (1049, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (1093, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (1137, 330), 5, 5)
+                    pygame.draw.circle(screen, lightGrey, (1179, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (1049, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (1093, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (1137, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (1179, 370), 5, 5)
+                    screen.blit(fleet, (1163, 328))
+                    if 1063 > mouse[0] > 1045 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 30000
+                            targetfleetX = 10000
+                            targetfleetY = 40000
+                    elif 1107 > mouse[0] > 1089 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 20000
+                            targetfleetX = 20000
+                            targetfleetY = 40000
+                    elif 1151 > mouse[0] > 1133 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 10000
+                            targetfleetX = 30000
+                            targetfleetY = 40000
+                    elif 1063 > mouse[0] > 1045 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 32000
+                            targetfleetX = 10000
+                            targetfleetY = 30000
+                    elif 1107 > mouse[0] > 1089 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 22000
+                            targetfleetX = 20000
+                            targetfleetY = 30000
+                    elif 1151 > mouse[0] > 1133 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 14000
+                            targetfleetX = 30000
+                            targetfleetY = 30000
+                    elif 1195 > mouse[0] > 1177 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 10000
+                            targetfleetX = 40000
+                            targetfleetY = 30000
+                    elif 1126 > mouse[0] > 1108 and 454 > mouse[1] > 436:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 29000
+                            targetfleetX = 25000
+                            targetfleetY = 15000
+
+                elif fleetX == 10000 and fleetY == 30000:
+                    pygame.draw.circle(screen, white, (1113, 440), 5, 5)
+                    pygame.draw.circle(screen, white, (1049, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (1093, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (1137, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (1179, 330), 5, 5)
+                    pygame.draw.circle(screen, lightGrey, (1049, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (1093, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (1137, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (1179, 370), 5, 5)
+                    screen.blit(fleet, (1033, 367))
+                    if 1063 > mouse[0] > 1045 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 10000
+                            targetfleetX = 10000
+                            targetfleetY = 40000
+                    elif 1107 > mouse[0] > 1089 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 14000
+                            targetfleetX = 20000
+                            targetfleetY = 40000
+                    elif 1151 > mouse[0] > 1133 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 22000
+                            targetfleetX = 30000
+                            targetfleetY = 40000
+                    elif 1195 > mouse[0] > 1177 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 32000
+                            targetfleetX = 40000
+                            targetfleetY = 40000
+                    elif 1107 > mouse[0] > 1089 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 10000
+                            targetfleetX = 20000
+                            targetfleetY = 30000
+                    elif 1151 > mouse[0] > 1133 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 20000
+                            targetfleetX = 30000
+                            targetfleetY = 30000
+                    elif 1195 > mouse[0] > 1177 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 30000
+                            targetfleetX = 40000
+                            targetfleetY = 30000
+                    elif 1126 > mouse[0] > 1108 and 454 > mouse[1] > 436:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 21000
+                            targetfleetX = 25000
+                            targetfleetY = 15000
+
+
+
+                elif fleetX == 20000 and fleetY == 30000:
+                    pygame.draw.circle(screen, white, (1113, 440), 5, 5)
+                    pygame.draw.circle(screen, white, (1049, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (1093, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (1137, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (1179, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (1049, 370), 5, 5)
+                    pygame.draw.circle(screen, lightGrey, (1093, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (1137, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (1179, 370), 5, 5)
+                    screen.blit(fleet, (1077, 367))
+                    if 1063 > mouse[0] > 1045 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 14000
+                            targetfleetX = 10000
+                            targetfleetY = 40000
+                    elif 1107 > mouse[0] > 1089 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 10000
+                            targetfleetX = 20000
+                            targetfleetY = 40000
+                    elif 1151 > mouse[0] > 1133 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 14000
+                            targetfleetX = 30000
+                            targetfleetY = 40000
+                    elif 1195 > mouse[0] > 1177 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 22000
+                            targetfleetX = 40000
+                            targetfleetY = 40000
+                    elif 1063 > mouse[0] > 1045 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 10000
+                            targetfleetX = 10000
+                            targetfleetY = 30000
+                    elif 1151 > mouse[0] > 1133 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 10000
+                            targetfleetX = 30000
+                            targetfleetY = 30000
+                    elif 1195 > mouse[0] > 1177 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 22000
+                            targetfleetX = 40000
+                            targetfleetY = 30000
+                    elif 1126 > mouse[0] > 1108 and 454 > mouse[1] > 436:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 16000
+                            targetfleetX = 25000
+                            targetfleetY = 15000
+
+                elif fleetX == 30000 and fleetY == 30000:
+                    pygame.draw.circle(screen, white, (1113, 440), 5, 5)
+                    pygame.draw.circle(screen, white, (1049, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (1093, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (1137, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (1179, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (1049, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (1093, 370), 5, 5)
+                    pygame.draw.circle(screen, lightGrey, (1137, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (1179, 370), 5, 5)
+                    screen.blit(fleet, (1121, 367))
+                    if 1063 > mouse[0] > 1045 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 22000
+                            targetfleetX = 10000
+                            targetfleetY = 40000
+                    elif 1107 > mouse[0] > 1089 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 14000
+                            targetfleetX = 20000
+                            targetfleetY = 40000
+                    elif 1151 > mouse[0] > 1133 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 10000
+                            targetfleetX = 30000
+                            targetfleetY = 40000
+                    elif 1195 > mouse[0] > 1177 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 14000
+                            targetfleetX = 40000
+                            targetfleetY = 40000
+                    elif 1063 > mouse[0] > 1045 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 20000
+                            targetfleetX = 10000
+                            targetfleetY = 30000
+                    elif 1107 > mouse[0] > 1089 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 10000
+                            targetfleetX = 20000
+                            targetfleetY = 30000
+                    elif 1195 > mouse[0] > 1177 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 10000
+                            targetfleetX = 40000
+                            targetfleetY = 30000
+                    elif 1126 > mouse[0] > 1108 and 454 > mouse[1] > 436:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 16000
+                            targetfleetX = 25000
+                            targetfleetY = 15000
+
+                elif fleetX == 40000 and fleetY == 30000:
+                    pygame.draw.circle(screen, white, (1113, 440), 5, 5)
+                    pygame.draw.circle(screen, white, (1049, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (1093, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (1137, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (1179, 330), 5, 5)
+                    pygame.draw.circle(screen, white, (1049, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (1093, 370), 5, 5)
+                    pygame.draw.circle(screen, white, (1137, 370), 5, 5)
+                    pygame.draw.circle(screen, lightGrey, (1179, 370), 5, 5)
+                    screen.blit(fleet, (1163, 367))
+                    if 1063 > mouse[0] > 1045 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 32000
+                            targetfleetX = 10000
+                            targetfleetY = 40000
+                    elif 1107 > mouse[0] > 1089 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 22000
+                            targetfleetX = 20000
+                            targetfleetY = 40000
+                    elif 1151 > mouse[0] > 1133 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 14000
+                            targetfleetX = 30000
+                            targetfleetY = 40000
+                    elif 1195 > mouse[0] > 1177 and 344 > mouse[1] > 326:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 10000
+                            targetfleetX = 40000
+                            targetfleetY = 40000
+                    elif 1063 > mouse[0] > 1045 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 30000
+                            targetfleetX = 10000
+                            targetfleetY = 30000
+                    elif 1107 > mouse[0] > 1089 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 20000
+                            targetfleetX = 20000
+                            targetfleetY = 30000
+                    elif 1151 > mouse[0] > 1133 and 384 > mouse[1] > 366:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 10000
+                            targetfleetX = 30000
+                            targetfleetY = 30000
+                    elif 1126 > mouse[0] > 1108 and 454 > mouse[1] > 436:
+                        if click[0] == 1:
+                            distanceToTargetLocation = 21000
+                            targetfleetX = 25000
+                            targetfleetY = 15000
+
+                if 980 > mouse[0] > 949 and 607 > mouse[1] > 582:
+                    screen.blit(jumpPointHoverOver, (945, 575))
+                    if click[0] == 1 and jumpTimer == 0:
+                        jumpTimer = 25
+                        targetSector = 'outpost'
+                elif 882 > mouse[0] > 851 and 665 > mouse[1] > 634:
+                    screen.blit(jumpPointHoverOver, (847, 627))
+                    if click[0] == 1 and jumpTimer == 0:
+                        jumpTimer = 25
+                        targetSector = 'outpost'
+                elif 948 > mouse[0] > 917 and 445 > mouse[1] > 420:
+                    screen.blit(jumpPointHoverOver, (913, 413))
+                    if click[0] == 1 and jumpTimer == 0:
+                        jumpTimer = 25
+                        targetSector = 'delta'
+
+
+            pygame.draw.circle(screen, white, (864, 662), 65, 3)
+            pygame.draw.circle(screen, white, (611, 440), 40, 3)
+            pygame.draw.circle(screen, white, (865, 440), 40, 3)
+            pygame.draw.circle(screen, white, (1113, 440), 40, 3)
+
+            printWhiteText('Alpha', 22, 612, 285)
+            printWhiteText('Delta', 22, 864, 285)
+            printWhiteText('Beta', 22, 1112, 285)
+            printWhiteText('Outpost', 22, 856, 530)
+
+
+        pygame.display.update()
+        clock.tick(60)
+    time.sleep(3)
+
+gameMenu()
+confirmationScreen()
+gameLoop()
+pygame.quit()
+quit()
