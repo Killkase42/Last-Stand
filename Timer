@@ -1,0 +1,59 @@
+import pygame
+import time
+import random
+
+#Initialize Pygame.
+pygame.init()
+
+clock = pygame.time.Clock()
+
+#Create screen.
+screen = pygame.display.set_mode((1728, 972))
+
+#Timer
+maxWaveTime = 30
+timing = False
+start = None
+
+#Colours
+white = (255, 255, 255)
+black = (0, 0, 0)
+
+def textObjectsWhite(text, font):
+    textSurface = font.render(text, True, white)
+    return textSurface, textSurface.get_rect()
+
+def printWhiteText(text, size, x, y ):
+    descriptionText = pygame.font.Font('freesansbold.ttf', size)
+    textSurf, textRect = textObjectsWhite(text, descriptionText)
+    textRect.center = (x, y)
+    screen.blit(textSurf, textRect)
+
+def gameLoop():
+    gameRunning = True
+    startWaveOne = True
+    while gameRunning:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+
+        screen.fill(black)
+
+        if startWaveOne == True:
+            timing = True
+            start = time.time()
+            startWaveOne = False
+
+
+        #Check if wave time ran out, and if so, moves enemies to outpost
+        if timing == True:
+            if time.time() - start >= maxWaveTime:
+                timing = False
+            printWhiteText(str(int(maxWaveTime - (time.time() - start))), 15, 500, 500)
+
+        pygame.display.update()
+        clock.tick(60)
+gameLoop()
+pygame.quit()
+quit()
